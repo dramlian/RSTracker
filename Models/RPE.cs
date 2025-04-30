@@ -10,18 +10,17 @@ namespace RSTracker.Models
         public int Id { get; set; }
         public int IntervalInMinutes { get; set; }
         public int Value { get; set; }
-
-        [Range(1, 52, ErrorMessage = "Value must be between 1 and 52.")]
         public int LeagueWeek { get; set; }
-
         public DateOnly Date { get; set; }
+        public DayOfWeekEnum DayOfWeek { get; set; }
 
-        public RPE(int intervalInMinutes, int value, int leagueWeek, DateOnly date)
+        public RPE(int intervalInMinutes, int value, int leagueWeek, DateOnly date, DayOfWeekEnum dayOfWeek)
         {
             IntervalInMinutes = intervalInMinutes;
             Value = value;
             LeagueWeek = leagueWeek;
             Date = date;
+            DayOfWeek = dayOfWeek;
         }
     }
 }

@@ -40,7 +40,12 @@ public class PlayerHelper
                 throw new HttpRequestException("Player not found.");
             }
 
-            Welness newWelness = new Welness(input.MuscleStatus, input.RecoveryStatus, input.StressStatus, input.SleepStatus, input.Date, input.LeagueWeek);
+            Welness newWelness = new Welness
+                (input.MuscleStatus, input.RecoveryStatus,
+                input.StressStatus, input.SleepStatus,
+                input.Date, input.LeagueWeek,
+                input.DayOfWeek);
+
             player.AddWelnessRecord(newWelness);
             await _context.SaveChangesAsync();
         }
@@ -60,7 +65,9 @@ public class PlayerHelper
                 throw new HttpRequestException("Player not found.");
             }
 
-            RPE newRpe = new RPE(input.IntervalInMinutes, input.Value, input.LeagueWeek, input.Date);
+            RPE newRpe = new RPE
+                (input.IntervalInMinutes, input.Value,
+                input.LeagueWeek, input.Date, input.DayOfWeek);
             player.AddRPERecord(newRpe);
             await _context.SaveChangesAsync();
         }
