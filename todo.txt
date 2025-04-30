@@ -1,6 +1,8 @@
-1. Opravit Git ignore
+1. Opravit Git ignore   X
 
-2. Vediet insertnut hraca do db
+1.5 Swagger X
+
+2. Vediet insertnut hraca do db X
 
 3. Vediet pridat welness hraca do db
 

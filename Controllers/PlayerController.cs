@@ -15,58 +15,25 @@ namespace RSTracker.Controllers
         }
 
         [HttpPost("addplayer")]
-        public IActionResult AddPlayer([FromBody] PlayerInput playerInput)
+        public async Task<IActionResult> AddPlayer([FromBody] PlayerInput playerInput)
         {
-            return Ok(_playerHelper.AddPlayerToDbAsync(playerInput));
+            await _playerHelper.AddPlayerToDbAsync(playerInput);
+            return Ok(new { message = "Player added successfully." });
         }
 
+        [HttpPost("add-welness/{playerId}")]
+        public async Task<IActionResult> AddWelness(int playerId, [FromBody] WelnessInput input)
+        {
+            await _playerHelper.AddWelnessToDbAsync(playerId, input);
+            return Ok(new { message = "Wellness data added successfully." });
+        }
 
-        // [HttpGet("get-players")]
-        // public IActionResult GetPlayers(
-        //     [FromQuery] List<int> playerIds,
-        //     [FromQuery] int week,
-        //     [FromQuery] DateOnly? date,
-        //     [FromQuery] bool addWelness = false,
-        //     [FromQuery] bool addRpe = false)
-        // {
-        //     var players = new List<Player>
-        //     {
-        //         new Player("John Doe", 25, "Forward", 180, 75),
-        //         new Player("Jane Smith", 22, "Midfielder", 170, 65)
-        //     };
+        [HttpPost("add-rpe/{playerId}")]
+        public async Task<IActionResult> AddRPE(int playerId, [FromBody] RpeInput input)
+        {
+            await _playerHelper.AddRpeToDbAsync(playerId, input);
+            return Ok(new { message = "RPE data added successfully." });
+        }
 
-        //     return Ok(players);
-        // }
-
-
-        // [HttpPost("add-welness/{playerId}")]
-        // public IActionResult AddWelness(int playerId, [FromBody] WelnessInput input)
-        // {
-        //     var welness = new Welness(
-        //         input.MuscleStatus,
-        //         input.RecoveryStatus,
-        //         input.StressStatus,
-        //         input.SleepStatus,
-        //         input.Date,
-        //         input.LeagueWeek
-        //     );
-
-        //     // Now you can save 'welness' to database, or add to Player, etc.
-
-        //     return Ok();
-        // }
-
-        // [HttpPost("add-rpe/{playerId}")]
-        // public IActionResult AddRPE(int playerId, [FromBody] RpeInput input)
-        // {
-        //     var rpe = new RPE(
-        //         input.IntervalInMinutes,
-        //         input.Value
-        //     );
-
-        //     // Now you can save 'rpe' to database, or add to Player, etc.
-
-        //     return Ok();
-        // }
     }
 }

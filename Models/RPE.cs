@@ -2,28 +2,26 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RSTracker.Models
 {
-    public class RPE // Changed from 'record' to 'class' for EF Core compatibility
+    public class RPE
     {
         public RPE() { }
 
-        // Primary key should be mutable, change readonly to property with a setter
         [Key]
         public int Id { get; set; }
-
-        // Other fields should be mutable as well
         public int IntervalInMinutes { get; set; }
         public int Value { get; set; }
 
         [Range(1, 52, ErrorMessage = "Value must be between 1 and 52.")]
-        public int LeagueWeek { get; set; }  // Changed from 'init' to a regular setter
+        public int LeagueWeek { get; set; }
 
-        public DateOnly Date { get; set; }  // Made mutable by removing 'readonly'
+        public DateOnly Date { get; set; }
 
-        // Constructor with parameters to initialize properties
-        public RPE(int intervalInMinutes, int value)
+        public RPE(int intervalInMinutes, int value, int leagueWeek, DateOnly date)
         {
             IntervalInMinutes = intervalInMinutes;
             Value = value;
+            LeagueWeek = leagueWeek;
+            Date = date;
         }
     }
 }

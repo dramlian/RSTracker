@@ -1,7 +1,6 @@
 namespace RSTracker.Models;
 
 public record PlayerInput(
-    int Id,
     string Name,
     int Age,
     string Position,
