@@ -1,0 +1,6 @@
+@RSTracker_HostAddress = http://localhost:5213
+
+GET {{RSTracker_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

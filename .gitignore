@@ -1,0 +1,42 @@
+# Ignore build outputs
+bin/
+obj/
+
+# User-specific files
+.idea/
+.vscode/
+.vs/
+
+# .NET specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# ASP.NET
+wwwroot/
+
+# Npm packages
+node_modules/
+
+# JetBrains Rider
+.idea/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer files for .NET Core
+*.exe
+*.dll
+*.pdb
+*.config
+
+# User-specific files for .NET tools
+.vscode/
+
+# Backup files
+*~.bak
+*~.swp
