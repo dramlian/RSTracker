@@ -21,6 +21,13 @@ namespace RSTracker.Controllers
             return Ok(new { message = "Player added successfully." });
         }
 
+        [HttpDelete("delete/{playerId}")]
+        public async Task<IActionResult> DeletePlayer(int playerId)
+        {
+            await _playerHelper.DeletePlayer(playerId);
+            return Ok(new { message = "Player deleted successfully." });
+        }
+
         [HttpPost("add-welness/{playerId}")]
         public async Task<IActionResult> AddWelness(int playerId, [FromBody] WelnessInput input)
         {
