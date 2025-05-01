@@ -30,6 +30,25 @@ public class PlayerHelper
         }
     }
 
+    public async Task DeletePlayer(int playerId)
+    {
+        try
+        {
+            var player = _context.Players.Where(x => x.Id.Equals(playerId)).FirstOrDefault();
+            if (player == null)
+            {
+                throw new HttpRequestException("Player not found.");
+            }
+
+            _context.Players.Remove(player);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            throw new HttpRequestException("An error occurred while deleting the player from the database.", ex);
+        }
+    }
+
     public async Task AddWelnessToDbAsync(int playerId, WelnessInput input)
     {
         try
