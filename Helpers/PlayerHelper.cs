@@ -10,7 +10,7 @@ public class PlayerHelper
         _context = context;
     }
 
-    public async Task AddPlayerToDbAsync(PlayerInput player)
+    public async Task AddPlayerToDb(PlayerInput player)
     {
         try
         {
@@ -51,14 +51,19 @@ public class PlayerHelper
         }
     }
 
-    public async Task AddWelnessToDbAsync(int playerId, WelnessInput input)
+    public async Task AddWelnessToDb(int playerId, WelnessInput input)
     {
         try
         {
-            var player = _context.Players.Where(x => x.Id.Equals(playerId)).FirstOrDefault();
+            var player = _context.Players.Where(x => x.Id.Equals(playerId)).Include(p => p.WelnessRecords).FirstOrDefault();
             if (player == null)
             {
                 throw new HttpRequestException("Player not found.");
+            }
+
+            if (player.WelnessRecords != null && player.WelnessRecords.Any(x => x.DayOfWeek.Equals(input.DayOfWeek) && x.LeagueWeek.Equals(input.LeagueWeek)))
+            {
+                throw new HttpRequestException("Welness record already exists for this player.");
             }
 
             Welness newWelness = new Welness
@@ -106,14 +111,22 @@ public class PlayerHelper
         }
     }
 
-    public async Task AddRpeToDbAsync(int playerId, RpeInput input)
+    public async Task AddRPEToDb(int playerId, RpeInput input)
     {
         try
         {
-            var player = _context.Players.Where(x => x.Id.Equals(playerId)).FirstOrDefault();
+            var player = await _context.Players
+                .Include(p => p.RPERecords)
+                .FirstOrDefaultAsync(p => p.Id == playerId);
+
             if (player == null)
             {
                 throw new HttpRequestException("Player not found.");
+            }
+
+            if (player.RPERecords != null && player.RPERecords.Any(x => x.DayOfWeek.Equals(input.DayOfWeek) && x.LeagueWeek.Equals(input.LeagueWeek)))
+            {
+                throw new HttpRequestException("RPE record already exists for this player.");
             }
 
             RPE newRpe = new RPE
