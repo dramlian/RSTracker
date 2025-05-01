@@ -38,7 +38,10 @@ public class PlayerHelper
 
     public async Task AddWelnessToDb(int playerId, WelnessInput input)
     {
-        var player = _context.Players.Where(x => x.Id.Equals(playerId)).Include(p => p.WelnessRecords).FirstOrDefault();
+        var player = _context.Players
+        .Where(x => x.Id.Equals(playerId))
+        .Include(p => p.WelnessRecords).FirstOrDefault();
+
         if (player == null)
         {
             throw new KeyNotFoundException("Player not found.");
@@ -61,9 +64,9 @@ public class PlayerHelper
 
     public async Task DeleteWelness(int playerId, DayOfWeekEnum dayOfWeek, int LeagueWeek)
     {
-        var player = await _context.Players
+        var player = _context.Players
             .Include(p => p.WelnessRecords)
-            .FirstOrDefaultAsync(p => p.Id == playerId);
+            .FirstOrDefault(p => p.Id == playerId);
 
         if (player == null)
         {
