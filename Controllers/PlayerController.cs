@@ -35,6 +35,13 @@ namespace RSTracker.Controllers
             return Ok(new { message = "Wellness data added successfully." });
         }
 
+        [HttpDelete("delete-welness/{playerId}")]
+        public async Task<IActionResult> DeleteWelness(int playerId, DayOfWeekEnum dayOfWeek, int LeagueWeek)
+        {
+            await _playerHelper.DeleteWelness(playerId, dayOfWeek, LeagueWeek);
+            return Ok(new { message = "Wellness data deleted successfully." });
+        }
+
         [HttpPost("add-rpe/{playerId}")]
         public async Task<IActionResult> AddRPE(int playerId, [FromBody] RpeInput input)
         {
@@ -42,5 +49,11 @@ namespace RSTracker.Controllers
             return Ok(new { message = "RPE data added successfully." });
         }
 
+        [HttpDelete("delete-rpe/{playerId}")]
+        public async Task<IActionResult> DeleteRPE(int playerId, DayOfWeekEnum dayOfWeek, int LeagueWeek)
+        {
+            await _playerHelper.DeleteRPE(playerId, dayOfWeek, LeagueWeek);
+            return Ok(new { message = "RPE data deleted successfully." });
+        }
     }
 }

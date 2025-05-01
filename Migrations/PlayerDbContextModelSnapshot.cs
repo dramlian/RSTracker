@@ -127,14 +127,16 @@ namespace RSTracker.Migrations
                 {
                     b.HasOne("RSTracker.Models.Player", null)
                         .WithMany("RPERecords")
-                        .HasForeignKey("PlayerId");
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("RSTracker.Models.Welness", b =>
                 {
                     b.HasOne("RSTracker.Models.Player", null)
                         .WithMany("WelnessRecords")
-                        .HasForeignKey("PlayerId");
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("RSTracker.Models.Player", b =>
