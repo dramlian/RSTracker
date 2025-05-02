@@ -12,8 +12,8 @@ namespace RSTracker.Models
         public int Weight { get; set; }
         public int Height { get; set; }
 
-        public ICollection<Welness>? WelnessRecords { get; set; }
-        public ICollection<RPE>? RPERecords { get; set; }
+        public ICollection<Welness> WelnessRecords { get; set; } = new List<Welness>();
+        public ICollection<RPE> RPERecords { get; set; } = new List<RPE>();
 
         public Player() { }
 
@@ -28,21 +28,12 @@ namespace RSTracker.Models
 
         public void AddWelnessRecord(Welness welness)
         {
-            if (WelnessRecords == null)
-            {
-                WelnessRecords = new List<Welness>();
-            }
             WelnessRecords.Add(welness);
         }
 
         public void AddRPERecord(RPE rpe)
         {
-            if (RPERecords == null)
-            {
-                RPERecords = new List<RPE>();
-            }
             RPERecords.Add(rpe);
         }
-
     }
 }

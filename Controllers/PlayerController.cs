@@ -55,5 +55,19 @@ namespace RSTracker.Controllers
             await _playerHelper.DeleteRPE(playerId, dayOfWeek, LeagueWeek);
             return Ok(new { message = "RPE data deleted successfully." });
         }
+
+        [HttpGet("get-welness/{leagueweek}/{dayofweek}")]
+        public async Task<IActionResult> GetWelness(int leagueweek, DayOfWeekEnum dayofweek)
+        {
+            var welness = await _playerHelper.GetWelness(leagueweek, dayofweek);
+            return Ok(welness);
+        }
+
+        [HttpGet("get-welness/{leagueweek}/{startday}/{endday}")]
+        public async Task<IActionResult> GetWelness(int leagueweek, DayOfWeekEnum startday, DayOfWeekEnum endday)
+        {
+            var welness = await _playerHelper.GetWelnessOfaWeek(leagueweek, startday, endday);
+            return Ok(welness);
+        }
     }
 }

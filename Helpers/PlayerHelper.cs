@@ -130,4 +130,32 @@ public class PlayerHelper
         _context.RPEs.Remove(rpeRecord);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<GetWelnessOfaDayOutput> GetWelness(int leagueweek, DayOfWeekEnum dayofweek)
+    {
+        var players = await _context.Players
+            .Select(p => new GetWelnessOfaDayOutputPlayers(
+                p.Id,
+                p.Name,
+                p.WelnessRecords
+                    .Where(w => w.LeagueWeek == leagueweek && w.DayOfWeek == dayofweek)
+                    .ToList()
+            ))
+            .ToListAsync();
+
+        return new GetWelnessOfaDayOutput(players.Where(x => x.welnessrecords.Any()));
+    }
+
+
+    public async Task<Dictionary<string, double>> GetWelnessOfaWeek(int leagueweek, DayOfWeekEnum start, DayOfWeekEnum end)
+    {
+        var daysRange = Enumerable.Range((int)start, (int)end - (int)start + 1).ToArray();
+        Dictionary<string, double> returnDic = new();
+        foreach (var day in daysRange)
+        {
+            var welness = (await GetWelness(leagueweek, (DayOfWeekEnum)day)).totalWelnessAverage;
+            returnDic.Add(((DayOfWeekEnum)day).ToString(), welness);
+        }
+        return returnDic;
+    }
 }
