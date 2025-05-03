@@ -131,30 +131,13 @@ public class PlayerHelper
         await _context.SaveChangesAsync();
     }
 
-    public async Task<GetWelnessOfaDayOutput> GetWelness(int leagueweek, DayOfWeekEnum dayofweek)
+    public async Task<Dictionary<string, GetRPEOfaDayOutput>> GetRPEOfLeagueWeek(int leagueweek)
     {
-        var players = await _context.Players
-            .Select(p => new GetWelnessOfaDayOutputPlayers(
-                p.Id,
-                p.Name,
-                p.WelnessRecords
-                    .Where(w => w.LeagueWeek == leagueweek && w.DayOfWeek == dayofweek)
-                    .ToList()
-            ))
-            .ToListAsync();
-
-        return new GetWelnessOfaDayOutput(players.Where(x => x.welnessrecords.Any()));
-    }
-
-
-    public async Task<Dictionary<string, double>> GetWelnessOfWeek(int leagueweek, DayOfWeekEnum start, DayOfWeekEnum end)
-    {
-        var daysRange = Enumerable.Range((int)start, (int)end - (int)start + 1).ToArray();
-        Dictionary<string, double> returnDic = new();
-        foreach (var day in daysRange)
+        Dictionary<string, GetRPEOfaDayOutput> returnDic = new();
+        foreach (DayOfWeekEnum day in Enum.GetValues(typeof(DayOfWeekEnum)))
         {
-            var welness = (await GetWelness(leagueweek, (DayOfWeekEnum)day)).totalWelnessAverage;
-            returnDic.Add(((DayOfWeekEnum)day).ToString(), welness);
+            var rpe = await GetRPE(leagueweek, day);
+            returnDic.Add(day.ToString(), rpe);
         }
         return returnDic;
     }
@@ -174,15 +157,29 @@ public class PlayerHelper
         return new GetRPEOfaDayOutput(players.Where(x => x.rpeRecords.Any()));
     }
 
-    public async Task<Dictionary<string, RpeDataOutput>> GetRPEOfWeek(int leagueweek, DayOfWeekEnum start, DayOfWeekEnum end)
+    public async Task<Dictionary<string, GetWelnessOfaDayOutput>> GetWelnessOfLeagueWeek(int leagueweek)
     {
-        var daysRange = Enumerable.Range((int)start, (int)end - (int)start + 1).ToArray();
-        Dictionary<string, RpeDataOutput> returnDic = new();
-        foreach (var day in daysRange)
+        Dictionary<string, GetWelnessOfaDayOutput> returnDic = new();
+        foreach (DayOfWeekEnum day in Enum.GetValues(typeof(DayOfWeekEnum)))
         {
-            var rpe = await GetRPE(leagueweek, (DayOfWeekEnum)day);
-            returnDic.Add(((DayOfWeekEnum)day).ToString(), new RpeDataOutput(rpe.volume, rpe.intensity));
+            var welness = await GetWelness(leagueweek, day);
+            returnDic.Add(day.ToString(), welness);
         }
         return returnDic;
+    }
+
+    public async Task<GetWelnessOfaDayOutput> GetWelness(int leagueweek, DayOfWeekEnum dayofweek)
+    {
+        var players = await _context.Players
+            .Select(p => new GetWelnessOfaDayOutputPlayers(
+                p.Id,
+                p.Name,
+                p.WelnessRecords
+                    .Where(w => w.LeagueWeek == leagueweek && w.DayOfWeek == dayofweek)
+                    .ToList()
+            ))
+            .ToListAsync();
+
+        return new GetWelnessOfaDayOutput(players.Where(x => x.welnessrecords.Any()));
     }
 }
