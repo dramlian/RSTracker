@@ -64,10 +64,24 @@ namespace RSTracker.Controllers
         }
 
         [HttpGet("get-welness/{leagueweek}/{startday}/{endday}")]
-        public async Task<IActionResult> GetWelness(int leagueweek, DayOfWeekEnum startday, DayOfWeekEnum endday)
+        public async Task<IActionResult> GetWelnessOfWeek(int leagueweek, DayOfWeekEnum startday, DayOfWeekEnum endday)
         {
-            var welness = await _playerHelper.GetWelnessOfaWeek(leagueweek, startday, endday);
+            var welness = await _playerHelper.GetWelnessOfWeek(leagueweek, startday, endday);
             return Ok(welness);
+        }
+
+        [HttpGet("get-rpe/{leagueweek}/{dayofweek}")]
+        public async Task<IActionResult> GetRpe(int leagueweek, DayOfWeekEnum dayofweek)
+        {
+            var rpe = await _playerHelper.GetRPE(leagueweek, dayofweek);
+            return Ok(rpe);
+        }
+
+        [HttpGet("get-rpe/{leagueweek}/{startday}/{endday}")]
+        public async Task<IActionResult> GetRpeOfWeek(int leagueweek, DayOfWeekEnum startday, DayOfWeekEnum endday)
+        {
+            var rpe = await _playerHelper.GetRPEOfWeek(leagueweek, startday, endday);
+            return Ok(rpe);
         }
     }
 }

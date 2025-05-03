@@ -147,7 +147,7 @@ public class PlayerHelper
     }
 
 
-    public async Task<Dictionary<string, double>> GetWelnessOfaWeek(int leagueweek, DayOfWeekEnum start, DayOfWeekEnum end)
+    public async Task<Dictionary<string, double>> GetWelnessOfWeek(int leagueweek, DayOfWeekEnum start, DayOfWeekEnum end)
     {
         var daysRange = Enumerable.Range((int)start, (int)end - (int)start + 1).ToArray();
         Dictionary<string, double> returnDic = new();
@@ -155,6 +155,33 @@ public class PlayerHelper
         {
             var welness = (await GetWelness(leagueweek, (DayOfWeekEnum)day)).totalWelnessAverage;
             returnDic.Add(((DayOfWeekEnum)day).ToString(), welness);
+        }
+        return returnDic;
+    }
+
+    public async Task<GetRPEOfaDayOutput> GetRPE(int leagueweek, DayOfWeekEnum dayofweek)
+    {
+        var players = await _context.Players
+            .Select(p => new GetRPEOfaDayOutputPlayers(
+                p.Id,
+                p.Name,
+                p.RPERecords
+                    .Where(w => w.LeagueWeek == leagueweek && w.DayOfWeek == dayofweek)
+                    .ToList()
+            ))
+            .ToListAsync();
+
+        return new GetRPEOfaDayOutput(players.Where(x => x.rpeRecords.Any()));
+    }
+
+    public async Task<Dictionary<string, RpeDataOutput>> GetRPEOfWeek(int leagueweek, DayOfWeekEnum start, DayOfWeekEnum end)
+    {
+        var daysRange = Enumerable.Range((int)start, (int)end - (int)start + 1).ToArray();
+        Dictionary<string, RpeDataOutput> returnDic = new();
+        foreach (var day in daysRange)
+        {
+            var rpe = await GetRPE(leagueweek, (DayOfWeekEnum)day);
+            returnDic.Add(((DayOfWeekEnum)day).ToString(), new RpeDataOutput(rpe.volume, rpe.intensity));
         }
         return returnDic;
     }
