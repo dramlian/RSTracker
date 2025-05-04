@@ -17,7 +17,12 @@ export default function Header() {
             <Nav.Link as={Link} to="/about">
               Insert data
             </Nav.Link>
-            {/* Add more nav links as you add pages */}
+            <Nav.Link as={Link} to="/rpe">
+              RPE Dashboard
+            </Nav.Link>
+            <Nav.Link as={Link} to="/welness">
+              Wellness Dashboard
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
