@@ -29,9 +29,9 @@ export default function BarChart() {
       },
     ],
   };
-
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       y: {
         beginAtZero: true,
@@ -39,5 +39,9 @@ export default function BarChart() {
     },
   };
 
-  return <Bar data={data} options={options} />;
+  return (
+    <div style={{ height: "55vh", width: "100%" }}>
+      <Bar data={data} options={options} />
+    </div>
+  );
 }
