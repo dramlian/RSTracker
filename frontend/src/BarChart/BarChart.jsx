@@ -39,11 +39,5 @@ export default function BarChart() {
     },
   };
 
-  return (
-    <Row className="justify-content-center">
-      <Col>
-        <Bar data={data} options={options} />
-      </Col>
-    </Row>
-  );
+  return <Bar data={data} options={options} />;
 }

@@ -1,15 +1,39 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import BarChart from "../BarChart/BarChart";
 import DayTable from "../DayTable/DayTable";
+import { useRef } from "react";
 
-function WelnessDashboard() {
+function WellnessDashboard() {
+  const dayDictionary = useRef({
+    1: "Monday",
+    2: "Tuesday",
+    3: "Wednesday",
+    4: "Thursday",
+    5: "Friday",
+    6: "Saturday",
+    7: "Sunday",
+  });
+
+  const days = Object.values(dayDictionary.current);
+
   return (
-    <Container>
-      <BarChart />
-      <DayTable />
+    <Container fluid>
+      <Row className="justify-content-center">
+        <Col xs={12} md={10} lg={8} xl={6}>
+          <BarChart />
+        </Col>
+      </Row>
+
+      <Row>
+        {days.map((day, index) => (
+          <Col key={index} xs={12} sm={6} lg={4} className="mb-4">
+            <DayTable day={day} />
+          </Col>
+        ))}
+      </Row>
     </Container>
   );
 }
 
-export default WelnessDashboard;
+export default WellnessDashboard;
