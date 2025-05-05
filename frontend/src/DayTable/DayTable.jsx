@@ -10,7 +10,6 @@ function DayTable({ day }) {
   const [summary, setSummary] = useState({});
 
   useEffect(() => {
-    // Dummy Data
     const dummyData = [
       {
         name: "Richard Rezes",
@@ -47,7 +46,10 @@ function DayTable({ day }) {
           <h2>{day}</h2>
         </Col>
         <Col className="text-end">
-          <Button>Add Entry</Button>
+          <Button variant="btn btn-outline-primary">Add Entry</Button>
+          <Button variant="btn btn-outline-danger" className="ms-2">
+            Delete Entry
+          </Button>
         </Col>
       </Row>
       <Row>
@@ -72,7 +74,7 @@ function DayTable({ day }) {
         </Col>
       </Row>
 
-      <Row className="mt-3 t">
+      <Row className="mt-3">
         <Col>
           <Table bordered striped>
             <tbody>
