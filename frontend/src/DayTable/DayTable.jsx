@@ -2,12 +2,22 @@ import { useEffect, useState } from "react";
 import DataTable from "datatables.net-react";
 import DT from "datatables.net-bs5";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
+import AddEntryModal from "../AddEntryModal/AddEntryModal";
+import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
 
 DataTable.use(DT);
 
 function DayTable({ day }) {
   const [data, setData] = useState([]);
   const [summary, setSummary] = useState({});
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const handleShowAddModal = () => setShowAddModal(true);
+  const handleCloseAddModal = () => setShowAddModal(false);
+
+  const handleShowDeleteModal = () => setShowDeleteModal(true);
+  const handleCloseDeleteModal = () => setShowDeleteModal(false);
 
   useEffect(() => {
     const dummyData = [
@@ -29,7 +39,6 @@ function DayTable({ day }) {
     ];
     setData(dummyData);
 
-    // Calculate summary
     const summaryData = {
       value1: dummyData.reduce((sum, row) => sum + row.muscle, 0),
       value2: dummyData.reduce((sum, row) => sum + row.recovery, 0),
@@ -46,8 +55,17 @@ function DayTable({ day }) {
           <h2>{day}</h2>
         </Col>
         <Col className="text-end">
-          <Button variant="btn btn-outline-primary">Add Entry</Button>
-          <Button variant="btn btn-outline-danger" className="ms-2">
+          <Button
+            variant="btn btn-outline-primary"
+            onClick={handleShowAddModal}
+          >
+            Add Entry
+          </Button>
+          <Button
+            variant="btn btn-outline-danger"
+            className="ms-2"
+            onClick={handleShowDeleteModal}
+          >
             Delete Entry
           </Button>
         </Col>
@@ -98,6 +116,12 @@ function DayTable({ day }) {
           </Table>
         </Col>
       </Row>
+
+      <AddEntryModal show={showAddModal} handleClose={handleCloseAddModal} />
+      <DeleteEntryModal
+        show={showDeleteModal}
+        handleClose={handleCloseDeleteModal}
+      />
     </Container>
   );
 }
