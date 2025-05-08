@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Row, Col, Card } from "react-bootstrap";
+import React, { useEffect, useState, useRef } from "react";
+import { Row, Col, Card, Button } from "react-bootstrap";
 import Select from "react-select";
 import AddEntryFormRPE from "../AddEntryForm/AddEntryFormRPE";
 import AddEntryFormWellness from "../AddEntryForm/AddEntryFormWellness";
@@ -8,6 +8,9 @@ function InsertPage() {
   const [selectedWeek, setSelectedWeek] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
+
+  const rpeFormRef = useRef();
+  const wellnessFormRef = useRef();
 
   const weekOptions = [
     { value: "week1", label: "Week 1" },
@@ -36,6 +39,14 @@ function InsertPage() {
     setSelectedDay(dayOptions[0]);
     setSelectedPlayer(playerOptions[0]);
   }, []);
+
+  const handleSaveRPE = () => {
+    rpeFormRef.current?.submitForm();
+  };
+
+  const handleSaveWellness = () => {
+    wellnessFormRef.current?.submitForm();
+  };
 
   return (
     <div className="m-4">
@@ -75,16 +86,29 @@ function InsertPage() {
           <Card className="h-100">
             <Card.Header className="fw-bold">RPE Entry</Card.Header>
             <Card.Body className="p-3">
-              <AddEntryFormRPE />
+              <AddEntryFormRPE ref={rpeFormRef} onSave={handleSaveRPE} />
             </Card.Body>
+            <Card.Footer>
+              <Button variant="primary" onClick={handleSaveRPE}>
+                Submit
+              </Button>
+            </Card.Footer>
           </Card>
         </Col>
         <Col md={6}>
           <Card className="h-100">
             <Card.Header className="fw-bold">Wellness Entry</Card.Header>
             <Card.Body className="p-3">
-              <AddEntryFormWellness />
+              <AddEntryFormWellness
+                ref={wellnessFormRef}
+                onSave={handleSaveWellness}
+              />
             </Card.Body>
+            <Card.Footer>
+              <Button variant="primary" onClick={handleSaveWellness}>
+                Submit
+              </Button>
+            </Card.Footer>
           </Card>
         </Col>
       </Row>

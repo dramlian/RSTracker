@@ -1,16 +1,9 @@
-import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
+import { Form } from "react-bootstrap";
 
-function AddEntryFormRPE({ onSubmit }) {
-  const [formData, setFormData] = useState({
-    rpe: "",
-    duration: "",
-  });
-
-  const [formErrors, setFormErrors] = useState({
-    rpe: false,
-    duration: false,
-  });
+const AddEntryFormRPE = forwardRef(({}, ref) => {
+  const [formData, setFormData] = useState({ rpe: "", duration: "" });
+  const [formErrors, setFormErrors] = useState({ rpe: false, duration: false });
 
   const validateForm = () => {
     const errors = { ...formErrors };
@@ -37,15 +30,20 @@ function AddEntryFormRPE({ onSubmit }) {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     if (validateForm()) {
-      onSubmit(formData);
+      alert("Form submitted successfully!");
+      alert(`RPE: ${formData.rpe}, Duration: ${formData.duration}`);
     }
   };
 
+  // Expose handleSubmit to parent
+  useImperativeHandle(ref, () => ({
+    submitForm: handleSubmit,
+  }));
+
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form>
       <Form.Group className="mb-3">
         <Form.Label>RPE Value</Form.Label>
         <Form.Control
@@ -79,12 +77,8 @@ function AddEntryFormRPE({ onSubmit }) {
           </Form.Text>
         )}
       </Form.Group>
-
-      <Button type="submit" variant="primary">
-        Submit
-      </Button>
     </Form>
   );
-}
+});
 
 export default AddEntryFormRPE;

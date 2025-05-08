@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import React, { useState, forwardRef, useImperativeHandle } from "react";
+import { Form } from "react-bootstrap";
 
-function AddEntryFormWellness({ onSubmit }) {
+const AddEntryFormWellness = forwardRef(({}, ref) => {
   const [formData, setFormData] = useState({
     muscle: "",
     recovery: "",
@@ -41,15 +41,22 @@ function AddEntryFormWellness({ onSubmit }) {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     if (validateForm()) {
-      onSubmit(formData);
+      alert("Form submitted successfully!");
+      alert(
+        `Muscle: ${formData.muscle}, Recovery: ${formData.recovery}, Stress: ${formData.stress}, Sleep: ${formData.sleep}`
+      );
     }
   };
 
+  // Expose submitForm to parent
+  useImperativeHandle(ref, () => ({
+    submitForm: handleSubmit,
+  }));
+
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form>
       <Form.Group className="mb-3">
         <Form.Label>Muscle</Form.Label>
         <Form.Control
@@ -117,12 +124,8 @@ function AddEntryFormWellness({ onSubmit }) {
           </Form.Text>
         )}
       </Form.Group>
-
-      <Button type="submit" variant="primary">
-        Submit
-      </Button>
     </Form>
   );
-}
+});
 
 export default AddEntryFormWellness;
