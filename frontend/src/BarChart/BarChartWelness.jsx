@@ -1,4 +1,3 @@
-import { Container, Row, Col } from "react-bootstrap";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -11,7 +10,7 @@ import {
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-export default function BarChart() {
+export default function BarChartWelness() {
   const data = {
     labels: ["Red", "Blue", "Yellow", "Green", "Purple"],
     datasets: [

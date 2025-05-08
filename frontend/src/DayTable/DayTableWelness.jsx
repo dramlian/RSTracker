@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import DataTable from "datatables.net-react";
 import DT from "datatables.net-bs5";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
-import AddEntryModal from "../AddEntryModal/AddEntryModal";
-import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
+import AddEntryModalWelness from "../AddEntryModal/AddEntryModalWelness";
+import DeleteEntryModalWelness from "../DeleteEntryModal/DeleteEntryModal";
 
 DataTable.use(DT);
 
-function DayTable({ day }) {
+function DayTableWelness({ day }) {
   const [data, setData] = useState([]);
   const [summary, setSummary] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
@@ -117,8 +117,11 @@ function DayTable({ day }) {
         </Col>
       </Row>
 
-      <AddEntryModal show={showAddModal} handleClose={handleCloseAddModal} />
-      <DeleteEntryModal
+      <AddEntryModalWelness
+        show={showAddModal}
+        handleClose={handleCloseAddModal}
+      />
+      <DeleteEntryModalWelness
         show={showDeleteModal}
         handleClose={handleCloseDeleteModal}
       />
@@ -126,4 +129,4 @@ function DayTable({ day }) {
   );
 }
 
-export default DayTable;
+export default DayTableWelness;

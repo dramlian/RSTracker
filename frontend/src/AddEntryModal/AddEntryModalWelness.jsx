@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import Select from "react-select";
 
-function AddEntryModal({ show, handleClose }) {
+function AddEntryModalWelness({ show, handleClose }) {
   const [formData, setFormData] = useState({
     name: null,
     muscle: "",
@@ -178,4 +178,4 @@ function AddEntryModal({ show, handleClose }) {
   );
 }
 
-export default AddEntryModal;
+export default AddEntryModalWelness;
