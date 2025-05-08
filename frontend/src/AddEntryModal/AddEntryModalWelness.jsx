@@ -2,21 +2,29 @@ import React, { useEffect, useState, useRef } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import Select from "react-select";
 import AddEntryFormWellness from "../AddEntryForm/AddEntryFormWellness";
+import ApiClient from "../Helpers/ApiClient";
 
 function AddEntryModalWelness({ show, handleClose, weekKey, dayKey }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [options, setOptions] = useState([]);
   const formRef = useRef();
 
-  const options = [
-    { value: "option1", label: "Option 1" },
-    { value: "option2", label: "Option 2" },
-    { value: "option3", label: "Option 3" },
-    { value: "option4", label: "Option 4" },
-    { value: "option5", label: "Option 5" },
-  ];
-
   useEffect(() => {
-    setSelectedPlayer(options[0]);
+    const fetchPlayers = async () => {
+      try {
+        const players = await ApiClient.get("get-players");
+        const mappedOptions = players.map((player) => ({
+          value: player.id,
+          label: player.name,
+        }));
+        setOptions(mappedOptions);
+        setSelectedPlayer(mappedOptions[0]);
+      } catch (error) {
+        console.error("Failed to fetch players:", error);
+      }
+    };
+
+    fetchPlayers();
   }, []);
 
   const handleDropdownChange = (selectedOption) => {
@@ -24,7 +32,7 @@ function AddEntryModalWelness({ show, handleClose, weekKey, dayKey }) {
   };
 
   const handleFormSubmit = () => {
-    formRef.current?.submitForm(weekKey, dayKey, selectedPlayer.value);
+    formRef.current?.submitForm(weekKey, dayKey, selectedPlayer?.value);
   };
 
   return (

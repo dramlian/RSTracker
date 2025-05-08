@@ -183,4 +183,10 @@ public class PlayerHelper
 
         return new GetWelnessOfaDayOutput(players.Where(x => x.noData == false));
     }
+
+    public async Task<List<Player>> GetAllPlayers()
+    {
+        var players = await _context.Players.ToListAsync();
+        return players;
+    }
 }

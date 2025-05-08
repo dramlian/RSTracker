@@ -69,5 +69,12 @@ namespace RSTracker.Controllers
             var welness = await _playerHelper.GetWelnessOfLeagueWeek(leagueweek);
             return Ok(welness);
         }
+
+        [HttpGet("get-players")]
+        public async Task<IActionResult> GetPlayers()
+        {
+            var players = await _playerHelper.GetAllPlayers();
+            return Ok(players);
+        }
     }
 }
