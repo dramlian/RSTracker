@@ -3,20 +3,21 @@ import { Row, Col, Card, Button } from "react-bootstrap";
 import Select from "react-select";
 import AddEntryFormRPE from "../AddEntryForm/AddEntryFormRPE";
 import AddEntryFormWellness from "../AddEntryForm/AddEntryFormWellness";
+import ApiClient from "../Helpers/ApiClient";
 
 function InsertPage() {
   const [selectedWeek, setSelectedWeek] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
+  const [playerOptions, setPlayerOptions] = useState([]);
   const rpeFormRef = useRef();
   const wellnessFormRef = useRef();
 
-  const weekOptions = [
-    { value: 1, label: "Week 1" },
-    { value: 2, label: "Week 2" },
-    { value: 3, label: "Week 3" },
-  ];
+  const weekOptions = Array.from({ length: 15 }, (_, i) => ({
+    value: i + 1,
+    label: `Week ${i + 1}`,
+  }));
 
   const dayOptions = [
     { value: 1, label: "Monday" },
@@ -28,20 +29,27 @@ function InsertPage() {
     { value: 7, label: "Sunday" },
   ];
 
-  const playerOptions = [
-    { value: 1, label: "Player 1" },
-    { value: 2, label: "Player 2" },
-    { value: 3, label: "Player 3" },
-  ];
-
   useEffect(() => {
+    const fetchPlayers = async () => {
+      try {
+        const players = await ApiClient.get("get-players");
+        const mappedOptions = players.map((player) => ({
+          value: player.id,
+          label: player.name,
+        }));
+        setPlayerOptions(mappedOptions);
+        setSelectedPlayer(mappedOptions[0]);
+      } catch (error) {
+        console.error("Failed to fetch players:", error);
+      }
+    };
+
+    fetchPlayers();
     setSelectedWeek(weekOptions[0]);
     setSelectedDay(dayOptions[0]);
-    setSelectedPlayer(playerOptions[0]);
   }, []);
 
   const handleSaveRPE = () => {
-    //(weekKey, dayKey, selectedPlayer);
     rpeFormRef.current?.submitForm(
       selectedWeek.value,
       selectedDay.value,

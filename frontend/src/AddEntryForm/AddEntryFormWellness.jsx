@@ -38,7 +38,7 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: parseInt(value, 10) || 0, // Ensure the value is always an integer
+      [name]: parseInt(value, 10) || 0,
     }));
   };
 
@@ -55,13 +55,16 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
       };
 
       try {
-        const response = await ApiClient.post(
-          `add-welness/${selectedPlayer}`,
-          payload
-        );
-        alert("Form submitted successfully!");
-        console.log("API Response:", response);
-        handleClose();
+        await ApiClient.post(`add-welness/${selectedPlayer}`, payload);
+        setFormData({
+          muscle: "",
+          recovery: "",
+          stress: "",
+          sleep: "",
+        });
+        if (handleClose) {
+          handleClose();
+        }
       } catch (error) {
         alert("Failed to submit the form. Please try again.");
         console.error("API Error:", error);
