@@ -1,5 +1,6 @@
 import React, { useState, forwardRef, useImperativeHandle } from "react";
 import { Form } from "react-bootstrap";
+import ApiClient from "../Helpers/ApiClient";
 
 const AddEntryFormWellness = forwardRef(({}, ref) => {
   const [formData, setFormData] = useState({
@@ -21,7 +22,7 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
     let isValid = true;
 
     ["muscle", "recovery", "stress", "sleep"].forEach((field) => {
-      if (isNaN(formData[field]) || formData[field] === "") {
+      if (isNaN(formData[field]) || formData[field] <= 0) {
         errors[field] = true;
         isValid = false;
       } else {
@@ -37,16 +38,33 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: parseInt(value, 10) || 0, // Ensure the value is always an integer
     }));
   };
 
-  const handleSubmit = (weekKey, dayKey, selectedPlayer) => {
+  const handleSubmit = async (weekKey, dayKey, selectedPlayer) => {
     if (validateForm()) {
-      alert("Form submitted successfully!");
-      alert(
-        `Muscle: ${formData.muscle}, Recovery: ${formData.recovery}, Stress: ${formData.stress}, Sleep: ${formData.sleep}, Player: ${selectedPlayer}, Week: ${weekKey}, Day: ${dayKey}`
-      );
+      const payload = {
+        muscleStatus: parseInt(formData.muscle),
+        recoveryStatus: parseInt(formData.recovery),
+        stressStatus: parseInt(formData.stress),
+        sleepStatus: fparseInt(ormData.sleep),
+        leagueWeek: weekKey,
+        date: new Date().toISOString().split("T")[0],
+        dayOfWeek: parseInt(dayKey, 10),
+      };
+
+      try {
+        const response = await ApiClient.post(
+          `add-welness/${selectedPlayer}`,
+          payload
+        );
+        alert("Form submitted successfully!");
+        console.log("API Response:", response);
+      } catch (error) {
+        alert("Failed to submit the form. Please try again.");
+        console.error("API Error:", error);
+      }
     }
   };
 
@@ -59,7 +77,6 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
       <Form.Group className="mb-3">
         <Form.Label>Muscle</Form.Label>
         <Form.Control
-          type="number"
           name="muscle"
           value={formData.muscle}
           onChange={handleInputChange}
@@ -68,7 +85,7 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
         />
         {formErrors.muscle && (
           <Form.Text className="text-danger">
-            Muscle value must be a number.
+            Muscle value must be greater than 0.
           </Form.Text>
         )}
       </Form.Group>
@@ -76,7 +93,6 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
       <Form.Group className="mb-3">
         <Form.Label>Recovery</Form.Label>
         <Form.Control
-          type="number"
           name="recovery"
           value={formData.recovery}
           onChange={handleInputChange}
@@ -85,7 +101,7 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
         />
         {formErrors.recovery && (
           <Form.Text className="text-danger">
-            Recovery value must be a number.
+            Recovery value must be greater than 0.
           </Form.Text>
         )}
       </Form.Group>
@@ -93,7 +109,6 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
       <Form.Group className="mb-3">
         <Form.Label>Stress</Form.Label>
         <Form.Control
-          type="number"
           name="stress"
           value={formData.stress}
           onChange={handleInputChange}
@@ -102,7 +117,7 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
         />
         {formErrors.stress && (
           <Form.Text className="text-danger">
-            Stress value must be a number.
+            Stress value must be greater than 0.
           </Form.Text>
         )}
       </Form.Group>
@@ -110,7 +125,6 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
       <Form.Group className="mb-3">
         <Form.Label>Sleep</Form.Label>
         <Form.Control
-          type="number"
           name="sleep"
           value={formData.sleep}
           onChange={handleInputChange}
@@ -119,7 +133,7 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
         />
         {formErrors.sleep && (
           <Form.Text className="text-danger">
-            Sleep value must be a number.
+            Sleep value must be greater than 0.
           </Form.Text>
         )}
       </Form.Group>

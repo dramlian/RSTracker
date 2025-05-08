@@ -31,8 +31,8 @@ function AddEntryModalWelness({ show, handleClose, weekKey, dayKey }) {
     setSelectedPlayer(selectedOption);
   };
 
-  const handleFormSubmit = () => {
-    formRef.current?.submitForm(weekKey, dayKey, selectedPlayer?.value);
+  const handleFormSubmit = async () => {
+    await formRef.current?.submitForm(weekKey, dayKey, selectedPlayer?.value);
   };
 
   return (
