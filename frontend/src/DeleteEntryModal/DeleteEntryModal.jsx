@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import Select from "react-select";
 
-function DeleteEntryModal({ show, handleClose }) {
+function DeleteEntryModal({ show, handleClose, weekKey, dayKey, type }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   const options = [
@@ -20,6 +20,9 @@ function DeleteEntryModal({ show, handleClose }) {
   const handleDelete = () => {
     if (selectedPlayer) {
       console.log("Deleted player:", selectedPlayer);
+      alert(
+        `Deleted player: ${selectedPlayer.label}, week: ${weekKey}, day: ${dayKey}, type: ${type}`
+      );
       handleClose();
     } else {
       alert("Please select a player to delete.");

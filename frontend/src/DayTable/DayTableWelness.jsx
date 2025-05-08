@@ -126,6 +126,9 @@ function DayTableWelness({ day, weekKey, dayKey }) {
       <DeleteEntryModal
         show={showDeleteModal}
         handleClose={handleCloseDeleteModal}
+        weekKey={weekKey}
+        dayKey={dayKey}
+        type="welness"
       />
     </Container>
   );

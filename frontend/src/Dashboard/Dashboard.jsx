@@ -5,7 +5,7 @@ import BarChartRPE from "../BarChart/BarChartRPE";
 import DayTableWelness from "../DayTable/DayTableWelness";
 import DayTableRPE from "../DayTable/DayTableRPE";
 import Select from "react-select";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 
 function Dashboard({ type }) {
   const dayDictionary = useRef({
@@ -18,7 +18,7 @@ function Dashboard({ type }) {
     7: "Sunday",
   });
 
-  const [weekOptions, setWeekOptions] = useState(
+  const [weekOptions, _] = useState(
     Array.from({ length: 15 }, (_, i) => ({
       value: i + 1,
       label: `Week ${i + 1}`,

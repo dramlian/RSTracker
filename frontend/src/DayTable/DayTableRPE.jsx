@@ -116,6 +116,9 @@ function DayTableRPE({ day, weekKey, dayKey }) {
       <DeleteEntryModal
         show={showDeleteModal}
         handleClose={handleCloseDeleteModal}
+        weekKey={weekKey}
+        dayKey={dayKey}
+        type="rpe"
       />
     </Container>
   );
