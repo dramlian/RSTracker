@@ -4,7 +4,8 @@ import BarChartWelness from "../BarChart/BarChartWelness";
 import BarChartRPE from "../BarChart/BarChartRPE";
 import DayTableWelness from "../DayTable/DayTableWelness";
 import DayTableRPE from "../DayTable/DayTableRPE";
-import { useRef } from "react";
+import Select from "react-select"; // Import react-select
+import { useRef, useState } from "react";
 
 function Dashboard({ type }) {
   const dayDictionary = useRef({
@@ -19,10 +20,29 @@ function Dashboard({ type }) {
 
   const days = Object.values(dayDictionary.current);
 
+  // Dummy options for weeks
+  const weekOptions = Array.from({ length: 15 }, (_, i) => ({
+    value: `week${i + 1}`,
+    label: `Week ${i + 1}`,
+  }));
+
+  const [selectedWeek, setSelectedWeek] = useState(null);
+
   return (
     <Container fluid>
+      <Row className="allign-items-center justify-content-center mt-4">
+        <Col xs={12}>
+          <Select
+            options={weekOptions}
+            value={selectedWeek}
+            onChange={setSelectedWeek}
+            placeholder="Select a week"
+          />
+        </Col>
+      </Row>
+
       <Row className="justify-content-center">
-        <Col xs={12} md={10} lg={8} xl={6}>
+        <Col>
           {type === "welness" && <BarChartWelness />}
           {type === "rpe" && <BarChartRPE />}
         </Col>
