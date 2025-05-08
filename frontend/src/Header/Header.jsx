@@ -1,10 +1,11 @@
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { NavDropdown } from "react-bootstrap";
 
 export default function Header() {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
-      <Container>
+      <Container fluid>
         <Navbar.Brand as={Link} to="/">
           RsTracker
         </Navbar.Brand>
@@ -14,8 +15,8 @@ export default function Header() {
             <Nav.Link as={Link} to="/">
               HomePage
             </Nav.Link>
-            <Nav.Link as={Link} to="/about">
-              Insert data
+            <Nav.Link as={Link} to="/insert">
+              Insert
             </Nav.Link>
             <Nav.Link as={Link} to="/rpe">
               RPE Dashboard

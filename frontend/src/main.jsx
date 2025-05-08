@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./Dashboard/Dashboard";
 import Header from "./Header/Header";
 import Homepage from "./Homepage/Homepage";
+import InsertPage from "./InsertPage/InsertPage";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 createRoot(document.getElementById("root")).render(
@@ -11,9 +12,10 @@ createRoot(document.getElementById("root")).render(
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="*" element={<Homepage />} />
         <Route path="/welness" element={<Dashboard type={"welness"} />} />
         <Route path="/rpe" element={<Dashboard type={"rpe"} />} />
+        <Route path="/insert" element={<InsertPage />} />
+        <Route path="*" element={<Homepage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
