@@ -47,9 +47,14 @@ public class PlayerHelper
             throw new KeyNotFoundException("Player not found.");
         }
 
-        if (player.WelnessRecords != null && player.WelnessRecords.Any(x => x.DayOfWeek.Equals(input.DayOfWeek) && x.LeagueWeek.Equals(input.LeagueWeek)))
+
+        Welness? welnessRecord = player.WelnessRecords
+            .Where(x => x.DayOfWeek.Equals(input.DayOfWeek) && x.LeagueWeek.Equals(input.LeagueWeek))
+            .FirstOrDefault();
+        if (welnessRecord != null)
         {
-            throw new ArgumentException("Welness record already exists for this player.");
+            _context.WelnessRecords.Remove(welnessRecord);
+            await _context.SaveChangesAsync();
         }
 
         Welness newWelness = new Welness
