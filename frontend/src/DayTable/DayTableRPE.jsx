@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import DataTable from "datatables.net-react";
 import DT from "datatables.net-bs5";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
-import AddEntryModalWelness from "../AddEntryModal/AddEntryModalWelness";
+import AddEntryModalRPE from "../AddEntryModal/AddEntryModalRPE";
 import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
 
 DataTable.use(DT);
 
-function DayTableWelness({ day }) {
+function DayTableRPE({ day }) {
   const [data, setData] = useState([]);
   const [summary, setSummary] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
@@ -21,29 +21,20 @@ function DayTableWelness({ day }) {
 
   useEffect(() => {
     const dummyData = [
-      {
-        name: "Richard Rezes",
-        muscle: 10,
-        recovery: 20,
-        stress: 30,
-        sleep: 40,
-      },
-      {
-        name: "Jakub Kovalcik",
-        muscle: 15,
-        recovery: 25,
-        stress: 35,
-        sleep: 40,
-      },
-      { name: "Pavol Hasin", muscle: 20, recovery: 30, stress: 40, sleep: 40 },
+      { name: "Richard Rezes", value: 10, duration: 30, totalvalue: 300 },
+      { name: "Jakub Kovalcik", value: 15, duration: 40, totalvalue: 600 },
+      { name: "Pavol Hasin", value: 20, duration: 50, totalvalue: 1000 },
     ];
     setData(dummyData);
 
     const summaryData = {
-      value1: dummyData.reduce((sum, row) => sum + row.muscle, 0),
-      value2: dummyData.reduce((sum, row) => sum + row.recovery, 0),
-      value3: dummyData.reduce((sum, row) => sum + row.stress, 0),
-      value4: dummyData.reduce((sum, row) => sum + row.sleep, 0),
+      avgDuration: (
+        dummyData.reduce((sum, row) => sum + row.duration, 0) / dummyData.length
+      ).toFixed(2),
+      avgTotalValue: (
+        dummyData.reduce((sum, row) => sum + row.totalvalue, 0) /
+        dummyData.length
+      ).toFixed(2),
     };
     setSummary(summaryData);
   }, []);
@@ -77,10 +68,9 @@ function DayTableWelness({ day }) {
             className="table table-striped table-hover"
             columns={[
               { title: "Name", data: "name" },
-              { title: "Muscle", data: "muscle" },
-              { title: "Recovery", data: "recovery" },
-              { title: "Stress", data: "stress" },
-              { title: "Sleep", data: "sleep" },
+              { title: "Value", data: "value" },
+              { title: "Duration", data: "duration" },
+              { title: "Total Value", data: "totalvalue" },
             ]}
             options={{
               paging: true,
@@ -97,30 +87,27 @@ function DayTableWelness({ day }) {
           <Table bordered striped>
             <tbody>
               <tr>
-                <td>Value 1</td>
-                <td>{summary.value1}</td>
+                <td>Average Duration</td>
+                <td>{summary.avgDuration}</td>
               </tr>
               <tr>
-                <td>Value 2</td>
-                <td>{summary.value2}</td>
+                <td>Average Total Value</td>
+                <td>{summary.avgTotalValue}</td>
               </tr>
               <tr>
-                <td>Value 3</td>
-                <td>{summary.value3}</td>
+                <td>Volume</td>
+                <td>{summary.avgDuration}</td>
               </tr>
               <tr>
-                <td>Value 4</td>
-                <td>{summary.value4}</td>
+                <td>Intensity</td>
+                <td>{summary.avgTotalValue}</td>
               </tr>
             </tbody>
           </Table>
         </Col>
       </Row>
 
-      <AddEntryModalWelness
-        show={showAddModal}
-        handleClose={handleCloseAddModal}
-      />
+      <AddEntryModalRPE show={showAddModal} handleClose={handleCloseAddModal} />
       <DeleteEntryModal
         show={showDeleteModal}
         handleClose={handleCloseDeleteModal}
@@ -129,4 +116,4 @@ function DayTableWelness({ day }) {
   );
 }
 
-export default DayTableWelness;
+export default DayTableRPE;

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import Select from "react-select";
 
-function DeleteEntryModalWelness({ show, handleClose }) {
+function DeleteEntryModal({ show, handleClose }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   const options = [
@@ -54,4 +54,4 @@ function DeleteEntryModalWelness({ show, handleClose }) {
   );
 }
 
-export default DeleteEntryModalWelness;
+export default DeleteEntryModal;
