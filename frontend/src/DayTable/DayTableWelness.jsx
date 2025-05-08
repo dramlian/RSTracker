@@ -7,7 +7,7 @@ import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
 
 DataTable.use(DT);
 
-function DayTableWelness({ day }) {
+function DayTableWelness({ day, weekKey, dayKey }) {
   const [data, setData] = useState([]);
   const [summary, setSummary] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
@@ -120,6 +120,8 @@ function DayTableWelness({ day }) {
       <AddEntryModalWelness
         show={showAddModal}
         handleClose={handleCloseAddModal}
+        weekKey={weekKey}
+        dayKey={dayKey}
       />
       <DeleteEntryModal
         show={showDeleteModal}

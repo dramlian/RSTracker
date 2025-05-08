@@ -4,8 +4,8 @@ import BarChartWelness from "../BarChart/BarChartWelness";
 import BarChartRPE from "../BarChart/BarChartRPE";
 import DayTableWelness from "../DayTable/DayTableWelness";
 import DayTableRPE from "../DayTable/DayTableRPE";
-import Select from "react-select"; // Import react-select
-import { useRef, useState } from "react";
+import Select from "react-select";
+import { useRef, useState, useEffect } from "react";
 
 function Dashboard({ type }) {
   const dayDictionary = useRef({
@@ -18,19 +18,20 @@ function Dashboard({ type }) {
     7: "Sunday",
   });
 
-  const days = Object.values(dayDictionary.current);
-
-  // Dummy options for weeks
-  const weekOptions = Array.from({ length: 15 }, (_, i) => ({
-    value: `week${i + 1}`,
-    label: `Week ${i + 1}`,
-  }));
-
-  const [selectedWeek, setSelectedWeek] = useState(null);
+  const [weekOptions, setWeekOptions] = useState(
+    Array.from({ length: 15 }, (_, i) => ({
+      value: i + 1,
+      label: `Week ${i + 1}`,
+    }))
+  );
+  const [selectedWeek, setSelectedWeek] = useState({
+    value: 1,
+    label: "Week 1",
+  });
 
   return (
     <Container fluid>
-      <Row className="allign-items-center justify-content-center mt-4">
+      <Row className="align-items-center justify-content-center mt-4">
         <Col xs={12}>
           <Select
             options={weekOptions}
@@ -49,10 +50,22 @@ function Dashboard({ type }) {
       </Row>
 
       <Row>
-        {days.map((day, index) => (
-          <Col key={index} xs={12} sm={12} lg={4} className="mb-4">
-            {type === "welness" && <DayTableWelness day={day} />}
-            {type === "rpe" && <DayTableRPE day={day} />}
+        {Object.entries(dayDictionary.current).map(([key, day]) => (
+          <Col key={key} xs={12} sm={12} lg={4} className="mb-4">
+            {type === "welness" && (
+              <DayTableWelness
+                day={day}
+                weekKey={selectedWeek.value}
+                dayKey={key}
+              />
+            )}
+            {type === "rpe" && (
+              <DayTableRPE
+                day={day}
+                weekKey={selectedWeek.value}
+                dayKey={key}
+              />
+            )}
           </Col>
         ))}
       </Row>

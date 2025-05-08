@@ -30,10 +30,12 @@ const AddEntryFormRPE = forwardRef(({}, ref) => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (weekKey, dayKey, selectedPlayer) => {
     if (validateForm()) {
       alert("Form submitted successfully!");
-      alert(`RPE: ${formData.rpe}, Duration: ${formData.duration}`);
+      alert(
+        `RPE: ${formData.rpe}, Duration: ${formData.duration}, Player: ${selectedPlayer}, Week: ${weekKey}, Day: ${dayKey}`
+      );
     }
   };
 

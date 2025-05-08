@@ -41,16 +41,15 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (weekKey, dayKey, selectedPlayer) => {
     if (validateForm()) {
       alert("Form submitted successfully!");
       alert(
-        `Muscle: ${formData.muscle}, Recovery: ${formData.recovery}, Stress: ${formData.stress}, Sleep: ${formData.sleep}`
+        `Muscle: ${formData.muscle}, Recovery: ${formData.recovery}, Stress: ${formData.stress}, Sleep: ${formData.sleep}, Player: ${selectedPlayer}, Week: ${weekKey}, Day: ${dayKey}`
       );
     }
   };
 
-  // Expose submitForm to parent
   useImperativeHandle(ref, () => ({
     submitForm: handleSubmit,
   }));

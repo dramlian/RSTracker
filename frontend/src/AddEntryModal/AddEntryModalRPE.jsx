@@ -3,16 +3,16 @@ import { Modal, Button, Form } from "react-bootstrap";
 import Select from "react-select";
 import AddEntryFormRPE from "../AddEntryForm/AddEntryFormRPE";
 
-function AddEntryModalRPE({ show, handleClose }) {
+function AddEntryModalRPE({ show, handleClose, weekKey, dayKey }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const formRef = useRef();
 
   const options = [
-    { value: "option1", label: "Option 1" },
-    { value: "option2", label: "Option 2" },
-    { value: "option3", label: "Option 3" },
-    { value: "option4", label: "Option 4" },
-    { value: "option5", label: "Option 5" },
+    { value: 1, label: "Option 1" },
+    { value: 2, label: "Option 2" },
+    { value: 3, label: "Option 3" },
+    { value: 4, label: "Option 4" },
+    { value: 5, label: "Option 5" },
   ];
 
   useEffect(() => {
@@ -24,7 +24,7 @@ function AddEntryModalRPE({ show, handleClose }) {
   };
 
   const handleFormSubmit = () => {
-    formRef.current?.submitForm();
+    formRef.current?.submitForm(weekKey, dayKey, selectedPlayer.value);
   };
 
   return (

@@ -3,7 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import Select from "react-select";
 import AddEntryFormWellness from "../AddEntryForm/AddEntryFormWellness";
 
-function AddEntryModalWelness({ show, handleClose }) {
+function AddEntryModalWelness({ show, handleClose, weekKey, dayKey }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const formRef = useRef();
 
@@ -24,7 +24,7 @@ function AddEntryModalWelness({ show, handleClose }) {
   };
 
   const handleFormSubmit = () => {
-    formRef.current?.submitForm();
+    formRef.current?.submitForm(weekKey, dayKey, selectedPlayer.value);
   };
 
   return (

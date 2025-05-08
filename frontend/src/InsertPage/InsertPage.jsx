@@ -13,25 +13,25 @@ function InsertPage() {
   const wellnessFormRef = useRef();
 
   const weekOptions = [
-    { value: "week1", label: "Week 1" },
-    { value: "week2", label: "Week 2" },
-    { value: "week3", label: "Week 3" },
+    { value: 1, label: "Week 1" },
+    { value: 2, label: "Week 2" },
+    { value: 3, label: "Week 3" },
   ];
 
   const dayOptions = [
-    { value: "monday", label: "Monday" },
-    { value: "tuesday", label: "Tuesday" },
-    { value: "wednesday", label: "Wednesday" },
-    { value: "thursday", label: "Thursday" },
-    { value: "friday", label: "Friday" },
-    { value: "saturday", label: "Saturday" },
-    { value: "sunday", label: "Sunday" },
+    { value: 1, label: "Monday" },
+    { value: 2, label: "Tuesday" },
+    { value: 3, label: "Wednesday" },
+    { value: 4, label: "Thursday" },
+    { value: 5, label: "Friday" },
+    { value: 6, label: "Saturday" },
+    { value: 7, label: "Sunday" },
   ];
 
   const playerOptions = [
-    { value: "player1", label: "Player 1" },
-    { value: "player2", label: "Player 2" },
-    { value: "player3", label: "Player 3" },
+    { value: 1, label: "Player 1" },
+    { value: 2, label: "Player 2" },
+    { value: 3, label: "Player 3" },
   ];
 
   useEffect(() => {
@@ -41,11 +41,20 @@ function InsertPage() {
   }, []);
 
   const handleSaveRPE = () => {
-    rpeFormRef.current?.submitForm();
+    //(weekKey, dayKey, selectedPlayer);
+    rpeFormRef.current?.submitForm(
+      selectedWeek.value,
+      selectedDay.value,
+      selectedPlayer.value
+    );
   };
 
   const handleSaveWellness = () => {
-    wellnessFormRef.current?.submitForm();
+    wellnessFormRef.current?.submitForm(
+      selectedWeek.value,
+      selectedDay.value,
+      selectedPlayer.value
+    );
   };
 
   return (

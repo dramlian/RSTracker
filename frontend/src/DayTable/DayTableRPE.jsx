@@ -7,7 +7,7 @@ import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
 
 DataTable.use(DT);
 
-function DayTableRPE({ day }) {
+function DayTableRPE({ day, weekKey, dayKey }) {
   const [data, setData] = useState([]);
   const [summary, setSummary] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
@@ -107,7 +107,12 @@ function DayTableRPE({ day }) {
         </Col>
       </Row>
 
-      <AddEntryModalRPE show={showAddModal} handleClose={handleCloseAddModal} />
+      <AddEntryModalRPE
+        show={showAddModal}
+        handleClose={handleCloseAddModal}
+        weekKey={weekKey}
+        dayKey={dayKey}
+      />
       <DeleteEntryModal
         show={showDeleteModal}
         handleClose={handleCloseDeleteModal}
