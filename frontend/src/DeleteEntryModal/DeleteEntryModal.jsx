@@ -1,31 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import Select from "react-select";
+import ApiClient from "../Helpers/ApiClient";
 
-function DeleteEntryModal({ show, handleClose, weekKey, dayKey, type }) {
+function DeleteEntryModal({
+  show,
+  handleClose,
+  weekKey,
+  dayKey,
+  type,
+  setWasUpdated,
+}) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [options, setOptions] = useState([]);
 
-  const options = [
-    { value: "option1", label: "Player 1" },
-    { value: "option2", label: "Player 2" },
-    { value: "option3", label: "Player 3" },
-    { value: "option4", label: "Player 4" },
-    { value: "option5", label: "Player 5" },
-  ];
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      try {
+        const players = await ApiClient.get("get-players");
+        const mappedOptions = players.map((player) => ({
+          value: player.id,
+          label: player.name,
+        }));
+        setOptions(mappedOptions);
+        setSelectedPlayer(mappedOptions[0]);
+      } catch (error) {
+        console.error("Failed to fetch players:", error);
+      }
+    };
+
+    fetchPlayers();
+  }, []);
 
   const handleDropdownChange = (selectedOption) => {
     setSelectedPlayer(selectedOption);
   };
 
-  const handleDelete = () => {
-    if (selectedPlayer) {
-      console.log("Deleted player:", selectedPlayer);
-      alert(
-        `Deleted player: ${selectedPlayer.label}, week: ${weekKey}, day: ${dayKey}, type: ${type}`
-      );
+  const handleDelete = async () => {
+    try {
+      const url = `delete-${type}/${selectedPlayer.value}?dayOfWeek=${dayKey}&LeagueWeek=${weekKey}`;
+      await ApiClient.delete(url);
       handleClose();
-    } else {
-      alert("Please select a player to delete.");
+      setWasUpdated((prev) => !prev);
+    } catch (error) {
+      console.error("Failed to delete entry:", error);
     }
   };
 
@@ -41,7 +59,8 @@ function DeleteEntryModal({ show, handleClose, weekKey, dayKey, type }) {
             value={selectedPlayer}
             onChange={handleDropdownChange}
             options={options}
-            placeholder="Select a player"
+            isSearchable={true}
+            placeholder="Search and select a player"
           />
         </Form.Group>
       </Modal.Body>

@@ -32,6 +32,7 @@ function Dashboard({ type }) {
 
   const [dayData, setDayData] = useState({});
   const [chartData, setChartData] = useState({});
+  const [wasUpdated, setWasUpdated] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,7 +48,7 @@ function Dashboard({ type }) {
     };
 
     fetchData();
-  }, [type, selectedWeek]);
+  }, [type, selectedWeek, wasUpdated]);
 
   const calculateWelnessCharts = (data) => {
     const result = {};
@@ -103,6 +104,7 @@ function Dashboard({ type }) {
                 weekKey={selectedWeek.value}
                 dayKey={key}
                 fetcheddata={dayData[key]}
+                setWasUpdated={setWasUpdated}
               />
             )}
             {type === "rpe" && (

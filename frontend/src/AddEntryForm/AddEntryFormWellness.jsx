@@ -42,13 +42,13 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
     }));
   };
 
-  const handleSubmit = async (weekKey, dayKey, selectedPlayer) => {
+  const handleSubmit = async (weekKey, dayKey, selectedPlayer, handleClose) => {
     if (validateForm()) {
       const payload = {
         muscleStatus: parseInt(formData.muscle),
         recoveryStatus: parseInt(formData.recovery),
         stressStatus: parseInt(formData.stress),
-        sleepStatus: fparseInt(ormData.sleep),
+        sleepStatus: parseInt(formData.sleep),
         leagueWeek: weekKey,
         date: new Date().toISOString().split("T")[0],
         dayOfWeek: parseInt(dayKey, 10),
@@ -61,6 +61,7 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
         );
         alert("Form submitted successfully!");
         console.log("API Response:", response);
+        handleClose();
       } catch (error) {
         alert("Failed to submit the form. Please try again.");
         console.error("API Error:", error);

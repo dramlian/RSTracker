@@ -4,7 +4,13 @@ import Select from "react-select";
 import AddEntryFormWellness from "../AddEntryForm/AddEntryFormWellness";
 import ApiClient from "../Helpers/ApiClient";
 
-function AddEntryModalWelness({ show, handleClose, weekKey, dayKey }) {
+function AddEntryModalWelness({
+  show,
+  handleClose,
+  weekKey,
+  dayKey,
+  setWasUpdated,
+}) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [options, setOptions] = useState([]);
   const formRef = useRef();
@@ -32,7 +38,13 @@ function AddEntryModalWelness({ show, handleClose, weekKey, dayKey }) {
   };
 
   const handleFormSubmit = async () => {
-    await formRef.current?.submitForm(weekKey, dayKey, selectedPlayer?.value);
+    await formRef.current?.submitForm(
+      weekKey,
+      dayKey,
+      selectedPlayer?.value,
+      handleClose
+    );
+    setWasUpdated((prev) => !prev);
   };
 
   return (
