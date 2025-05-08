@@ -157,16 +157,17 @@ public class PlayerHelper
         return new GetRPEOfaDayOutput(players.Where(x => x.rpeRecords.Any()));
     }
 
-    public async Task<Dictionary<string, GetWelnessOfaDayOutput>> GetWelnessOfLeagueWeek(int leagueweek)
+    public async Task<Dictionary<int, GetWelnessOfaDayOutput>> GetWelnessOfLeagueWeek(int leagueweek)
     {
-        Dictionary<string, GetWelnessOfaDayOutput> returnDic = new();
+        Dictionary<int, GetWelnessOfaDayOutput> returnDic = new();
         foreach (DayOfWeekEnum day in Enum.GetValues(typeof(DayOfWeekEnum)))
         {
             var welness = await GetWelness(leagueweek, day);
-            returnDic.Add(day.ToString(), welness);
+            returnDic.Add((int)day, welness);
         }
         return returnDic;
     }
+
 
     public async Task<GetWelnessOfaDayOutput> GetWelness(int leagueweek, DayOfWeekEnum dayofweek)
     {
@@ -176,10 +177,10 @@ public class PlayerHelper
                 p.Name,
                 p.WelnessRecords
                     .Where(w => w.LeagueWeek == leagueweek && w.DayOfWeek == dayofweek)
-                    .ToList()
+                    .FirstOrDefault()
             ))
             .ToListAsync();
 
-        return new GetWelnessOfaDayOutput(players.Where(x => x.welnessrecords.Any()));
+        return new GetWelnessOfaDayOutput(players.Where(x => x.noData == false));
     }
 }

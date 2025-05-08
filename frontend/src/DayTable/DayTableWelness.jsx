@@ -7,9 +7,8 @@ import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
 
 DataTable.use(DT);
 
-function DayTableWelness({ day, weekKey, dayKey }) {
+function DayTableWelness({ day, weekKey, dayKey, fetcheddata }) {
   const [data, setData] = useState([]);
-  const [summary, setSummary] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -20,33 +19,9 @@ function DayTableWelness({ day, weekKey, dayKey }) {
   const handleCloseDeleteModal = () => setShowDeleteModal(false);
 
   useEffect(() => {
-    const dummyData = [
-      {
-        name: "Richard Rezes",
-        muscle: 10,
-        recovery: 20,
-        stress: 30,
-        sleep: 40,
-      },
-      {
-        name: "Jakub Kovalcik",
-        muscle: 15,
-        recovery: 25,
-        stress: 35,
-        sleep: 40,
-      },
-      { name: "Pavol Hasin", muscle: 20, recovery: 30, stress: 40, sleep: 40 },
-    ];
-    setData(dummyData);
-
-    const summaryData = {
-      value1: dummyData.reduce((sum, row) => sum + row.muscle, 0),
-      value2: dummyData.reduce((sum, row) => sum + row.recovery, 0),
-      value3: dummyData.reduce((sum, row) => sum + row.stress, 0),
-      value4: dummyData.reduce((sum, row) => sum + row.sleep, 0),
-    };
-    setSummary(summaryData);
-  }, []);
+    console.log(`weekKey: ${weekKey}, dayKey: ${dayKey}`);
+    setData(fetcheddata.outcomeplayers ?? []);
+  }, [fetcheddata, weekKey, dayKey]);
 
   return (
     <Container className="mt-5 border border-2 rounded p-4">
@@ -73,6 +48,7 @@ function DayTableWelness({ day, weekKey, dayKey }) {
       <Row>
         <Col>
           <DataTable
+            key={`${weekKey}-${dayKey}`}
             data={data}
             className="table table-striped table-hover"
             columns={[
@@ -97,20 +73,24 @@ function DayTableWelness({ day, weekKey, dayKey }) {
           <Table bordered striped>
             <tbody>
               <tr>
-                <td>Value 1</td>
-                <td>{summary.value1}</td>
+                <td>Muscle average</td>
+                <td>{fetcheddata.muscleAverage}</td>
               </tr>
               <tr>
-                <td>Value 2</td>
-                <td>{summary.value2}</td>
+                <td>Recovery average</td>
+                <td>{fetcheddata.recoveryAverage}</td>
               </tr>
               <tr>
-                <td>Value 3</td>
-                <td>{summary.value3}</td>
+                <td>Stress average</td>
+                <td>{fetcheddata.stressAverage}</td>
               </tr>
               <tr>
-                <td>Value 4</td>
-                <td>{summary.value4}</td>
+                <td>Sleep average</td>
+                <td>{fetcheddata.sleepAverage}</td>
+              </tr>
+              <tr>
+                <td>Total welness average</td>
+                <td>{fetcheddata.totalWelnessAverage}</td>
               </tr>
             </tbody>
           </Table>

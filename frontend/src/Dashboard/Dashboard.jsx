@@ -5,7 +5,8 @@ import BarChartRPE from "../BarChart/BarChartRPE";
 import DayTableWelness from "../DayTable/DayTableWelness";
 import DayTableRPE from "../DayTable/DayTableRPE";
 import Select from "react-select";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import ApiClient from "../Helpers/ApiClient";
 
 function Dashboard({ type }) {
   const dayDictionary = useRef({
@@ -29,6 +30,23 @@ function Dashboard({ type }) {
     label: "Week 1",
   });
 
+  const [dayData, setDayData] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (type === "welness") {
+        try {
+          const data = await ApiClient.get(`get-welness/${selectedWeek.value}`);
+          setDayData(data);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [type, selectedWeek]);
+
   return (
     <Container fluid>
       <Row className="align-items-center justify-content-center mt-4">
@@ -49,14 +67,23 @@ function Dashboard({ type }) {
         </Col>
       </Row>
 
-      <Row>
+      <Row className="d-flex align-items-stretch">
         {Object.entries(dayDictionary.current).map(([key, day]) => (
-          <Col key={key} xs={12} sm={12} lg={4} className="mb-4">
-            {type === "welness" && (
+          <Col
+            key={`${selectedWeek.value}-${key}`}
+            xs={12}
+            sm={6}
+            md={4}
+            lg={4}
+            className="mb-4 d-flex"
+          >
+            {type === "welness" && dayData[key] && (
               <DayTableWelness
+                key={`${selectedWeek.value}-${key}`}
                 day={day}
                 weekKey={selectedWeek.value}
                 dayKey={key}
+                fetcheddata={dayData[key]}
               />
             )}
             {type === "rpe" && (
