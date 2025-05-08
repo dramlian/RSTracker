@@ -31,6 +31,7 @@ function Dashboard({ type }) {
   });
 
   const [dayData, setDayData] = useState({});
+  const [chartData, setChartData] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,6 +39,7 @@ function Dashboard({ type }) {
         try {
           const data = await ApiClient.get(`get-welness/${selectedWeek.value}`);
           setDayData(data);
+          setChartData(calculateWelnessCharts(data));
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -46,6 +48,23 @@ function Dashboard({ type }) {
 
     fetchData();
   }, [type, selectedWeek]);
+
+  const calculateWelnessCharts = (data) => {
+    const result = {};
+
+    for (const dayNumber in data) {
+      const dayName = dayDictionary.current[dayNumber];
+      const dayData = data[dayNumber];
+
+      if (dayData && typeof dayData.totalWelnessAverage === "number") {
+        result[dayName] = dayData.totalWelnessAverage;
+      } else {
+        result[dayName] = 0;
+      }
+    }
+
+    return result;
+  };
 
   return (
     <Container fluid>
@@ -62,7 +81,7 @@ function Dashboard({ type }) {
 
       <Row className="justify-content-center">
         <Col>
-          {type === "welness" && <BarChartWelness />}
+          {type === "welness" && <BarChartWelness chartData={chartData} />}
           {type === "rpe" && <BarChartRPE />}
         </Col>
       </Row>

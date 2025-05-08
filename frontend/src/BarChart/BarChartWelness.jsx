@@ -10,24 +10,22 @@ import {
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-export default function BarChartWelness() {
+export default function BarChartWelness({ chartData }) {
+  const labels = Object.keys(chartData);
+  const values = Object.values(chartData);
+
   const data = {
-    labels: ["Red", "Blue", "Yellow", "Green", "Purple"],
+    labels,
     datasets: [
       {
-        label: "Votes",
-        data: [12, 19, 3, 5, 2],
-        backgroundColor: [
-          "rgba(255, 99, 132, 0.6)",
-          "rgba(54, 162, 235, 0.6)",
-          "rgba(255, 206, 86, 0.6)",
-          "rgba(75, 192, 192, 0.6)",
-          "rgba(153, 102, 255, 0.6)",
-        ],
+        label: "Wellness Score",
+        data: values,
+        backgroundColor: "rgba(24, 58, 30, 0.6)",
         borderWidth: 1,
       },
     ],
   };
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
