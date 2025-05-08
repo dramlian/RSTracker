@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Modal, Form } from "react-bootstrap";
+import React, { useEffect, useState, useRef } from "react";
+import { Modal, Button, Form } from "react-bootstrap";
 import Select from "react-select";
 import AddEntryFormWellness from "../AddEntryForm/AddEntryFormWellness";
 
 function AddEntryModalWelness({ show, handleClose }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const formRef = useRef();
 
   const options = [
     { value: "option1", label: "Option 1" },
@@ -22,19 +23,8 @@ function AddEntryModalWelness({ show, handleClose }) {
     setSelectedPlayer(selectedOption);
   };
 
-  const handleFormSubmit = (formData) => {
-    if (!selectedPlayer) {
-      alert("Please select a player.");
-      return;
-    }
-
-    const completeData = {
-      player: selectedPlayer,
-      ...formData,
-    };
-
-    console.log("Form Data Submitted:", completeData);
-    handleClose(); // Close modal after submission
+  const handleFormSubmit = () => {
+    formRef.current?.submitForm();
   };
 
   return (
@@ -54,8 +44,16 @@ function AddEntryModalWelness({ show, handleClose }) {
           />
         </Form.Group>
 
-        <AddEntryFormWellness onSubmit={handleFormSubmit} />
+        <AddEntryFormWellness ref={formRef} />
       </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          Close
+        </Button>
+        <Button variant="primary" onClick={handleFormSubmit}>
+          Submit
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 }
