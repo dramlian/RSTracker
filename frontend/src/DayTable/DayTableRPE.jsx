@@ -98,6 +98,7 @@ function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
         handleClose={handleCloseAddModal}
         weekKey={weekKey}
         dayKey={dayKey}
+        setWasUpdated={setWasUpdated}
       />
       <DeleteEntryModal
         show={showDeleteModal}

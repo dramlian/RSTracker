@@ -1,5 +1,6 @@
 import React, { useState, forwardRef, useImperativeHandle } from "react";
 import { Form } from "react-bootstrap";
+import ApiClient from "../Helpers/ApiClient";
 
 const AddEntryFormRPE = forwardRef(({}, ref) => {
   const [formData, setFormData] = useState({ rpe: "", duration: "" });
@@ -10,7 +11,7 @@ const AddEntryFormRPE = forwardRef(({}, ref) => {
     let isValid = true;
 
     ["rpe", "duration"].forEach((field) => {
-      if (isNaN(formData[field]) || formData[field] === "") {
+      if (isNaN(formData[field]) || formData[field] <= 0) {
         errors[field] = true;
         isValid = false;
       } else {
@@ -26,20 +27,33 @@ const AddEntryFormRPE = forwardRef(({}, ref) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: parseInt(value, 10) || 0,
     }));
   };
 
-  const handleSubmit = (weekKey, dayKey, selectedPlayer) => {
+  const handleSubmit = async (weekKey, dayKey, selectedPlayer, handleClose) => {
     if (validateForm()) {
-      alert("Form submitted successfully!");
-      alert(
-        `RPE: ${formData.rpe}, Duration: ${formData.duration}, Player: ${selectedPlayer}, Week: ${weekKey}, Day: ${dayKey}`
-      );
+      const payload = {
+        intervalInMinutes: parseInt(formData.duration),
+        value: parseInt(formData.rpe),
+        leagueWeek: weekKey,
+        date: new Date().toISOString().split("T")[0],
+        dayOfWeek: parseInt(dayKey, 10),
+      };
+
+      try {
+        await ApiClient.post(`add-rpe/${selectedPlayer}`, payload);
+        setFormData({ rpe: "", duration: "" });
+        if (handleClose) {
+          handleClose();
+        }
+      } catch (error) {
+        alert("Failed to submit the form. Please try again.");
+        console.error("API Error:", error);
+      }
     }
   };
 
-  // Expose handleSubmit to parent
   useImperativeHandle(ref, () => ({
     submitForm: handleSubmit,
   }));
@@ -58,7 +72,7 @@ const AddEntryFormRPE = forwardRef(({}, ref) => {
         />
         {formErrors.rpe && (
           <Form.Text className="text-danger">
-            RPE value must be a number.
+            RPE value must be greater than 0.
           </Form.Text>
         )}
       </Form.Group>
@@ -75,7 +89,7 @@ const AddEntryFormRPE = forwardRef(({}, ref) => {
         />
         {formErrors.duration && (
           <Form.Text className="text-danger">
-            Duration must be a number.
+            Duration must be greater than 0.
           </Form.Text>
         )}
       </Form.Group>

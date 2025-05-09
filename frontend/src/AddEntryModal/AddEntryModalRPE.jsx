@@ -2,29 +2,49 @@ import React, { useEffect, useState, useRef } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import Select from "react-select";
 import AddEntryFormRPE from "../AddEntryForm/AddEntryFormRPE";
+import ApiClient from "../Helpers/ApiClient";
 
-function AddEntryModalRPE({ show, handleClose, weekKey, dayKey }) {
+function AddEntryModalRPE({
+  show,
+  handleClose,
+  weekKey,
+  dayKey,
+  setWasUpdated,
+}) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [options, setOptions] = useState([]);
   const formRef = useRef();
 
-  const options = [
-    { value: 1, label: "Option 1" },
-    { value: 2, label: "Option 2" },
-    { value: 3, label: "Option 3" },
-    { value: 4, label: "Option 4" },
-    { value: 5, label: "Option 5" },
-  ];
-
   useEffect(() => {
-    setSelectedPlayer(options[0]);
+    const fetchPlayers = async () => {
+      try {
+        const players = await ApiClient.get("get-players");
+        const mappedOptions = players.map((player) => ({
+          value: player.id,
+          label: player.name,
+        }));
+        setOptions(mappedOptions);
+        setSelectedPlayer(mappedOptions[0]);
+      } catch (error) {
+        console.error("Failed to fetch players:", error);
+      }
+    };
+
+    fetchPlayers();
   }, []);
 
   const handleDropdownChange = (selectedOption) => {
     setSelectedPlayer(selectedOption);
   };
 
-  const handleFormSubmit = () => {
-    formRef.current?.submitForm(weekKey, dayKey, selectedPlayer.value);
+  const handleFormSubmit = async () => {
+    await formRef.current?.submitForm(
+      weekKey,
+      dayKey,
+      selectedPlayer?.value,
+      handleClose
+    );
+    setWasUpdated((prev) => !prev);
   };
 
   return (
