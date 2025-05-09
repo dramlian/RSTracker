@@ -7,7 +7,7 @@ import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
 
 DataTable.use(DT);
 
-function DayTableRPE({ day, weekKey, dayKey }) {
+function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
   const [data, setData] = useState([]);
   const [summary, setSummary] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
@@ -20,24 +20,8 @@ function DayTableRPE({ day, weekKey, dayKey }) {
   const handleCloseDeleteModal = () => setShowDeleteModal(false);
 
   useEffect(() => {
-    const dummyData = [
-      { name: "Richard Rezes", value: 10, duration: 30, totalvalue: 300 },
-      { name: "Jakub Kovalcik", value: 15, duration: 40, totalvalue: 600 },
-      { name: "Pavol Hasin", value: 20, duration: 50, totalvalue: 1000 },
-    ];
-    setData(dummyData);
-
-    const summaryData = {
-      avgDuration: (
-        dummyData.reduce((sum, row) => sum + row.duration, 0) / dummyData.length
-      ).toFixed(2),
-      avgTotalValue: (
-        dummyData.reduce((sum, row) => sum + row.totalvalue, 0) /
-        dummyData.length
-      ).toFixed(2),
-    };
-    setSummary(summaryData);
-  }, []);
+    setData(fetcheddata.outcomeplayers ?? []);
+  }, [fetcheddata, weekKey, dayKey]);
 
   return (
     <Container className="mt-5 border border-2 rounded p-4">
@@ -64,6 +48,7 @@ function DayTableRPE({ day, weekKey, dayKey }) {
       <Row>
         <Col>
           <DataTable
+            id={`rpe-${weekKey}-${dayKey}`}
             data={data}
             className="table table-striped table-hover"
             columns={[
@@ -77,6 +62,7 @@ function DayTableRPE({ day, weekKey, dayKey }) {
               searching: true,
               ordering: true,
               info: true,
+              destroy: true,
             }}
           />
         </Col>
@@ -88,19 +74,11 @@ function DayTableRPE({ day, weekKey, dayKey }) {
             <tbody>
               <tr>
                 <td>Average Duration</td>
-                <td>{summary.avgDuration}</td>
+                <td>{fetcheddata.commonTime}</td>
               </tr>
               <tr>
                 <td>Average Total Value</td>
-                <td>{summary.avgTotalValue}</td>
-              </tr>
-              <tr>
-                <td>Volume</td>
-                <td>{summary.avgDuration}</td>
-              </tr>
-              <tr>
-                <td>Intensity</td>
-                <td>{summary.avgTotalValue}</td>
+                <td>{fetcheddata.totalAverage}</td>
               </tr>
             </tbody>
           </Table>

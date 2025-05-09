@@ -19,7 +19,6 @@ function DayTableWelness({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
   const handleCloseDeleteModal = () => setShowDeleteModal(false);
 
   useEffect(() => {
-    console.log(`weekKey: ${weekKey}, dayKey: ${dayKey}`);
     setData(fetcheddata.outcomeplayers ?? []);
   }, [fetcheddata, weekKey, dayKey]);
 
@@ -48,7 +47,7 @@ function DayTableWelness({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
       <Row>
         <Col>
           <DataTable
-            key={`${weekKey}-${dayKey}`}
+            id={`${weekKey}-${dayKey}-welness`}
             data={data}
             className="table table-striped table-hover"
             columns={[
@@ -63,6 +62,7 @@ function DayTableWelness({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
               searching: true,
               ordering: true,
               info: true,
+              destroy: true,
             }}
           />
         </Col>

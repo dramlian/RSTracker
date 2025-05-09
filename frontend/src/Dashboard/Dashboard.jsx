@@ -8,7 +8,7 @@ import Select from "react-select";
 import { useRef, useState, useEffect } from "react";
 import ApiClient from "../Helpers/ApiClient";
 
-function Dashboard({ type }) {
+export default function Dashboard({ type }) {
   const dayDictionary = useRef({
     1: "Monday",
     2: "Tuesday",
@@ -32,40 +32,28 @@ function Dashboard({ type }) {
 
   const [dayData, setDayData] = useState({});
   const [chartData, setChartData] = useState({});
-  const [wasUpdated, setWasUpdated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (type === "welness") {
-        try {
-          const data = await ApiClient.get(`get-welness/${selectedWeek.value}`);
-          setDayData(data);
-          setChartData(calculateWelnessCharts(data));
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
+      try {
+        setIsLoading(true);
+        const data = await ApiClient.get(`get-${type}/${selectedWeek.value}`);
+        setDayData(data);
+        //setChartData(calculateWelnessCharts(data));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [type, selectedWeek, wasUpdated]);
+  }, [type, selectedWeek]);
 
-  const calculateWelnessCharts = (data) => {
-    const result = {};
-
-    for (const dayNumber in data) {
-      const dayName = dayDictionary.current[dayNumber];
-      const dayData = data[dayNumber];
-
-      if (dayData && typeof dayData.totalWelnessAverage === "number") {
-        result[dayName] = dayData.totalWelnessAverage;
-      } else {
-        result[dayName] = 0;
-      }
-    }
-
-    return result;
-  };
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Container fluid>
@@ -97,28 +85,27 @@ function Dashboard({ type }) {
             lg={4}
             className="mb-4 d-flex"
           >
-            {type === "welness" && dayData[key] && (
-              <DayTableWelness
-                key={`${selectedWeek.value}-${key}`}
-                day={day}
-                weekKey={selectedWeek.value}
-                dayKey={key}
-                fetcheddata={dayData[key]}
-                setWasUpdated={setWasUpdated}
-              />
-            )}
-            {type === "rpe" && (
-              <DayTableRPE
-                day={day}
-                weekKey={selectedWeek.value}
-                dayKey={key}
-              />
-            )}
+            {dayData[key] &&
+              (type === "welness" ? (
+                <DayTableWelness
+                  key={`${selectedWeek.value}-${key}`}
+                  day={day}
+                  weekKey={selectedWeek.value}
+                  dayKey={key}
+                  fetcheddata={dayData[key]}
+                />
+              ) : (
+                <DayTableRPE
+                  key={`${selectedWeek.value}-${key}`}
+                  day={day}
+                  weekKey={selectedWeek.value}
+                  dayKey={key}
+                  fetcheddata={dayData[key]}
+                />
+              ))}
           </Col>
         ))}
       </Row>
     </Container>
   );
 }
-
-export default Dashboard;
