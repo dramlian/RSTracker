@@ -1,7 +1,7 @@
 namespace RSTracker.Models;
 public class GetRPEOfaDayOutput
 {
-    public double totalRPEAverage { get; set; }
+    public double totalAverage { get; set; }
     public double volume { get; set; }
     public double intensity { get; set; }
     public int commonTime { get; set; }
@@ -11,9 +11,9 @@ public class GetRPEOfaDayOutput
     {
         if (!players.Any()) return;
         outcomeplayers = players;
-        totalRPEAverage = Math.Round(players.SelectMany(x => x.rpeRecords).Select(x => x.TotalRpeValue).Sum() / (double)players.Count(), 1);
-        commonTime = players.SelectMany(x => x.rpeRecords).Select(x => x.IntervalInMinutes).Sum() / players.Count();
-        volume = Math.Round(totalRPEAverage / 760 * 100, 2);
+        totalAverage = Math.Round(players.Select(x => x.totalvalue).Sum() / (double)players.Count(), 1);
+        commonTime = players.Select(x => x.duration).Sum() / players.Count();
+        volume = Math.Round(totalAverage / 760 * 100, 2);
         intensity = Math.Round(volume / (commonTime / 95.0), 2);
     }
 }
@@ -22,24 +22,18 @@ public class GetRPEOfaDayOutputPlayers
 {
     public int id { get; set; }
     public string name { get; set; } = null!;
-    public IEnumerable<RPE> rpeRecords { get; set; } = null!;
+    public int value { get; set; }
+    public int duration { get; set; }
+    public int totalvalue { get; set; }
+    public bool noData => value == 0 && duration == 0 && totalvalue == 0;
 
-    public GetRPEOfaDayOutputPlayers(int id, string name, IEnumerable<RPE> rpeRecords)
+    public GetRPEOfaDayOutputPlayers(int id, string name, RPE? rpeRecord)
     {
         this.id = id;
         this.name = name;
-        this.rpeRecords = rpeRecords;
-    }
-}
+        this.value = rpeRecord?.Rpevalue ?? 0;
+        this.duration = rpeRecord?.IntervalInMinutes ?? 0;
+        this.totalvalue = rpeRecord?.TotalRpeValue ?? 0;
 
-public class RpeDataOutput
-{
-    public double Volume { get; set; }
-    public double Intensity { get; set; }
-
-    public RpeDataOutput(double volume, double intensity)
-    {
-        Volume = volume;
-        Intensity = intensity;
     }
 }
