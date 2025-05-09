@@ -80,6 +80,14 @@ function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
                 <td>Average Total Value</td>
                 <td>{fetcheddata.totalAverage}</td>
               </tr>
+              <tr>
+                <td>Average common intensity</td>
+                <td>{fetcheddata.intensity} %</td>
+              </tr>
+              <tr>
+                <td>Average common volume</td>
+                <td>{fetcheddata.volume} %</td>
+              </tr>
             </tbody>
           </Table>
         </Col>

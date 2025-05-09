@@ -10,19 +10,19 @@ import {
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
-export default function BarChartRPE() {
+export default function BarChartRPE({ chartData }) {
   const data = {
-    labels: ["Red", "Blue", "Yellow", "Green", "Purple"],
+    labels: Object.keys(chartData),
     datasets: [
       {
-        label: "Dataset 1",
-        data: [12, 19, 3, 5, 2],
+        label: "Volume",
+        data: Object.values(chartData).map((dayData) => dayData.volume),
         backgroundColor: "rgba(255, 99, 132, 0.6)",
         borderWidth: 1,
       },
       {
-        label: "Dataset 2",
-        data: [8, 15, 6, 10, 4],
+        label: "Intensity",
+        data: Object.values(chartData).map((dayData) => dayData.intensity),
         backgroundColor: "rgba(54, 162, 235, 0.6)",
         borderWidth: 1,
       },

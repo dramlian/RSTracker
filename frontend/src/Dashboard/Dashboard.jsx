@@ -40,7 +40,11 @@ export default function Dashboard({ type }) {
         setIsLoading(true);
         const data = await ApiClient.get(`get-${type}/${selectedWeek.value}`);
         setDayData(data);
-        //setChartData(calculateWelnessCharts(data));
+        if (type === "welness") {
+          setChartData(calculateWelnessCharts(data));
+        } else if (type === "rpe") {
+          setChartData(calculateRPECharts(data));
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -50,6 +54,39 @@ export default function Dashboard({ type }) {
 
     fetchData();
   }, [type, selectedWeek]);
+
+  const calculateWelnessCharts = (data) => {
+    const result = {};
+
+    for (const dayNumber in data) {
+      const dayName = dayDictionary.current[dayNumber];
+      const dayData = data[dayNumber];
+
+      if (dayData && typeof dayData.totalWelnessAverage === "number") {
+        result[dayName] = dayData.totalWelnessAverage;
+      } else {
+        result[dayName] = 0;
+      }
+    }
+
+    return result;
+  };
+
+  const calculateRPECharts = (data) => {
+    const result = {};
+
+    for (const dayNumber in data) {
+      const dayName = dayDictionary.current[dayNumber];
+      const dayData = data[dayNumber];
+
+      result[dayName] = {
+        volume: dayData.volume,
+        intensity: dayData.intensity,
+      };
+    }
+
+    return result;
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -71,7 +108,7 @@ export default function Dashboard({ type }) {
       <Row className="justify-content-center">
         <Col>
           {type === "welness" && <BarChartWelness chartData={chartData} />}
-          {type === "rpe" && <BarChartRPE />}
+          {type === "rpe" && <BarChartRPE chartData={chartData} />}
         </Col>
       </Row>
 
