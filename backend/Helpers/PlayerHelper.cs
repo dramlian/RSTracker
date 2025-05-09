@@ -101,9 +101,13 @@ public class PlayerHelper
             throw new KeyNotFoundException("Player not found.");
         }
 
-        if (player.RPERecords != null && player.RPERecords.Any(x => x.DayOfWeek.Equals(input.DayOfWeek) && x.LeagueWeek.Equals(input.LeagueWeek)))
+        RPE? rpeRecord = player.RPERecords
+            .Where(x => x.DayOfWeek.Equals(input.DayOfWeek) && x.LeagueWeek.Equals(input.LeagueWeek))
+            .FirstOrDefault();
+        if (rpeRecord != null)
         {
-            throw new ArgumentException("RPE record already exists for this player.");
+            _context.RPEs.Remove(rpeRecord);
+            await _context.SaveChangesAsync();
         }
 
         RPE newRpe = new RPE
