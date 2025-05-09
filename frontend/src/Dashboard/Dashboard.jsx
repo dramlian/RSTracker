@@ -33,6 +33,7 @@ export default function Dashboard({ type }) {
   const [dayData, setDayData] = useState({});
   const [chartData, setChartData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [wasUpdated, setWasUpdated] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,7 +54,7 @@ export default function Dashboard({ type }) {
     };
 
     fetchData();
-  }, [type, selectedWeek]);
+  }, [type, selectedWeek, wasUpdated]);
 
   const calculateWelnessCharts = (data) => {
     const result = {};
@@ -130,6 +131,7 @@ export default function Dashboard({ type }) {
                   weekKey={selectedWeek.value}
                   dayKey={key}
                   fetcheddata={dayData[key]}
+                  setWasUpdated={setWasUpdated}
                 />
               ) : (
                 <DayTableRPE
@@ -138,6 +140,7 @@ export default function Dashboard({ type }) {
                   weekKey={selectedWeek.value}
                   dayKey={key}
                   fetcheddata={dayData[key]}
+                  setWasUpdated={setWasUpdated}
                 />
               ))}
           </Col>
