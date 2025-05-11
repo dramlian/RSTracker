@@ -1,17 +1,21 @@
 using RSTracker.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace RSTracker.Helpers;
 public class PlayerHelper
 {
     private readonly PlayerDbContext _context;
-    public PlayerHelper(PlayerDbContext context)
+    private readonly BlobLogger _blobLogger;
+    public PlayerHelper(PlayerDbContext context, BlobLogger blobLogger)
     {
         _context = context;
+        _blobLogger = blobLogger;
     }
 
     public async Task AddPlayerToDb(PlayerInput player)
     {
+        await _blobLogger.LogAsync($"Adding player {JsonConvert.SerializeObject(player)}");
         Player newPlayer = new Player
         {
             Name = player.Name,
@@ -27,6 +31,7 @@ public class PlayerHelper
 
     public async Task DeletePlayer(int playerId)
     {
+        await _blobLogger.LogAsync($"Deleting player with ID {playerId}");
         var player = _context.Players.Where(x => x.Id.Equals(playerId)).FirstOrDefault();
         if (player == null)
         {
@@ -38,6 +43,7 @@ public class PlayerHelper
 
     public async Task AddWelnessToDb(int playerId, WelnessInput input)
     {
+        await _blobLogger.LogAsync($"Adding wellness data for player {playerId} {JsonConvert.SerializeObject(input)}");
         var player = _context.Players
         .Where(x => x.Id.Equals(playerId))
         .Include(p => p.WelnessRecords).FirstOrDefault();
@@ -69,6 +75,7 @@ public class PlayerHelper
 
     public async Task DeleteWelness(int playerId, DayOfWeekEnum dayOfWeek, int LeagueWeek)
     {
+        await _blobLogger.LogAsync($"Deleting wellness data for player {playerId} on {dayOfWeek} of week {LeagueWeek}");
         var player = _context.Players
             .Include(p => p.WelnessRecords)
             .FirstOrDefault(p => p.Id == playerId);
@@ -92,6 +99,7 @@ public class PlayerHelper
 
     public async Task AddRPEToDb(int playerId, RpeInput input)
     {
+        await _blobLogger.LogAsync($"Adding RPE data for player {playerId} {JsonConvert.SerializeObject(input)}");
         var player = await _context.Players
             .Include(p => p.RPERecords)
             .FirstOrDefaultAsync(p => p.Id == playerId);
@@ -119,6 +127,7 @@ public class PlayerHelper
 
     public async Task DeleteRPE(int playerId, DayOfWeekEnum dayOfWeek, int LeagueWeek)
     {
+        await _blobLogger.LogAsync($"Deleting RPE data for player {playerId} on {dayOfWeek} of week {LeagueWeek}");
         var player = await _context.Players
             .Include(p => p.RPERecords)
             .FirstOrDefaultAsync(p => p.Id == playerId);
@@ -142,6 +151,7 @@ public class PlayerHelper
 
     public async Task<Dictionary<int, GetRPEOfaDayOutput>> GetRPEOfLeagueWeek(int leagueweek)
     {
+        await _blobLogger.LogAsync($"Getting RPE data for league week {leagueweek}");
         Dictionary<int, GetRPEOfaDayOutput> returnDic = new();
         foreach (DayOfWeekEnum day in Enum.GetValues(typeof(DayOfWeekEnum)))
         {
@@ -153,6 +163,7 @@ public class PlayerHelper
 
     public async Task<GetRPEOfaDayOutput> GetRPE(int leagueweek, DayOfWeekEnum dayofweek)
     {
+        await _blobLogger.LogAsync($"Getting RPE data for league week {leagueweek} on {dayofweek}");
         var players = await _context.Players
             .Select(p => new GetRPEOfaDayOutputPlayers(
                 p.Id,
@@ -168,6 +179,7 @@ public class PlayerHelper
 
     public async Task<Dictionary<int, GetWelnessOfaDayOutput>> GetWelnessOfLeagueWeek(int leagueweek)
     {
+        await _blobLogger.LogAsync($"Getting wellness data for league week {leagueweek}");
         Dictionary<int, GetWelnessOfaDayOutput> returnDic = new();
         foreach (DayOfWeekEnum day in Enum.GetValues(typeof(DayOfWeekEnum)))
         {
@@ -180,6 +192,7 @@ public class PlayerHelper
 
     public async Task<GetWelnessOfaDayOutput> GetWelness(int leagueweek, DayOfWeekEnum dayofweek)
     {
+        await _blobLogger.LogAsync($"Getting wellness data for league week {leagueweek} on {dayofweek}");
         var players = await _context.Players
             .Select(p => new GetWelnessOfaDayOutputPlayers(
                 p.Id,
@@ -195,6 +208,7 @@ public class PlayerHelper
 
     public async Task<List<Player>> GetAllPlayers()
     {
+        await _blobLogger.LogAsync($"Getting all players");
         var players = await _context.Players.ToListAsync();
         return players;
     }

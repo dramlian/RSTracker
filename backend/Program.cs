@@ -16,7 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<PlayerDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+builder.Services.AddScoped<BlobLogger>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
