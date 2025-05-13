@@ -28,9 +28,10 @@ function DeleteEntryModal({
         console.error("Failed to fetch players:", error);
       }
     };
-
-    fetchPlayers();
-  }, []);
+    if (show) {
+      fetchPlayers();
+    }
+  }, [show]);
 
   const handleDropdownChange = (selectedOption) => {
     setSelectedPlayer(selectedOption);
