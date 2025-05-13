@@ -6,6 +6,7 @@ import Header from "./Header/Header";
 import Homepage from "./Homepage/Homepage";
 import InsertPage from "./InsertPage/InsertPage";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { ToastContainer } from "react-toastify";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -18,5 +19,6 @@ createRoot(document.getElementById("root")).render(
         <Route path="*" element={<Homepage />} />
       </Routes>
     </BrowserRouter>
+    <ToastContainer />
   </StrictMode>
 );

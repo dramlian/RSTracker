@@ -1,9 +1,11 @@
+import { toast } from 'react-toastify';
+
 class ApiClient {
     constructor(baseUrl) {
       this.baseUrl = baseUrl;
     }
   
-    async request(method, suffix, data = null) {
+    async request(method, suffix, data = null, shouldToast = false) {
       try {
         const options = {
           method,
@@ -17,12 +19,18 @@ class ApiClient {
         }
   
         const response = await fetch(`${this.baseUrl}/${suffix}`, options);
-  
+        const responseData = await response.json();
+
         if (!response.ok) {
+          toast.error(responseData.error);
           throw new Error(`${method} request failed: ${response.statusText}`);
         }
+
+        if(shouldToast){
+          toast.success(responseData.message);
+        }
   
-        return await response.json();
+        return await responseData;
       } catch (error) {
         console.error(`Error in ${method} request:`, error);
         throw error;
@@ -34,15 +42,15 @@ class ApiClient {
     }
   
     post(suffix, data) {
-      return this.request("POST", suffix, data);
+      return this.request("POST", suffix, data, true);
     }
   
     put(suffix, data) {
-      return this.request("PUT", suffix, data);
+      return this.request("PUT", suffix, data, true);
     }
   
     delete(suffix) {
-      return this.request("DELETE", suffix);
+      return this.request("DELETE", suffix, null, true);
     }
   }
   
