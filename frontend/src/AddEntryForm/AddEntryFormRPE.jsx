@@ -10,14 +10,23 @@ const AddEntryFormRPE = forwardRef(({}, ref) => {
     const errors = { ...formErrors };
     let isValid = true;
 
-    ["rpe", "duration"].forEach((field) => {
-      if (isNaN(formData[field]) || formData[field] <= 0) {
-        errors[field] = true;
-        isValid = false;
-      } else {
-        errors[field] = false;
-      }
-    });
+    if (isNaN(formData.rpe) || formData.rpe <= 0 || formData.rpe > 10) {
+      errors.rpe = true;
+      isValid = false;
+    } else {
+      errors.rpe = false;
+    }
+
+    if (
+      isNaN(formData.duration) ||
+      formData.duration <= 0 ||
+      formData.duration > 90
+    ) {
+      errors.duration = true;
+      isValid = false;
+    } else {
+      errors.duration = false;
+    }
 
     setFormErrors(errors);
     return isValid;
@@ -74,7 +83,7 @@ const AddEntryFormRPE = forwardRef(({}, ref) => {
         />
         {formErrors.rpe && (
           <Form.Text className="text-danger">
-            RPE value must be greater than 0.
+            RPE value must be greater than 0 smaller than 10.
           </Form.Text>
         )}
       </Form.Group>
@@ -91,7 +100,7 @@ const AddEntryFormRPE = forwardRef(({}, ref) => {
         />
         {formErrors.duration && (
           <Form.Text className="text-danger">
-            Duration must be greater than 0.
+            Duration must be greater than 0 smaller than 90.
           </Form.Text>
         )}
       </Form.Group>

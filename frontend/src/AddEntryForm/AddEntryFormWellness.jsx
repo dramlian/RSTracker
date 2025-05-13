@@ -22,7 +22,11 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
     let isValid = true;
 
     ["muscle", "recovery", "stress", "sleep"].forEach((field) => {
-      if (isNaN(formData[field]) || formData[field] <= 0) {
+      if (
+        isNaN(formData[field]) ||
+        formData[field] <= 0 ||
+        formData[field] > 10
+      ) {
         errors[field] = true;
         isValid = false;
       } else {
@@ -91,7 +95,7 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
         />
         {formErrors.muscle && (
           <Form.Text className="text-danger">
-            Muscle value must be greater than 0.
+            Muscle value must be greater than 0 smaller than 10.
           </Form.Text>
         )}
       </Form.Group>
@@ -107,7 +111,7 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
         />
         {formErrors.recovery && (
           <Form.Text className="text-danger">
-            Recovery value must be greater than 0.
+            Recovery value must be greater than 0 smaller than 10.
           </Form.Text>
         )}
       </Form.Group>
@@ -123,7 +127,7 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
         />
         {formErrors.stress && (
           <Form.Text className="text-danger">
-            Stress value must be greater than 0.
+            Stress value must be greater than 0 smaller than 10.
           </Form.Text>
         )}
       </Form.Group>
@@ -139,7 +143,7 @@ const AddEntryFormWellness = forwardRef(({}, ref) => {
         />
         {formErrors.sleep && (
           <Form.Text className="text-danger">
-            Sleep value must be greater than 0.
+            Sleep value must be greater than 0 smaller than 10.
           </Form.Text>
         )}
       </Form.Group>
