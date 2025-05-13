@@ -38,13 +38,16 @@ function AddEntryModalWelness({
   };
 
   const handleFormSubmit = async () => {
-    await formRef.current?.submitForm(
-      weekKey,
-      dayKey,
-      selectedPlayer?.value,
-      handleClose
-    );
-    setWasUpdated((prev) => !prev);
+    if (
+      await formRef.current?.submitForm(
+        weekKey,
+        dayKey,
+        selectedPlayer?.value,
+        handleClose
+      )
+    ) {
+      setWasUpdated((prev) => !prev);
+    }
   };
 
   return (

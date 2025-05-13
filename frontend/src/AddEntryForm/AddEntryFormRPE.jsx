@@ -47,9 +47,11 @@ const AddEntryFormRPE = forwardRef(({}, ref) => {
         if (handleClose) {
           handleClose();
         }
+        return true;
       } catch (error) {
         alert("Failed to submit the form. Please try again.");
         console.error("API Error:", error);
+        return false;
       }
     }
   };
