@@ -19,6 +19,15 @@ function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
     setData(fetcheddata.outcomeplayers ?? []);
   }, [fetcheddata, weekKey, dayKey]);
 
+  function getRowClass(entry) {
+    if (entry.value > 5) {
+      return "table-danger";
+    } else if (entry.value === 5) {
+      return "table-warning";
+    }
+    return "";
+  }
+
   return (
     <Container className="mt-5 border border-2 rounded p-4">
       <Row className="d-flex justify-content-between align-items-center mb-3">
@@ -54,7 +63,7 @@ function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
             </thead>
             <tbody>
               {data.map((entry, index) => (
-                <tr key={index}>
+                <tr key={index} className={getRowClass(entry)}>
                   <td>{entry.name}</td>
                   <td>{entry.value}</td>
                   <td>{entry.duration}</td>
