@@ -1,8 +1,16 @@
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import Switch from "react-switch";
 import styles from "./Header.module.css";
+import { useState } from "react";
 
 export default function Header() {
+  const [isChecked, setIsChecked] = useState(false);
+
+  function handleChange(checked) {
+    setIsChecked((prev) => !prev);
+  }
+
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container fluid>
@@ -26,6 +34,14 @@ export default function Header() {
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>
+        <Switch
+          offColor={"#0000"}
+          onColor={"#d9d5d4"}
+          uncheckedIcon={false}
+          checkedIcon={false}
+          onChange={handleChange}
+          checked={isChecked}
+        />
       </Container>
     </Navbar>
   );
