@@ -1,8 +1,8 @@
-import { Navbar, Nav, Container } from "react-bootstrap";
+import { Navbar, Nav, Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Switch from "react-switch";
-import styles from "./Header.module.css";
 import { useState } from "react";
+import styles from "./Header.module.css";
 
 export default function Header() {
   const [isChecked, setIsChecked] = useState(false);
@@ -19,29 +19,38 @@ export default function Header() {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbar-nav" />
         <Navbar.Collapse id="navbar-nav">
-          <Nav className="ms-auto">
-            <Nav.Link as={Link} to="/">
-              HomePage
-            </Nav.Link>
-            <Nav.Link as={Link} to="/insert">
-              Insert
-            </Nav.Link>
-            <Nav.Link as={Link} to="/rpe">
-              RPE Dashboard
-            </Nav.Link>
-            <Nav.Link as={Link} to="/welness">
-              Wellness Dashboard
-            </Nav.Link>
-          </Nav>
+          <Row className="w-100 justify-content-center">
+            <Col className="d-flex justify-content-center" xs="auto">
+              <Nav>
+                <Nav.Link as={Link} to="/">
+                  HomePage
+                </Nav.Link>
+                <Nav.Link as={Link} to="/insert">
+                  Insert
+                </Nav.Link>
+                <Nav.Link as={Link} to="/rpe">
+                  RPE Dashboard
+                </Nav.Link>
+                <Nav.Link as={Link} to="/welness">
+                  Wellness Dashboard
+                </Nav.Link>
+              </Nav>
+            </Col>
+          </Row>
         </Navbar.Collapse>
-        <Switch
-          offColor={"#0000"}
-          onColor={"#d9d5d4"}
-          uncheckedIcon={false}
-          checkedIcon={false}
-          onChange={handleChange}
-          checked={isChecked}
-        />
+
+        <div className={styles.switchWrapper}>
+          <div className={styles.username}>John Doe</div>
+          <div className={styles.nameCircle}>JD</div>
+          <Switch
+            offColor={"#0000"}
+            onColor={"#d9d5d4"}
+            uncheckedIcon={false}
+            checkedIcon={false}
+            onChange={handleChange}
+            checked={isChecked}
+          />
+        </div>
       </Container>
     </Navbar>
   );
