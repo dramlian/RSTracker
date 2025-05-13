@@ -10,7 +10,7 @@ public class GetRPEOfaDayOutput
     public GetRPEOfaDayOutput(IEnumerable<GetRPEOfaDayOutputPlayers> players)
     {
         if (!players.Any()) return;
-        outcomeplayers = players;
+        outcomeplayers = players.OrderBy(x => x.id);
         totalAverage = Math.Round(players.Select(x => x.totalvalue).Sum() / (double)players.Count(), 1);
         commonTime = players.Select(x => x.duration).Sum() / players.Count();
         volume = Math.Round(totalAverage / 760 * 100, 2);

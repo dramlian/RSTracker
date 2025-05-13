@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
-import DataTable from "datatables.net-react";
-import DT from "datatables.net-bs5";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import AddEntryModalWelness from "../AddEntryModal/AddEntryModalWelness";
 import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
-
-DataTable.use(DT);
 
 function DayTableWelness({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
   const [data, setData] = useState([]);
@@ -46,25 +42,28 @@ function DayTableWelness({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
       </Row>
       <Row>
         <Col>
-          <DataTable
-            id={`${weekKey}-${dayKey}-welness`}
-            data={data}
-            className="table table-striped table-hover"
-            columns={[
-              { title: "Name", data: "name" },
-              { title: "Muscle", data: "muscle" },
-              { title: "Recovery", data: "recovery" },
-              { title: "Stress", data: "stress" },
-              { title: "Sleep", data: "sleep" },
-            ]}
-            options={{
-              paging: true,
-              searching: true,
-              ordering: true,
-              info: true,
-              destroy: true,
-            }}
-          />
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Muscle</th>
+                <th>Recovery</th>
+                <th>Stress</th>
+                <th>Sleep</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((entry, index) => (
+                <tr key={index}>
+                  <td>{entry.name}</td>
+                  <td>{entry.muscle}</td>
+                  <td>{entry.recovery}</td>
+                  <td>{entry.stress}</td>
+                  <td>{entry.sleep}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         </Col>
       </Row>
 

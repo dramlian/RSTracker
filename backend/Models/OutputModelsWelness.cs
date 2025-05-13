@@ -13,7 +13,7 @@ public class GetWelnessOfaDayOutput
     public GetWelnessOfaDayOutput(IEnumerable<GetWelnessOfaDayOutputPlayers> players)
     {
         if (!players.Any()) return;
-        outcomeplayers = players;
+        outcomeplayers = players.OrderBy(x => x.id);
         muscleAverage = Math.Round(players.Select(x => x.muscle).Sum() / (double)players.Count(), 1);
         recoveryAverage = Math.Round(players.Select(x => x.recovery).Sum() / (double)players.Count(), 1);
         stressAverage = Math.Round(players.Select(x => x.stress).Sum() / (double)players.Count(), 1);

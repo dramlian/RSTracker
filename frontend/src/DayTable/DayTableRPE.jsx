@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
-import DataTable from "datatables.net-react";
-import DT from "datatables.net-bs5";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import AddEntryModalRPE from "../AddEntryModal/AddEntryModalRPE";
 import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
-
-DataTable.use(DT);
 
 function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
   const [data, setData] = useState([]);
@@ -47,24 +43,26 @@ function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
       </Row>
       <Row>
         <Col>
-          <DataTable
-            id={`rpe-${weekKey}-${dayKey}`}
-            data={data}
-            className="table table-striped table-hover"
-            columns={[
-              { title: "Name", data: "name" },
-              { title: "Value", data: "value" },
-              { title: "Duration", data: "duration" },
-              { title: "Total Value", data: "totalvalue" },
-            ]}
-            options={{
-              paging: true,
-              searching: true,
-              ordering: true,
-              info: true,
-              destroy: true,
-            }}
-          />
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Duration</th>
+                <th>Total Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((entry, index) => (
+                <tr key={index}>
+                  <td>{entry.name}</td>
+                  <td>{entry.value}</td>
+                  <td>{entry.duration}</td>
+                  <td>{entry.totalvalue}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         </Col>
       </Row>
 
