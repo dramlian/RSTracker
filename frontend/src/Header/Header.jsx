@@ -1,12 +1,12 @@
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { NavDropdown } from "react-bootstrap";
+import styles from "./Header.module.css";
 
 export default function Header() {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container fluid>
-        <Navbar.Brand as={Link} to="/">
+        <Navbar.Brand as={Link} to="/" className={styles.logo}>
           RsTracker
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbar-nav" />

@@ -1,0 +1,14 @@
+@font-face {
+    font-family: 'QBOne';
+    src: url('/fonts/rsfont.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+  }
+  
+  .logo {
+    font-family: 'QBOne', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+
+  }
