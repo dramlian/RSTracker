@@ -20,9 +20,9 @@ function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
   }, [fetcheddata, weekKey, dayKey]);
 
   function getRowClass(entry) {
-    if (entry.value > 5) {
+    if (entry.value > 7) {
       return "table-danger";
-    } else if (entry.value === 5) {
+    } else if (entry.value === 7) {
       return "table-warning";
     }
     return "";
