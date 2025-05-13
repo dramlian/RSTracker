@@ -3,7 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import Select from "react-select";
 import AddEntryFormWellness from "../AddEntryForm/AddEntryFormWellness";
 import ApiClient from "../Helpers/ApiClient";
-
+import LoadingScreen from "../LoadingScreen/LoadingScreen";
 function AddEntryModalWelness({
   show,
   handleClose,
@@ -13,11 +13,13 @@ function AddEntryModalWelness({
 }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [options, setOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const formRef = useRef();
 
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
+        setIsLoading(true);
         const players = await ApiClient.get("get-players");
         const mappedOptions = players.map((player) => ({
           value: player.id,
@@ -27,6 +29,8 @@ function AddEntryModalWelness({
         setSelectedPlayer(mappedOptions[0]);
       } catch (error) {
         console.error("Failed to fetch players:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     if (show) {
@@ -53,6 +57,7 @@ function AddEntryModalWelness({
 
   return (
     <Modal show={show} onHide={handleClose}>
+      <LoadingScreen isLoading={isLoading} />
       <Modal.Header closeButton>
         <Modal.Title>Add Wellness Entry</Modal.Title>
       </Modal.Header>

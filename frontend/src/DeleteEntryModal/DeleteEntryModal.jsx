@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import Select from "react-select";
 import ApiClient from "../Helpers/ApiClient";
+import LoadingScreen from "../LoadingScreen/LoadingScreen";
 
 function DeleteEntryModal({
   show,
@@ -13,10 +14,12 @@ function DeleteEntryModal({
 }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [options, setOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
+        setIsLoading(true);
         const players = await ApiClient.get("get-players");
         const mappedOptions = players.map((player) => ({
           value: player.id,
@@ -26,6 +29,8 @@ function DeleteEntryModal({
         setSelectedPlayer(mappedOptions[0]);
       } catch (error) {
         console.error("Failed to fetch players:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     if (show) {
@@ -50,6 +55,7 @@ function DeleteEntryModal({
 
   return (
     <Modal show={show} onHide={handleClose}>
+      <LoadingScreen isLoading={isLoading} />
       <Modal.Header closeButton>
         <Modal.Title>Delete Entry</Modal.Title>
       </Modal.Header>

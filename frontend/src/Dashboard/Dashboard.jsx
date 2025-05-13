@@ -7,6 +7,7 @@ import DayTableRPE from "../DayTable/DayTableRPE";
 import Select from "react-select";
 import { useRef, useState, useEffect } from "react";
 import ApiClient from "../Helpers/ApiClient";
+import LoadingScreen from "../LoadingScreen/LoadingScreen";
 
 export default function Dashboard({ type }) {
   const dayDictionary = useRef({
@@ -89,12 +90,9 @@ export default function Dashboard({ type }) {
     return result;
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <Container fluid>
+      <LoadingScreen isLoading={isLoading} />
       <Row className="align-items-center justify-content-center mt-4">
         <Col xs={12}>
           <Select
