@@ -1,13 +1,24 @@
 namespace RSTracker.Models;
-public class GetRPEOfaDayOutput
+
+public class GetRPEWeekOutput
+{
+    public Dictionary<int, GetRPEDayOutput> days { get; set; }
+    public GetRPEWeekOutput(Dictionary<int, GetRPEDayOutput> days)
+    {
+        this.days = days;
+    }
+}
+
+
+public class GetRPEDayOutput
 {
     public double totalAverage { get; set; }
     public double volume { get; set; }
     public double intensity { get; set; }
     public int commonTime { get; set; }
-    public IEnumerable<GetRPEOfaDayOutputPlayers>? outcomeplayers { get; set; }
+    public IEnumerable<GetRPEDayOutputPlayers>? outcomeplayers { get; set; }
 
-    public GetRPEOfaDayOutput(IEnumerable<GetRPEOfaDayOutputPlayers> players)
+    public GetRPEDayOutput(IEnumerable<GetRPEDayOutputPlayers> players)
     {
         if (!players.Any()) return;
         outcomeplayers = players.OrderBy(x => x.id);
@@ -18,7 +29,7 @@ public class GetRPEOfaDayOutput
     }
 }
 
-public class GetRPEOfaDayOutputPlayers
+public class GetRPEDayOutputPlayers
 {
     public int id { get; set; }
     public string name { get; set; } = null!;
@@ -27,7 +38,7 @@ public class GetRPEOfaDayOutputPlayers
     public int totalvalue { get; set; }
     public bool noData => value == 0 && duration == 0 && totalvalue == 0;
 
-    public GetRPEOfaDayOutputPlayers(int id, string name, RPE? rpeRecord)
+    public GetRPEDayOutputPlayers(int id, string name, RPE? rpeRecord)
     {
         this.id = id;
         this.name = name;

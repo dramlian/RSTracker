@@ -149,23 +149,23 @@ public class PlayerHelper
         await _context.SaveChangesAsync();
     }
 
-    public async Task<Dictionary<int, GetRPEOfaDayOutput>> GetRPEOfLeagueWeek(int leagueweek)
+    public async Task<GetRPEWeekOutput> GetRPEOfLeagueWeek(int leagueweek)
     {
         await _blobLogger.LogAsync($"Getting RPE data for league week {leagueweek}");
-        Dictionary<int, GetRPEOfaDayOutput> returnDic = new();
+        Dictionary<int, GetRPEDayOutput> returnDic = new();
         foreach (DayOfWeekEnum day in Enum.GetValues(typeof(DayOfWeekEnum)))
         {
             var rpe = await GetRPE(leagueweek, day);
             returnDic.Add((int)day, rpe);
         }
-        return returnDic;
+        return new GetRPEWeekOutput(returnDic);
     }
 
-    public async Task<GetRPEOfaDayOutput> GetRPE(int leagueweek, DayOfWeekEnum dayofweek)
+    public async Task<GetRPEDayOutput> GetRPE(int leagueweek, DayOfWeekEnum dayofweek)
     {
         await _blobLogger.LogAsync($"Getting RPE data for league week {leagueweek} on {dayofweek}");
         var players = await _context.Players
-            .Select(p => new GetRPEOfaDayOutputPlayers(
+            .Select(p => new GetRPEDayOutputPlayers(
                 p.Id,
                 p.Name,
                 p.RPERecords
@@ -174,27 +174,27 @@ public class PlayerHelper
             ))
             .ToListAsync();
 
-        return new GetRPEOfaDayOutput(players.Where(x => x.noData == false));
+        return new GetRPEDayOutput(players.Where(x => x.noData == false));
     }
 
-    public async Task<Dictionary<int, GetWelnessOfaDayOutput>> GetWelnessOfLeagueWeek(int leagueweek)
+    public async Task<GetWelnessWeekOutput> GetWelnessOfLeagueWeek(int leagueweek)
     {
         await _blobLogger.LogAsync($"Getting wellness data for league week {leagueweek}");
-        Dictionary<int, GetWelnessOfaDayOutput> returnDic = new();
+        Dictionary<int, GetWelnessDayOutput> returnDic = new();
         foreach (DayOfWeekEnum day in Enum.GetValues(typeof(DayOfWeekEnum)))
         {
             var welness = await GetWelness(leagueweek, day);
             returnDic.Add((int)day, welness);
         }
-        return returnDic;
+        return new GetWelnessWeekOutput(returnDic);
     }
 
 
-    public async Task<GetWelnessOfaDayOutput> GetWelness(int leagueweek, DayOfWeekEnum dayofweek)
+    public async Task<GetWelnessDayOutput> GetWelness(int leagueweek, DayOfWeekEnum dayofweek)
     {
         await _blobLogger.LogAsync($"Getting wellness data for league week {leagueweek} on {dayofweek}");
         var players = await _context.Players
-            .Select(p => new GetWelnessOfaDayOutputPlayers(
+            .Select(p => new GetWelnessDayOutputPlayers(
                 p.Id,
                 p.Name,
                 p.WelnessRecords
@@ -203,7 +203,7 @@ public class PlayerHelper
             ))
             .ToListAsync();
 
-        return new GetWelnessOfaDayOutput(players.Where(x => x.noData == false));
+        return new GetWelnessDayOutput(players.Where(x => x.noData == false));
     }
 
     public async Task<List<Player>> GetAllPlayers()

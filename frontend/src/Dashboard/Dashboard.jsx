@@ -8,6 +8,7 @@ import Select from "react-select";
 import { useRef, useState, useEffect } from "react";
 import ApiClient from "../Helpers/ApiClient";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
+import WeekTableWelness from "../WeekTable/WeekTableWelness";
 
 export default function Dashboard({ type }) {
   const dayDictionary = useRef({
@@ -41,11 +42,11 @@ export default function Dashboard({ type }) {
       try {
         setIsLoading(true);
         const data = await ApiClient.get(`get-${type}/${selectedWeek.value}`);
-        setDayData(data);
+        setDayData(data); // Save the entire response object
         if (type === "welness") {
-          setChartData(calculateWelnessCharts(data));
+          setChartData(calculateWelnessCharts(data.days)); // Use .days here
         } else if (type === "rpe") {
-          setChartData(calculateRPECharts(data));
+          setChartData(calculateRPECharts(data.days)); // Use the entire object if needed
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -110,39 +111,51 @@ export default function Dashboard({ type }) {
           {type === "rpe" && <BarChartRPE chartData={chartData} />}
         </Col>
       </Row>
-
-      <Row className="d-flex align-items-stretch">
-        {Object.entries(dayDictionary.current).map(([key, day]) => (
-          <Col
-            key={`${selectedWeek.value}-${key}`}
-            xs={12}
-            sm={6}
-            md={4}
-            lg={4}
-            className="mb-4 d-flex"
-          >
-            {dayData[key] &&
-              (type === "welness" ? (
-                <DayTableWelness
-                  key={`${selectedWeek.value}-${key}`}
-                  day={day}
-                  weekKey={selectedWeek.value}
-                  dayKey={key}
-                  fetcheddata={dayData[key]}
-                  setWasUpdated={setWasUpdated}
-                />
-              ) : (
-                <DayTableRPE
-                  key={`${selectedWeek.value}-${key}`}
-                  day={day}
-                  weekKey={selectedWeek.value}
-                  dayKey={key}
-                  fetcheddata={dayData[key]}
-                  setWasUpdated={setWasUpdated}
-                />
-              ))}
+      {type === "welness" && (
+        <Row>
+          <Col>
+            <WeekTableWelness
+              data={dayData.days}
+              dayDictionary={dayDictionary.current}
+              totalWeekWelness={dayData.totalWeekWelness}
+              averageThree={dayData.averageThree}
+            />
           </Col>
-        ))}
+        </Row>
+      )}
+      <Row className="d-flex align-items-stretch">
+        {dayData.days &&
+          Object.entries(dayDictionary.current).map(([key, day]) => (
+            <Col
+              key={`${selectedWeek.value}-${key}`}
+              xs={12}
+              sm={6}
+              md={4}
+              lg={4}
+              className="mb-4 d-flex"
+            >
+              {dayData.days[key] &&
+                (type === "welness" ? (
+                  <DayTableWelness
+                    key={`${selectedWeek.value}-${key}`}
+                    day={day}
+                    weekKey={selectedWeek.value}
+                    dayKey={key}
+                    fetcheddata={dayData.days[key]}
+                    setWasUpdated={setWasUpdated}
+                  />
+                ) : (
+                  <DayTableRPE
+                    key={`${selectedWeek.value}-${key}`}
+                    day={day}
+                    weekKey={selectedWeek.value}
+                    dayKey={key}
+                    fetcheddata={dayData.days[key]}
+                    setWasUpdated={setWasUpdated}
+                  />
+                ))}
+            </Col>
+          ))}
       </Row>
     </Container>
   );

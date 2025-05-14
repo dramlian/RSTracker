@@ -60,7 +60,7 @@ function DayTableWelness({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
         </Col>
       </Row>
       <Row>
-        <Col>
+        <Col className="text-center">
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -86,7 +86,7 @@ function DayTableWelness({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
         </Col>
       </Row>
 
-      <Row className="mt-3">
+      <Row className="mt-3 text-center">
         <Col>
           <Table bordered striped>
             <tbody>
