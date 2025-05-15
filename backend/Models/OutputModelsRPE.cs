@@ -3,9 +3,26 @@ namespace RSTracker.Models;
 public class GetRPEWeekOutput
 {
     public Dictionary<int, GetRPEDayOutput> days { get; set; }
+
+    public double totalWeekVolume { get; set; }
+    public double totalWeekIntensity { get; set; }
+    public double totalWeekRpe { get; set; }
+    public Dictionary<int, int> norms { get; set; }
     public GetRPEWeekOutput(Dictionary<int, GetRPEDayOutput> days)
     {
         this.days = days;
+        this.totalWeekVolume = Math.Round(days.Values.Sum(x => x.volume) / (double)days.Count, 2);
+        this.totalWeekIntensity = Math.Round(days.Values.Sum(x => x.intensity) / (double)days.Count, 2);
+        this.norms = new Dictionary<int, int>{
+            { 1, 300 },
+            { 2, 600 },
+            { 3, 580 },
+            { 4, 110 },
+            { 5, 220 },
+            { 6, 760 },
+            { 7, 0 }
+        };
+        this.totalWeekRpe = Math.Round(days.Values.Sum(x => x.totalAverage), 2);
     }
 }
 

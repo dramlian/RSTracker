@@ -9,6 +9,7 @@ import { useRef, useState, useEffect } from "react";
 import ApiClient from "../Helpers/ApiClient";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
 import WeekTableWelness from "../WeekTable/WeekTableWelness";
+import WeekTableRpe from "../WeekTable/WeekTableRpe";
 
 export default function Dashboard({ type }) {
   const dayDictionary = useRef({
@@ -42,11 +43,11 @@ export default function Dashboard({ type }) {
       try {
         setIsLoading(true);
         const data = await ApiClient.get(`get-${type}/${selectedWeek.value}`);
-        setDayData(data); // Save the entire response object
+        setDayData(data);
         if (type === "welness") {
-          setChartData(calculateWelnessCharts(data.days)); // Use .days here
+          setChartData(calculateWelnessCharts(data.days));
         } else if (type === "rpe") {
-          setChartData(calculateRPECharts(data.days)); // Use the entire object if needed
+          setChartData(calculateRPECharts(data.days));
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -111,7 +112,7 @@ export default function Dashboard({ type }) {
           {type === "rpe" && <BarChartRPE chartData={chartData} />}
         </Col>
       </Row>
-      {type === "welness" && (
+      {type === "welness" ? (
         <Row>
           <Col>
             <WeekTableWelness
@@ -122,7 +123,20 @@ export default function Dashboard({ type }) {
             />
           </Col>
         </Row>
-      )}
+      ) : type === "rpe" ? (
+        <Row>
+          <Col>
+            <WeekTableRpe
+              data={dayData.days}
+              dayDictionary={dayDictionary.current}
+              totalWeekVolume={dayData.totalWeekVolume}
+              totalWeekIntensity={dayData.totalWeekIntensity}
+              totalWeekRpe={dayData.totalWeekRpe}
+              norms={dayData.norms}
+            />
+          </Col>
+        </Row>
+      ) : null}
       <Row className="d-flex align-items-stretch">
         {dayData.days &&
           Object.entries(dayDictionary.current).map(([key, day]) => (
