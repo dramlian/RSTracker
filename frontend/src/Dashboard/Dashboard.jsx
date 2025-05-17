@@ -96,52 +96,54 @@ export default function Dashboard({ type }) {
   return (
     <Container fluid>
       <LoadingScreen isLoading={isLoading} />
-      <Row className="align-items-center justify-content-center mt-4">
-        <Col xs={12}>
-          <Select
-            options={weekOptions}
-            value={selectedWeek}
-            onChange={setSelectedWeek}
-            placeholder="Select a week"
-          />
-        </Col>
-      </Row>
+      <div className="p-5 pt-3">
+        <Row className="align-items-center justify-content-center mb-4">
+          <Col xs={12}>
+            <Select
+              options={weekOptions}
+              value={selectedWeek}
+              onChange={setSelectedWeek}
+              placeholder="Select a week"
+            />
+          </Col>
+        </Row>
 
-      <Row className="justify-content-center">
-        <Col>
-          {type === "welness" && <BarChartWelness chartData={chartData} />}
-          {type === "rpe" && (
-            <>
-              <BarChartRPE chartData={chartData} /> <HorizontalLineChart />{" "}
-            </>
-          )}
-        </Col>
-      </Row>
-      {type === "welness" ? (
-        <Row>
+        <Row className="justify-content-center">
           <Col>
-            <WeekTableWelness
-              data={dayData.days}
-              dayDictionary={dayDictionary.current}
-              totalWeekWelness={dayData.totalWeekWelness}
-              averageThree={dayData.averageThree}
-            />
+            {type === "welness" && <BarChartWelness chartData={chartData} />}
+            {type === "rpe" && (
+              <>
+                <BarChartRPE chartData={chartData} /> <HorizontalLineChart />{" "}
+              </>
+            )}
           </Col>
         </Row>
-      ) : type === "rpe" ? (
-        <Row>
-          <Col>
-            <WeekTableRpe
-              data={dayData.days}
-              dayDictionary={dayDictionary.current}
-              totalWeekVolume={dayData.totalWeekVolume}
-              totalWeekIntensity={dayData.totalWeekIntensity}
-              totalWeekRpe={dayData.totalWeekRpe}
-              norms={dayData.norms}
-            />
-          </Col>
-        </Row>
-      ) : null}
+        {type === "welness" ? (
+          <Row>
+            <Col>
+              <WeekTableWelness
+                data={dayData.days}
+                dayDictionary={dayDictionary.current}
+                totalWeekWelness={dayData.totalWeekWelness}
+                averageThree={dayData.averageThree}
+              />
+            </Col>
+          </Row>
+        ) : type === "rpe" ? (
+          <Row>
+            <Col>
+              <WeekTableRpe
+                data={dayData.days}
+                dayDictionary={dayDictionary.current}
+                totalWeekVolume={dayData.totalWeekVolume}
+                totalWeekIntensity={dayData.totalWeekIntensity}
+                totalWeekRpe={dayData.totalWeekRpe}
+                norms={dayData.norms}
+              />
+            </Col>
+          </Row>
+        ) : null}
+      </div>
       <Row className="d-flex align-items-stretch">
         {dayData.days &&
           Object.entries(dayDictionary.current).map(([key, day]) => (
