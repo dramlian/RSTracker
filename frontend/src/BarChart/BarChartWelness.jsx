@@ -8,8 +8,16 @@ import {
   Legend,
 } from "chart.js";
 import { useState, useEffect } from "react";
+import DataLabelsPlugin from "chartjs-plugin-datalabels";
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+ChartJS.register(
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+  DataLabelsPlugin
+);
 
 export default function BarChartWelness({ chartData }) {
   const [fontSize, setFontSize] = useState(13);
@@ -59,6 +67,14 @@ export default function BarChartWelness({ chartData }) {
         beginAtZero: true,
         ticks: {
           display: false,
+        },
+      },
+      x: {
+        ticks: {
+          color: "#000",
+          font: {
+            size: fontSize,
+          },
         },
       },
     },

@@ -75,6 +75,14 @@ export default function BarChartRPE({ chartData }) {
           display: false,
         },
       },
+      x: {
+        ticks: {
+          color: "#000",
+          font: {
+            size: fontSize,
+          },
+        },
+      },
     },
   };
 

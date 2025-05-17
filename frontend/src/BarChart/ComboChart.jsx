@@ -88,6 +88,14 @@ const ComboChart = () => {
           display: false,
         },
       },
+      x: {
+        ticks: {
+          color: "#000",
+          font: {
+            size: fontSize,
+          },
+        },
+      },
     },
   };
 
