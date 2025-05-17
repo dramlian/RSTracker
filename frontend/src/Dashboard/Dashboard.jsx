@@ -97,7 +97,7 @@ export default function Dashboard({ type }) {
     <Container fluid>
       <LoadingScreen isLoading={isLoading} />
       <div className="p-5 pt-3">
-        <Row className="align-items-center justify-content-center mb-4">
+        <Row className="align-items-center justify-content-center">
           <Col xs={12}>
             <Select
               options={weekOptions}
@@ -108,16 +108,6 @@ export default function Dashboard({ type }) {
           </Col>
         </Row>
 
-        <Row className="justify-content-center">
-          <Col>
-            {type === "welness" && <BarChartWelness chartData={chartData} />}
-            {type === "rpe" && (
-              <>
-                <BarChartRPE chartData={chartData} /> <HorizontalLineChart />{" "}
-              </>
-            )}
-          </Col>
-        </Row>
         {type === "welness" ? (
           <Row>
             <Col>
@@ -143,6 +133,17 @@ export default function Dashboard({ type }) {
             </Col>
           </Row>
         ) : null}
+
+        <Row className="justify-content-center">
+          <Col>
+            {type === "welness" && <BarChartWelness chartData={chartData} />}
+            {type === "rpe" && (
+              <>
+                <BarChartRPE chartData={chartData} /> <HorizontalLineChart />{" "}
+              </>
+            )}
+          </Col>
+        </Row>
       </div>
       <Row className="d-flex align-items-stretch">
         {dayData.days &&
