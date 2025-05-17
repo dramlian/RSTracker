@@ -27,9 +27,9 @@ ChartJS.register(
   DataLabelsPlugin
 );
 
-const ComboChart = () => {
+const ComboChartRPE = ({ dayDictionary, norms, averages }) => {
   const [fontSize, setFontSize] = useState(13);
-  const labels = ["January", "February", "March", "April", "May", "June"];
+  const labels = Object.values(dayDictionary);
 
   useEffect(() => {
     const handleResize = () => {
@@ -48,7 +48,7 @@ const ComboChart = () => {
       {
         type: "bar",
         label: "Monthly Sales",
-        data: [65, 59, 80, 81, 56, 55],
+        data: averages ? Object.values(averages) : [],
         backgroundColor: "rgba(54, 162, 235, 0.5)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
@@ -56,7 +56,7 @@ const ComboChart = () => {
       {
         type: "line",
         label: "Target Line",
-        data: [75, 59, 80, 81, 56, 55],
+        data: norms ? Object.values(norms) : [],
         borderColor: "#FF0000",
         borderWidth: 2,
         borderDash: [],
@@ -108,4 +108,4 @@ const ComboChart = () => {
   );
 };
 
-export default ComboChart;
+export default ComboChartRPE;

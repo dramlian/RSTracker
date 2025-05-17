@@ -8,6 +8,7 @@ public class GetRPEWeekOutput
     public double totalWeekIntensity { get; set; }
     public double totalWeekRpe { get; set; }
     public Dictionary<int, int> norms { get; set; }
+    public Dictionary<int, double> totalWeekAverages { get; set; }
     public GetRPEWeekOutput(Dictionary<int, GetRPEDayOutput> days)
     {
         this.days = days;
@@ -23,6 +24,7 @@ public class GetRPEWeekOutput
             { 7, 0 }
         };
         this.totalWeekRpe = Math.Round(days.Values.Sum(x => x.totalAverage), 2);
+        this.totalWeekAverages = days.ToDictionary(x => x.Key, y => y.Value.totalAverage);
     }
 }
 

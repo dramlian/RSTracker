@@ -10,7 +10,7 @@ import ApiClient from "../Helpers/ApiClient";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
 import WeekTableWelness from "../WeekTable/WeekTableWelness";
 import WeekTableRpe from "../WeekTable/WeekTableRpe";
-import HorizontalLineChart from "../BarChart/ComboChart";
+import HorizontalLineChart from "../BarChart/ComboChartRPE";
 
 export default function Dashboard({ type }) {
   const dayDictionary = useRef({
@@ -139,7 +139,12 @@ export default function Dashboard({ type }) {
             {type === "welness" && <BarChartWelness chartData={chartData} />}
             {type === "rpe" && (
               <>
-                <BarChartRPE chartData={chartData} /> <HorizontalLineChart />{" "}
+                <BarChartRPE chartData={chartData} />
+                <HorizontalLineChart
+                  dayDictionary={dayDictionary.current}
+                  norms={dayData.norms}
+                  averages={dayData.totalWeekAverages}
+                />
               </>
             )}
           </Col>
