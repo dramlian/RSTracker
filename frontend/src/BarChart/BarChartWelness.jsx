@@ -57,6 +57,9 @@ export default function BarChartWelness({ chartData }) {
     scales: {
       y: {
         beginAtZero: true,
+        ticks: {
+          display: false,
+        },
       },
     },
   };

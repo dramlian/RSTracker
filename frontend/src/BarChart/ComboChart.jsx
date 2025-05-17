@@ -84,6 +84,9 @@ const ComboChart = () => {
     scales: {
       y: {
         beginAtZero: true,
+        ticks: {
+          display: false,
+        },
       },
     },
   };

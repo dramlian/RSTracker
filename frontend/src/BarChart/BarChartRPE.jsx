@@ -72,9 +72,7 @@ export default function BarChartRPE({ chartData }) {
       y: {
         beginAtZero: true,
         ticks: {
-          callback: function (value) {
-            return value + "%";
-          },
+          display: false,
         },
       },
     },
