@@ -72,16 +72,12 @@ function InsertPage() {
   return (
     <div className="m-4">
       <Row className="mb-4">
-        <Col>
-          <Card>
-            <Card.Header className="fw-bold">Add New Player</Card.Header>
+        <Col xs={12} md={6} className="d-flex">
+          <Card className="w-100">
+            <Card.Header className="fw-bold">Add / Remove Player</Card.Header>
             <Card.Body>
               <InsertPlayer setPlayersUpdated={setPlayersUpdated} />
-            </Card.Body>
-          </Card>
-          <Card className="mt-3">
-            <Card.Header className="fw-bold">Remove Player</Card.Header>
-            <Card.Body>
+              <hr />
               <RemovePlayer
                 setPlayersUpdated={setPlayersUpdated}
                 playerOptions={playerOptions}
@@ -89,8 +85,8 @@ function InsertPage() {
             </Card.Body>
           </Card>
         </Col>
-        <Col>
-          <Card>
+        <Col xs={12} md={6} className="d-flex">
+          <Card className="w-100">
             <Card.Header className="fw-bold">List Players</Card.Header>
             <Card.Body>
               <ListPlayers playerOptions={playerOptions} />
