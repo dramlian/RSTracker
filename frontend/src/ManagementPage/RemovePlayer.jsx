@@ -36,6 +36,8 @@ function RemovePlayer({ setPlayersUpdated, playerOptions }) {
       setPlayersUpdated((prev) => !prev);
     } catch (error) {
       console.error("Failed to delete player:", error);
+    } finally {
+      setSelectedPlayer(null);
     }
   };
 
