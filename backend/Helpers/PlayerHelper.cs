@@ -152,11 +152,11 @@ public class PlayerHelper
     public async Task<GetRPEWeekOutput> GetRPEOfLeagueWeek(int leagueweek)
     {
         await _blobLogger.LogAsync($"Getting RPE data for league week {leagueweek}");
-        Dictionary<int, GetRPEDayOutput> returnDic = new();
+        Dictionary<DayOfWeekEnum, GetRPEDayOutput> returnDic = new();
         foreach (DayOfWeekEnum day in Enum.GetValues(typeof(DayOfWeekEnum)))
         {
             var rpe = await GetRPE(leagueweek, day);
-            returnDic.Add((int)day, rpe);
+            returnDic.Add(day, rpe);
         }
         return new GetRPEWeekOutput(returnDic);
     }

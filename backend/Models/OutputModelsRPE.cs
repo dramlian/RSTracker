@@ -3,28 +3,27 @@ namespace RSTracker.Models;
 public class GetRPEWeekOutput
 {
     public Dictionary<int, GetRPEDayOutput> days { get; set; }
-
     public double totalWeekVolume { get; set; }
     public double totalWeekIntensity { get; set; }
     public double totalWeekRpe { get; set; }
     public Dictionary<int, int> norms { get; set; }
     public Dictionary<int, double> totalWeekAverages { get; set; }
-    public GetRPEWeekOutput(Dictionary<int, GetRPEDayOutput> days)
+    public GetRPEWeekOutput(Dictionary<DayOfWeekEnum, GetRPEDayOutput> days)
     {
-        this.days = days;
+        this.days = days.ToDictionary(x => (int)x.Key, y => y.Value);
         this.totalWeekVolume = Math.Round(days.Values.Sum(x => x.volume) / (double)days.Count, 2);
         this.totalWeekIntensity = Math.Round(days.Values.Sum(x => x.intensity) / (double)days.Count, 2);
         this.norms = new Dictionary<int, int>{
-            { 1, 300 },
-            { 2, 600 },
-            { 3, 580 },
-            { 4, 110 },
-            { 5, 220 },
-            { 6, 760 },
-            { 7, 0 }
+            { (int)DayOfWeekEnum.Monday, 300 },
+            { (int)DayOfWeekEnum.Tuesday, 600 },
+            { (int)DayOfWeekEnum.Wednesday, 580 },
+            { (int)DayOfWeekEnum.Thursday, 110 },
+            { (int)DayOfWeekEnum.Friday, 220 },
+            { (int)DayOfWeekEnum.Saturday, 760 },
+            { (int)DayOfWeekEnum.Sunday, 0 }
         };
         this.totalWeekRpe = Math.Round(days.Values.Sum(x => x.totalAverage), 2);
-        this.totalWeekAverages = days.ToDictionary(x => x.Key, y => y.Value.totalAverage);
+        this.totalWeekAverages = days.ToDictionary(x => (int)x.Key, y => y.Value.totalAverage);
     }
 }
 
