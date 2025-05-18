@@ -4,13 +4,15 @@ import Select from "react-select";
 import AddEntryFormRPE from "../AddEntryForm/AddEntryFormRPE";
 import AddEntryFormWellness from "../AddEntryForm/AddEntryFormWellness";
 import ApiClient from "../Helpers/ApiClient";
+import InsertPlayer from "./InsertPlayer";
 
 function InsertPage() {
   const [selectedWeek, setSelectedWeek] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
-
   const [playerOptions, setPlayerOptions] = useState([]);
+  const [playersUpdated, setPlayersUpdated] = useState(false);
+
   const rpeFormRef = useRef();
   const wellnessFormRef = useRef();
 
@@ -47,7 +49,7 @@ function InsertPage() {
     fetchPlayers();
     setSelectedWeek(weekOptions[0]);
     setSelectedDay(dayOptions[0]);
-  }, []);
+  }, [playersUpdated]);
 
   const handleSaveRPE = () => {
     rpeFormRef.current?.submitForm(
@@ -67,6 +69,17 @@ function InsertPage() {
 
   return (
     <div className="m-4">
+      <Row className="mb-4">
+        <Col>
+          <Card>
+            <Card.Header className="fw-bold">Add New Player</Card.Header>
+            <Card.Body>
+              <InsertPlayer setPlayersUpdated={setPlayersUpdated} />
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
       <Row className="mb-4">
         <Col md={4}>
           <label>Select Week</label>
