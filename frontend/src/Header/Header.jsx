@@ -25,8 +25,8 @@ export default function Header() {
                 <Nav.Link as={Link} to="/">
                   HomePage
                 </Nav.Link>
-                <Nav.Link as={Link} to="/insert">
-                  Insert
+                <Nav.Link as={Link} to="/management">
+                  Management
                 </Nav.Link>
                 <Nav.Link as={Link} to="/rpe">
                   RPE Dashboard

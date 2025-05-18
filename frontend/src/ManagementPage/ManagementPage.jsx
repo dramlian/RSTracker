@@ -8,7 +8,7 @@ import InsertPlayer from "./InsertPlayer";
 import RemovePlayer from "./RemovePlayer";
 import ListPlayers from "./ListPlayers";
 
-function InsertPage() {
+function ManagementPage() {
   const [selectedWeek, setSelectedWeek] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
@@ -172,4 +172,4 @@ function InsertPage() {
   );
 }
 
-export default InsertPage;
+export default ManagementPage;
