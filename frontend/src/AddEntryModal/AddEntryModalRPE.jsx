@@ -11,6 +11,7 @@ function AddEntryModalRPE({
   weekKey,
   dayKey,
   setWasUpdated,
+  dayString,
 }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [options, setOptions] = useState([]);
@@ -60,7 +61,9 @@ function AddEntryModalRPE({
     <Modal show={show} onHide={handleClose}>
       <LoadingScreen isLoading={isLoading} />
       <Modal.Header closeButton>
-        <Modal.Title>Add RPE Entry</Modal.Title>
+        <Modal.Title>
+          Add RPE in week {weekKey}, day {dayString}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form.Group className="mb-3">

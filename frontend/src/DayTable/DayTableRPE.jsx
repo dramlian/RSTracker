@@ -5,7 +5,6 @@ import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
 
 function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
   const [data, setData] = useState([]);
-  const [summary, setSummary] = useState({});
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -106,6 +105,7 @@ function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
         weekKey={weekKey}
         dayKey={dayKey}
         setWasUpdated={setWasUpdated}
+        dayString={day}
       />
       <DeleteEntryModal
         show={showDeleteModal}

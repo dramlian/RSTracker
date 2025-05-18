@@ -121,6 +121,7 @@ function DayTableWelness({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
         weekKey={weekKey}
         dayKey={dayKey}
         setWasUpdated={setWasUpdated}
+        dayString={day}
       />
       <DeleteEntryModal
         show={showDeleteModal}
