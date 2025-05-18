@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace RSTracker.Helpers;
+
 public class PlayerHelper
 {
     private readonly PlayerDbContext _context;
@@ -180,11 +181,11 @@ public class PlayerHelper
     public async Task<GetWelnessWeekOutput> GetWelnessOfLeagueWeek(int leagueweek)
     {
         await _blobLogger.LogAsync($"Getting wellness data for league week {leagueweek}");
-        Dictionary<int, GetWelnessDayOutput> returnDic = new();
+        Dictionary<DayOfWeekEnum, GetWelnessDayOutput> returnDic = new();
         foreach (DayOfWeekEnum day in Enum.GetValues(typeof(DayOfWeekEnum)))
         {
             var welness = await GetWelness(leagueweek, day);
-            returnDic.Add((int)day, welness);
+            returnDic.Add(day, welness);
         }
         return new GetWelnessWeekOutput(returnDic);
     }
