@@ -71,100 +71,103 @@ function InsertPage() {
 
   return (
     <div className="m-4">
-      <Row className="mb-4">
-        <Col xs={12} md={6} className="d-flex">
-          <Card className="w-100">
-            <Card.Header className="fw-bold">Add / Remove Player</Card.Header>
-            <Card.Body>
-              <InsertPlayer setPlayersUpdated={setPlayersUpdated} />
-              <hr />
-              <RemovePlayer
-                setPlayersUpdated={setPlayersUpdated}
-                playerOptions={playerOptions}
-              />
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col xs={12} md={6} className="d-flex">
-          <Card className="w-100">
-            <Card.Header className="fw-bold">List Players</Card.Header>
-            <Card.Body>
-              <ListPlayers playerOptions={playerOptions} />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+      <div className="mb-4 border rounded shadow-sm bg-white p-3">
+        <Row>
+          <Col xs={12} md={6} className="d-flex">
+            <Card className="w-100">
+              <Card.Header className="fw-bold">Add / Remove Player</Card.Header>
+              <Card.Body>
+                <InsertPlayer setPlayersUpdated={setPlayersUpdated} />
+                <hr />
+                <RemovePlayer
+                  setPlayersUpdated={setPlayersUpdated}
+                  playerOptions={playerOptions}
+                />
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col xs={12} md={6} className="d-flex">
+            <Card className="w-100">
+              <Card.Header className="fw-bold">List Players</Card.Header>
+              <Card.Body>
+                <ListPlayers playerOptions={playerOptions} />
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+      <div className="mb-4 border rounded shadow-sm bg-white p-3">
+        <Row className="mb-4">
+          <Col md={4}>
+            <label>Select Week</label>
+            <Select
+              value={selectedWeek}
+              onChange={setSelectedWeek}
+              options={weekOptions}
+              placeholder="Choose a week"
+            />
+          </Col>
+          <Col md={4}>
+            <label>Select Day</label>
+            <Select
+              value={selectedDay}
+              onChange={setSelectedDay}
+              options={dayOptions}
+              placeholder="Choose a day"
+            />
+          </Col>
+          <Col md={4}>
+            <label>Select Player</label>
+            <Select
+              value={selectedPlayer}
+              onChange={setSelectedPlayer}
+              options={playerOptions}
+              placeholder="Choose a player"
+              isSearchable
+            />
+          </Col>
+        </Row>
 
-      <Row className="mb-4">
-        <Col md={4}>
-          <label>Select Week</label>
-          <Select
-            value={selectedWeek}
-            onChange={setSelectedWeek}
-            options={weekOptions}
-            placeholder="Choose a week"
-          />
-        </Col>
-        <Col md={4}>
-          <label>Select Day</label>
-          <Select
-            value={selectedDay}
-            onChange={setSelectedDay}
-            options={dayOptions}
-            placeholder="Choose a day"
-          />
-        </Col>
-        <Col md={4}>
-          <label>Select Player</label>
-          <Select
-            value={selectedPlayer}
-            onChange={setSelectedPlayer}
-            options={playerOptions}
-            placeholder="Choose a player"
-            isSearchable
-          />
-        </Col>
-      </Row>
-
-      <Row className="align-items-stretch">
-        <Col md={6}>
-          <Card className="h-100">
-            <Card.Header className="fw-bold">RPE Entry</Card.Header>
-            <Card.Body className="p-3">
-              <AddEntryFormRPE ref={rpeFormRef} onSave={handleSaveRPE} />
-            </Card.Body>
-            <Card.Footer>
-              <Button
-                variant="btn btn-outline-primary"
-                onClick={handleSaveRPE}
-                className="w-100"
-              >
-                Submit
-              </Button>
-            </Card.Footer>
-          </Card>
-        </Col>
-        <Col md={6}>
-          <Card className="h-100">
-            <Card.Header className="fw-bold">Wellness Entry</Card.Header>
-            <Card.Body className="p-3">
-              <AddEntryFormWellness
-                ref={wellnessFormRef}
-                onSave={handleSaveWellness}
-              />
-            </Card.Body>
-            <Card.Footer>
-              <Button
-                variant="btn btn-outline-primary"
-                onClick={handleSaveWellness}
-                className="w-100"
-              >
-                Submit
-              </Button>
-            </Card.Footer>
-          </Card>
-        </Col>
-      </Row>
+        <Row className="align-items-stretch">
+          <Col md={6}>
+            <Card className="h-100">
+              <Card.Header className="fw-bold">RPE Entry</Card.Header>
+              <Card.Body className="p-3">
+                <AddEntryFormRPE ref={rpeFormRef} onSave={handleSaveRPE} />
+              </Card.Body>
+              <Card.Footer>
+                <Button
+                  variant="btn btn-outline-primary"
+                  onClick={handleSaveRPE}
+                  className="w-100"
+                >
+                  Submit
+                </Button>
+              </Card.Footer>
+            </Card>
+          </Col>
+          <Col md={6}>
+            <Card className="h-100">
+              <Card.Header className="fw-bold">Wellness Entry</Card.Header>
+              <Card.Body className="p-3">
+                <AddEntryFormWellness
+                  ref={wellnessFormRef}
+                  onSave={handleSaveWellness}
+                />
+              </Card.Body>
+              <Card.Footer>
+                <Button
+                  variant="btn btn-outline-primary"
+                  onClick={handleSaveWellness}
+                  className="w-100"
+                >
+                  Submit
+                </Button>
+              </Card.Footer>
+            </Card>
+          </Col>
+        </Row>
+      </div>
     </div>
   );
 }
