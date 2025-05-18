@@ -52,7 +52,15 @@ export default function BarChartWelness({ chartData }) {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
+        display: true,
+        position: "bottom",
+      },
+      title: {
+        display: true,
+        text: "Wellness Bar Chart",
+        font: {
+          size: 18,
+        },
       },
       datalabels: {
         display: true,

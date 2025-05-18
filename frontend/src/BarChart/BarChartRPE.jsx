@@ -55,7 +55,15 @@ export default function BarChartRPE({ chartData }) {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
+        display: true,
+        position: "bottom",
+      },
+      title: {
+        display: true,
+        text: "RPE Bar Chart",
+        font: {
+          size: 18,
+        },
       },
       datalabels: {
         display: true,

@@ -47,7 +47,7 @@ const ComboChartRPE = ({ dayDictionary, norms, averages }) => {
     datasets: [
       {
         type: "bar",
-        label: "Monthly Sales",
+        label: "RPE",
         data: averages ? Object.values(averages) : [],
         backgroundColor: "rgba(54, 162, 235, 0.5)",
         borderColor: "rgba(54, 162, 235, 1)",
@@ -55,7 +55,7 @@ const ComboChartRPE = ({ dayDictionary, norms, averages }) => {
       },
       {
         type: "line",
-        label: "Target Line",
+        label: "Norms",
         data: norms ? Object.values(norms) : [],
         borderColor: "#FF0000",
         borderWidth: 2,
@@ -71,7 +71,15 @@ const ComboChartRPE = ({ dayDictionary, norms, averages }) => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
+        display: true,
+        position: "bottom",
+      },
+      title: {
+        display: true,
+        text: "RPE Bar Chart",
+        font: {
+          size: 18,
+        },
       },
       datalabels: {
         display: true,
