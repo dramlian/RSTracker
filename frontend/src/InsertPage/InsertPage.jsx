@@ -5,6 +5,7 @@ import AddEntryFormRPE from "../AddEntryForm/AddEntryFormRPE";
 import AddEntryFormWellness from "../AddEntryForm/AddEntryFormWellness";
 import ApiClient from "../Helpers/ApiClient";
 import InsertPlayer from "./InsertPlayer";
+import RemovePlayer from "./RemovePlayer";
 
 function InsertPage() {
   const [selectedWeek, setSelectedWeek] = useState(null);
@@ -75,6 +76,14 @@ function InsertPage() {
             <Card.Header className="fw-bold">Add New Player</Card.Header>
             <Card.Body>
               <InsertPlayer setPlayersUpdated={setPlayersUpdated} />
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <Card>
+            <Card.Header className="fw-bold">Remove Player</Card.Header>
+            <Card.Body>
+              <RemovePlayer setPlayersUpdated={setPlayersUpdated} playerOptions={playerOptions}/>
             </Card.Body>
           </Card>
         </Col>
