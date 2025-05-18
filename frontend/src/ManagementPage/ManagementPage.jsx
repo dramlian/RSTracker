@@ -80,7 +80,7 @@ function ManagementPage() {
 
   return (
     <>
-      <LoadingScreen isLoading={loading} />;
+      <LoadingScreen isLoading={loading} />
       <div className="m-4">
         <div className="mb-4 border rounded shadow-sm bg-white p-3">
           <Row>
