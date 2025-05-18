@@ -6,12 +6,12 @@ import ApiClient from "../Helpers/ApiClient";
 function RemovePlayer({ setPlayersUpdated, playerOptions }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [options, setOptions] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
         setOptions(playerOptions);
-        setSelectedPlayer(playerOptions[0]);
       } catch (error) {
         console.error("Failed to fetch players:", error);
       }
@@ -22,12 +22,13 @@ function RemovePlayer({ setPlayersUpdated, playerOptions }) {
 
   const handleDropdownChange = (selectedOption) => {
     setSelectedPlayer(selectedOption);
+    setErrorMessage("");
   };
 
   const handleDelete = async () => {
     try {
       if (!selectedPlayer) {
-        console.error("No player selected for deletion.");
+        setErrorMessage("Please select a player to remove.");
         return;
       }
       const suffix = `delete/${selectedPlayer.value}`;
@@ -50,10 +51,10 @@ function RemovePlayer({ setPlayersUpdated, playerOptions }) {
           placeholder="Search and select a player"
         />
       </Form.Group>
+      {errorMessage && <div className="text-danger mb-3">{errorMessage}</div>}
       <Button
         variant="btn btn-outline-danger"
         onClick={handleDelete}
-        disabled={!selectedPlayer}
         className="w-100"
       >
         Remove Player
