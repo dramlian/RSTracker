@@ -29,7 +29,6 @@ function InsertPlayer({ setPlayersUpdated }) {
     e.preventDefault();
     const newErrors = {};
 
-    // Validation
     if (!formData.name.trim()) {
       newErrors.name = "Name cannot be empty.";
     }
@@ -142,7 +141,11 @@ function InsertPlayer({ setPlayersUpdated }) {
             {errors.height}
           </Form.Control.Feedback>
         </Form.Group>
-        <Button variant="primary" type="submit">
+        <Button
+          variant="btn btn-outline-primary"
+          type="submit"
+          className="w-100"
+        >
           Add Player
         </Button>
       </Form>

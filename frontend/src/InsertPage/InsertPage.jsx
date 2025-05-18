@@ -134,7 +134,11 @@ function InsertPage() {
               <AddEntryFormRPE ref={rpeFormRef} onSave={handleSaveRPE} />
             </Card.Body>
             <Card.Footer>
-              <Button variant="primary" onClick={handleSaveRPE}>
+              <Button
+                variant="btn btn-outline-primary"
+                onClick={handleSaveRPE}
+                className="w-100"
+              >
                 Submit
               </Button>
             </Card.Footer>
@@ -150,7 +154,11 @@ function InsertPage() {
               />
             </Card.Body>
             <Card.Footer>
-              <Button variant="primary" onClick={handleSaveWellness}>
+              <Button
+                variant="btn btn-outline-primary"
+                onClick={handleSaveWellness}
+                className="w-100"
+              >
                 Submit
               </Button>
             </Card.Footer>

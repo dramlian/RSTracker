@@ -51,9 +51,10 @@ function RemovePlayer({ setPlayersUpdated, playerOptions }) {
         />
       </Form.Group>
       <Button
-        variant="danger"
+        variant="btn btn-outline-danger"
         onClick={handleDelete}
         disabled={!selectedPlayer}
+        className="w-100"
       >
         Remove Player
       </Button>
