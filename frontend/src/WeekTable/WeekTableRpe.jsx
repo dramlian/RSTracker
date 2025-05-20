@@ -51,7 +51,7 @@ export default function WeekTableRpe({
               <td>
                 <strong>Total Weekly Volume</strong>
               </td>
-              <td>{totalWeekVolume || "N/A"}</td>
+              <td>{totalWeekVolume || "N/A"} %</td>
             </tr>
             <tr>
               <td>
@@ -63,7 +63,7 @@ export default function WeekTableRpe({
               <td>
                 <strong>Total Weekly RPE</strong>
               </td>
-              <td>{totalWeekRpe || "N/A"} %</td>
+              <td>{totalWeekRpe || "N/A"}</td>
             </tr>
           </tbody>
         </Table>

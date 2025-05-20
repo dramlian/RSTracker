@@ -130,6 +130,7 @@ function DayTableWelness({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
         dayKey={dayKey}
         type="welness"
         setWasUpdated={setWasUpdated}
+        dayString={day}
       />
     </Container>
   );

@@ -76,7 +76,7 @@ const ComboChartRPE = ({ dayDictionary, norms, averages }) => {
       },
       title: {
         display: true,
-        text: "RPE Bar Chart",
+        text: "RPE Norm Bar Chart",
         font: {
           size: 18,
         },

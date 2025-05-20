@@ -114,6 +114,7 @@ function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
         dayKey={dayKey}
         type="rpe"
         setWasUpdated={setWasUpdated}
+        dayString={day}
       />
     </Container>
   );

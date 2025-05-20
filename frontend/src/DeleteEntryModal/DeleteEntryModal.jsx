@@ -11,6 +11,7 @@ function DeleteEntryModal({
   dayKey,
   type,
   setWasUpdated,
+  dayString,
 }) {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [options, setOptions] = useState([]);
@@ -57,7 +58,9 @@ function DeleteEntryModal({
     <Modal show={show} onHide={handleClose}>
       <LoadingScreen isLoading={isLoading} />
       <Modal.Header closeButton>
-        <Modal.Title>Delete Entry</Modal.Title>
+        <Modal.Title>
+          Delete Entry in week {weekKey}, day {dayString}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form.Group className="mb-3">
