@@ -36,9 +36,9 @@ namespace RSTracker.Controllers
         }
 
         [HttpDelete("delete-welness/{playerId}")]
-        public async Task<IActionResult> DeleteWelness(int playerId, DayOfWeekEnum dayOfWeek, int LeagueWeek)
+        public async Task<IActionResult> DeleteWelness(int playerId, DateOnly dateTarget)
         {
-            await _playerHelper.DeleteWelness(playerId, dayOfWeek, LeagueWeek);
+            await _playerHelper.DeleteWelness(playerId, dateTarget);
             return Ok(new { message = "Wellness data deleted successfully." });
         }
 
@@ -50,23 +50,23 @@ namespace RSTracker.Controllers
         }
 
         [HttpDelete("delete-rpe/{playerId}")]
-        public async Task<IActionResult> DeleteRPE(int playerId, DayOfWeekEnum dayOfWeek, int LeagueWeek)
+        public async Task<IActionResult> DeleteRPE(int playerId, DateOnly dateTarget)
         {
-            await _playerHelper.DeleteRPE(playerId, dayOfWeek, LeagueWeek);
+            await _playerHelper.DeleteRPE(playerId, dateTarget);
             return Ok(new { message = "RPE data deleted successfully." });
         }
 
         [HttpGet("get-rpe/{leagueweek}")]
-        public async Task<IActionResult> GetRpeOfLeagueWeek(int leagueweek)
+        public async Task<IActionResult> GetRpeOfLeagueWeek(DateOnly startDate)
         {
-            var rpe = await _playerHelper.GetRPEOfLeagueWeek(leagueweek);
+            var rpe = await _playerHelper.GetRPEOfLeagueWeek(startDate);
             return Ok(rpe);
         }
 
         [HttpGet("get-welness/{leagueweek}")]
-        public async Task<IActionResult> GetWelnessOfLeagueWeek(int leagueweek)
+        public async Task<IActionResult> GetWelnessOfLeagueWeek(DateOnly startDate)
         {
-            var welness = await _playerHelper.GetWelnessOfLeagueWeek(leagueweek);
+            var welness = await _playerHelper.GetWelnessOfLeagueWeek(startDate);
             return Ok(welness);
         }
 

@@ -22,19 +22,15 @@ namespace RSTracker.Models
         public int SleepStatus { get; set; }
 
         [Range(1, 52, ErrorMessage = "Value must be between 1 and 52.")]
-        public int LeagueWeek { get; set; }
         public DateOnly Date { get; set; }
-        public DayOfWeekEnum DayOfWeek { get; set; }
 
-        public Welness(int muscleStatus, int recoveryStatus, int stressStatus, int sleepStatus, DateOnly date, int leagueWeek, DayOfWeekEnum dayOfWeek)
+        public Welness(int muscleStatus, int recoveryStatus, int stressStatus, int sleepStatus, DateOnly date)
         {
             MuscleStatus = muscleStatus;
             RecoveryStatus = recoveryStatus;
             StressStatus = stressStatus;
             SleepStatus = sleepStatus;
-            LeagueWeek = leagueWeek;
             Date = date;
-            DayOfWeek = dayOfWeek;
         }
     }
 }

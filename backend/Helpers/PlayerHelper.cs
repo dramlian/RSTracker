@@ -54,10 +54,10 @@ public class PlayerHelper
             throw new KeyNotFoundException("Player not found.");
         }
 
-
         Welness? welnessRecord = player.WelnessRecords
-            .Where(x => x.DayOfWeek.Equals(input.DayOfWeek) && x.LeagueWeek.Equals(input.LeagueWeek))
+            .Where(x => x.Date.Equals(input.Date))
             .FirstOrDefault();
+
         if (welnessRecord != null)
         {
             _context.WelnessRecords.Remove(welnessRecord);
@@ -67,16 +67,15 @@ public class PlayerHelper
         Welness newWelness = new Welness
             (input.MuscleStatus, input.RecoveryStatus,
             input.StressStatus, input.SleepStatus,
-            input.Date, input.LeagueWeek,
-            input.DayOfWeek);
+            input.Date);
 
         player.AddWelnessRecord(newWelness);
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteWelness(int playerId, DayOfWeekEnum dayOfWeek, int LeagueWeek)
+    public async Task DeleteWelness(int playerId, DateOnly dateTarget)
     {
-        await _blobLogger.LogAsync($"Deleting wellness data for player {playerId} on {dayOfWeek} of week {LeagueWeek}");
+        await _blobLogger.LogAsync($"Deleting wellness data for player {playerId} on {dateTarget}");
         var player = _context.Players
             .Include(p => p.WelnessRecords)
             .FirstOrDefault(p => p.Id == playerId);
@@ -86,7 +85,7 @@ public class PlayerHelper
             throw new KeyNotFoundException("Player not found.");
         }
         var welnessRecord = player.WelnessRecords?
-            .Where(x => x.DayOfWeek.Equals(dayOfWeek) && x.LeagueWeek.Equals(LeagueWeek))
+            .Where(x => x.Date.Equals(dateTarget))
             .FirstOrDefault();
 
         if (welnessRecord == null)
@@ -111,8 +110,9 @@ public class PlayerHelper
         }
 
         RPE? rpeRecord = player.RPERecords
-            .Where(x => x.DayOfWeek.Equals(input.DayOfWeek) && x.LeagueWeek.Equals(input.LeagueWeek))
+            .Where(x => x.Date.Equals(input.Date))
             .FirstOrDefault();
+
         if (rpeRecord != null)
         {
             _context.RPEs.Remove(rpeRecord);
@@ -120,15 +120,15 @@ public class PlayerHelper
         }
 
         RPE newRpe = new RPE
-            (input.IntervalInMinutes, input.Value,
-            input.LeagueWeek, input.Date, input.DayOfWeek);
+            (input.IntervalInMinutes, input.Value, input.Date);
+
         player.AddRPERecord(newRpe);
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteRPE(int playerId, DayOfWeekEnum dayOfWeek, int LeagueWeek)
+    public async Task DeleteRPE(int playerId, DateOnly dateTarget)
     {
-        await _blobLogger.LogAsync($"Deleting RPE data for player {playerId} on {dayOfWeek} of week {LeagueWeek}");
+        await _blobLogger.LogAsync($"Deleting RPE data for player {playerId} on {dateTarget}");
         var player = await _context.Players
             .Include(p => p.RPERecords)
             .FirstOrDefaultAsync(p => p.Id == playerId);
@@ -139,7 +139,7 @@ public class PlayerHelper
         }
 
         var rpeRecord = player.RPERecords?
-            .Where(x => x.DayOfWeek.Equals(dayOfWeek) && x.LeagueWeek.Equals(LeagueWeek))
+            .Where(x => x.Date.Equals(dateTarget))
             .FirstOrDefault();
 
         if (rpeRecord == null)
@@ -150,56 +150,63 @@ public class PlayerHelper
         await _context.SaveChangesAsync();
     }
 
-    public async Task<GetRPEWeekOutput> GetRPEOfLeagueWeek(int leagueweek)
+    public async Task<GetRPEWeekOutput> GetRPEOfLeagueWeek(DateOnly startDate)
     {
-        await _blobLogger.LogAsync($"Getting RPE data for league week {leagueweek}");
-        Dictionary<DayOfWeekEnum, GetRPEDayOutput> returnDic = new();
-        foreach (DayOfWeekEnum day in Enum.GetValues(typeof(DayOfWeekEnum)))
+        IEnumerable<DateOnly> dates = Enumerable.Range(0, 7)
+            .Select(i => startDate.AddDays(i));
+
+        await _blobLogger.LogAsync($"Getting RPE data for league week starting with {startDate}");
+
+        Dictionary<DayOfWeek, GetRPEDayOutput> returnDic = new();
+        foreach (var date in dates)
         {
-            var rpe = await GetRPE(leagueweek, day);
-            returnDic.Add(day, rpe);
+            var rpe = await GetRPE(date);
+            returnDic.Add(date.DayOfWeek, rpe);
         }
         return new GetRPEWeekOutput(returnDic);
     }
 
-    public async Task<GetRPEDayOutput> GetRPE(int leagueweek, DayOfWeekEnum dayofweek)
+    public async Task<GetRPEDayOutput> GetRPE(DateOnly dateTarget)
     {
-        await _blobLogger.LogAsync($"Getting RPE data for league week {leagueweek} on {dayofweek}");
+        await _blobLogger.LogAsync($"Getting RPE data for league week {dateTarget}");
+
         var players = await _context.Players
             .Select(p => new GetRPEDayOutputPlayers(
                 p.Id,
                 p.Name,
                 p.RPERecords
-                    .Where(w => w.LeagueWeek == leagueweek && w.DayOfWeek == dayofweek)
+                    .Where(w => w.Date.Equals(dateTarget))
                     .FirstOrDefault()
             ))
             .ToListAsync();
-
         return new GetRPEDayOutput(players.Where(x => x.noData == false));
     }
 
-    public async Task<GetWelnessWeekOutput> GetWelnessOfLeagueWeek(int leagueweek)
+    public async Task<GetWelnessWeekOutput> GetWelnessOfLeagueWeek(DateOnly startDate)
     {
-        await _blobLogger.LogAsync($"Getting wellness data for league week {leagueweek}");
-        Dictionary<DayOfWeekEnum, GetWelnessDayOutput> returnDic = new();
-        foreach (DayOfWeekEnum day in Enum.GetValues(typeof(DayOfWeekEnum)))
+        IEnumerable<DateOnly> dates = Enumerable.Range(0, 7)
+            .Select(i => startDate.AddDays(i));
+
+        await _blobLogger.LogAsync($"Getting wellness data for league week starting with {startDate}");
+
+        Dictionary<DayOfWeek, GetWelnessDayOutput> returnDic = new();
+        foreach (var date in dates)
         {
-            var welness = await GetWelness(leagueweek, day);
-            returnDic.Add(day, welness);
+            var welness = await GetWelness(date);
+            returnDic.Add(date.DayOfWeek, welness);
         }
         return new GetWelnessWeekOutput(returnDic);
     }
 
-
-    public async Task<GetWelnessDayOutput> GetWelness(int leagueweek, DayOfWeekEnum dayofweek)
+    public async Task<GetWelnessDayOutput> GetWelness(DateOnly dateTarget)
     {
-        await _blobLogger.LogAsync($"Getting wellness data for league week {leagueweek} on {dayofweek}");
+        await _blobLogger.LogAsync($"Getting wellness data for league week {dateTarget}");
         var players = await _context.Players
             .Select(p => new GetWelnessDayOutputPlayers(
                 p.Id,
                 p.Name,
                 p.WelnessRecords
-                    .Where(w => w.LeagueWeek == leagueweek && w.DayOfWeek == dayofweek)
+                    .Where(w => w.Date.Equals(dateTarget))
                     .FirstOrDefault()
             ))
             .ToListAsync();

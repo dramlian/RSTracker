@@ -5,11 +5,11 @@ public class GetWelnessWeekOutput
     public Dictionary<int, GetWelnessDayOutput> days { get; set; }
     public double totalWeekWelness { get; set; }
     public double averageThree { get; set; }
-    public GetWelnessWeekOutput(Dictionary<DayOfWeekEnum, GetWelnessDayOutput> days)
+    public GetWelnessWeekOutput(Dictionary<DayOfWeek, GetWelnessDayOutput> days)
     {
         this.days = days.ToDictionary(x => (int)x.Key, y => y.Value);
         this.totalWeekWelness = days.Values.Sum(x => x.totalWelnessAverage);
-        this.averageThree = Math.Round(days.Where(x => x.Key == DayOfWeekEnum.Wednesday || x.Key == DayOfWeekEnum.Thursday || x.Key == DayOfWeekEnum.Friday).Sum(x => x.Value.totalWelnessAverage) / 3, 1);
+        this.averageThree = Math.Round(days.Where(x => x.Key == DayOfWeek.Wednesday || x.Key == DayOfWeek.Thursday || x.Key == DayOfWeek.Friday).Sum(x => x.Value.totalWelnessAverage) / 3, 1);
     }
 }
 

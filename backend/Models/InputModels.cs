@@ -12,9 +12,7 @@ public record RpeInput
 (
     int IntervalInMinutes,
     int Value,
-    int LeagueWeek,
-    DateOnly Date,
-    DayOfWeekEnum DayOfWeek
+    DateOnly Date
 );
 
 public record WelnessInput
@@ -23,7 +21,5 @@ public record WelnessInput
     int RecoveryStatus,
     int StressStatus,
     int SleepStatus,
-    int LeagueWeek,
-    DateOnly Date,
-    DayOfWeekEnum DayOfWeek
+    DateOnly Date
 );

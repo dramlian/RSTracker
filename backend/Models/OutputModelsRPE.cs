@@ -8,19 +8,19 @@ public class GetRPEWeekOutput
     public double totalWeekRpe { get; set; }
     public Dictionary<int, int> norms { get; set; }
     public Dictionary<int, double> totalWeekAverages { get; set; }
-    public GetRPEWeekOutput(Dictionary<DayOfWeekEnum, GetRPEDayOutput> days)
+    public GetRPEWeekOutput(Dictionary<DayOfWeek, GetRPEDayOutput> days)
     {
         this.days = days.ToDictionary(x => (int)x.Key, y => y.Value);
         this.totalWeekVolume = Math.Round(days.Values.Sum(x => x.volume) / (double)days.Count, 2);
         this.totalWeekIntensity = Math.Round(days.Values.Sum(x => x.intensity) / (double)days.Count, 2);
         this.norms = new Dictionary<int, int>{
-            { (int)DayOfWeekEnum.Monday, 300 },
-            { (int)DayOfWeekEnum.Tuesday, 600 },
-            { (int)DayOfWeekEnum.Wednesday, 580 },
-            { (int)DayOfWeekEnum.Thursday, 110 },
-            { (int)DayOfWeekEnum.Friday, 220 },
-            { (int)DayOfWeekEnum.Saturday, 760 },
-            { (int)DayOfWeekEnum.Sunday, 0 }
+            { (int)DayOfWeek.Monday, 300 },
+            { (int)DayOfWeek.Tuesday, 600 },
+            { (int)DayOfWeek.Wednesday, 580 },
+            { (int)DayOfWeek.Thursday, 110 },
+            { (int)DayOfWeek.Friday, 220 },
+            { (int)DayOfWeek.Saturday, 760 },
+            { (int)DayOfWeek.Sunday, 0 }
         };
         this.totalWeekRpe = Math.Round(days.Values.Sum(x => x.totalAverage), 2);
         this.totalWeekAverages = days.ToDictionary(x => (int)x.Key, y => y.Value.totalAverage);
