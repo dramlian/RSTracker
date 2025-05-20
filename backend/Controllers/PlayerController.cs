@@ -35,7 +35,7 @@ namespace RSTracker.Controllers
             return Ok(new { message = "Wellness data added successfully." });
         }
 
-        [HttpDelete("delete-welness/{playerId}")]
+        [HttpDelete("delete-welness/{playerId}/{dateTarget}")]
         public async Task<IActionResult> DeleteWelness(int playerId, DateOnly dateTarget)
         {
             await _playerHelper.DeleteWelness(playerId, dateTarget);
@@ -49,21 +49,21 @@ namespace RSTracker.Controllers
             return Ok(new { message = "RPE data added successfully." });
         }
 
-        [HttpDelete("delete-rpe/{playerId}")]
+        [HttpDelete("delete-rpe/{playerId}/{dateTarget}")]
         public async Task<IActionResult> DeleteRPE(int playerId, DateOnly dateTarget)
         {
             await _playerHelper.DeleteRPE(playerId, dateTarget);
             return Ok(new { message = "RPE data deleted successfully." });
         }
 
-        [HttpGet("get-rpe/{leagueweek}")]
+        [HttpGet("get-rpe/{startDate}")]
         public async Task<IActionResult> GetRpeOfLeagueWeek(DateOnly startDate)
         {
             var rpe = await _playerHelper.GetRPEOfLeagueWeek(startDate);
             return Ok(rpe);
         }
 
-        [HttpGet("get-welness/{leagueweek}")]
+        [HttpGet("get-welness/{startDate}")]
         public async Task<IActionResult> GetWelnessOfLeagueWeek(DateOnly startDate)
         {
             var welness = await _playerHelper.GetWelnessOfLeagueWeek(startDate);

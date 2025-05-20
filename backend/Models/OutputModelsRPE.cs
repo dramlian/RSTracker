@@ -2,67 +2,87 @@ namespace RSTracker.Models;
 
 public class GetRPEWeekOutput
 {
-    public Dictionary<int, GetRPEDayOutput> days { get; set; }
-    public double totalWeekVolume { get; set; }
-    public double totalWeekIntensity { get; set; }
-    public double totalWeekRpe { get; set; }
-    public Dictionary<int, int> norms { get; set; }
-    public Dictionary<int, double> totalWeekAverages { get; set; }
-    public GetRPEWeekOutput(Dictionary<DayOfWeek, GetRPEDayOutput> days)
+    public IEnumerable<GetRPEDayOutput> Days { get; }
+    public double TotalWeekVolume { get; }
+    public double TotalWeekIntensity { get; }
+    public double TotalWeekRpe { get; }
+    public Dictionary<int, int> Norms { get; }
+    public Dictionary<int, double> TotalWeekAverages { get; }
+
+    public GetRPEWeekOutput(List<GetRPEDayOutput> days)
     {
-        this.days = days.ToDictionary(x => (int)x.Key, y => y.Value);
-        this.totalWeekVolume = Math.Round(days.Values.Sum(x => x.volume) / (double)days.Count, 2);
-        this.totalWeekIntensity = Math.Round(days.Values.Sum(x => x.intensity) / (double)days.Count, 2);
-        this.norms = new Dictionary<int, int>{
-            { (int)DayOfWeek.Monday, 300 },
-            { (int)DayOfWeek.Tuesday, 600 },
-            { (int)DayOfWeek.Wednesday, 580 },
-            { (int)DayOfWeek.Thursday, 110 },
-            { (int)DayOfWeek.Friday, 220 },
-            { (int)DayOfWeek.Saturday, 760 },
-            { (int)DayOfWeek.Sunday, 0 }
+        Days = days;
+        int dayCount = days.Count;
+        TotalWeekVolume = Math.Round(days.Sum(x => x.Volume) / dayCount, 2);
+        TotalWeekIntensity = Math.Round(days.Sum(x => x.Intensity) / dayCount, 2);
+        TotalWeekRpe = Math.Round(days.Sum(x => x.TotalAverage), 2);
+        TotalWeekAverages = days.ToDictionary(x => (int)x.DayOfWeek, y => y.TotalAverage);
+
+        Norms = new Dictionary<int, int>
+        {
+            [(int)DayOfWeek.Monday] = 300,
+            [(int)DayOfWeek.Tuesday] = 600,
+            [(int)DayOfWeek.Wednesday] = 580,
+            [(int)DayOfWeek.Thursday] = 110,
+            [(int)DayOfWeek.Friday] = 220,
+            [(int)DayOfWeek.Saturday] = 760,
+            [(int)DayOfWeek.Sunday] = 0
         };
-        this.totalWeekRpe = Math.Round(days.Values.Sum(x => x.totalAverage), 2);
-        this.totalWeekAverages = days.ToDictionary(x => (int)x.Key, y => y.Value.totalAverage);
     }
 }
 
-
 public class GetRPEDayOutput
 {
-    public double totalAverage { get; set; }
-    public double volume { get; set; }
-    public double intensity { get; set; }
-    public int commonTime { get; set; }
-    public IEnumerable<GetRPEDayOutputPlayers>? outcomeplayers { get; set; }
+    public DayOfWeek DayOfWeek { get; }
+    public string DayOfWeekString { get; }
+    public DateOnly Date { get; }
+    public double TotalAverage { get; }
+    public double Volume { get; }
+    public double Intensity { get; }
+    public int CommonTime { get; }
+    public IEnumerable<GetRPEDayOutputPlayers> OutcomePlayers { get; }
 
-    public GetRPEDayOutput(IEnumerable<GetRPEDayOutputPlayers> players)
+    public GetRPEDayOutput(IEnumerable<GetRPEDayOutputPlayers> players, DateOnly day)
     {
-        if (!players.Any()) return;
-        outcomeplayers = players.OrderBy(x => x.id);
-        totalAverage = Math.Round(players.Select(x => x.totalvalue).Sum() / (double)players.Count(), 1);
-        commonTime = players.Select(x => x.duration).Sum() / players.Count();
-        volume = Math.Round(totalAverage / 760 * 100, 2);
-        intensity = Math.Round(volume / (commonTime / 95.0), 2);
+        DayOfWeek = day.DayOfWeek;
+        DayOfWeekString = day.ToString("dddd");
+        Date = day;
+        OutcomePlayers = players.OrderBy(x => x.Id).ToList();
+
+        var evalData = players
+            .Where(x => !x.NoData)
+            .Select(x => new { x.TotalValue, x.Duration })
+            .ToList();
+
+        var count = evalData.Count;
+        if (count == 0) return;
+
+        var totalSum = evalData.Sum(x => x.TotalValue);
+        var durationSum = evalData.Sum(x => x.Duration);
+
+        TotalAverage = Math.Round((double)totalSum / count, 1);
+        CommonTime = durationSum / count;
+        Volume = Math.Round(TotalAverage / 760 * 100, 2);
+        Intensity = Math.Round(Volume / (CommonTime / 95.0), 2);
     }
 }
 
 public class GetRPEDayOutputPlayers
 {
-    public int id { get; set; }
-    public string name { get; set; } = null!;
-    public int value { get; set; }
-    public int duration { get; set; }
-    public int totalvalue { get; set; }
-    public bool noData => value == 0 && duration == 0 && totalvalue == 0;
+    public int Id { get; }
+    public string Name { get; }
+    public int Value { get; }
+    public int Duration { get; }
+    public int TotalValue { get; }
+    public bool NoData => Value == 0 && Duration == 0 && TotalValue == 0;
 
     public GetRPEDayOutputPlayers(int id, string name, RPE? rpeRecord)
     {
-        this.id = id;
-        this.name = name;
-        this.value = rpeRecord?.Rpevalue ?? 0;
-        this.duration = rpeRecord?.IntervalInMinutes ?? 0;
-        this.totalvalue = rpeRecord?.TotalRpeValue ?? 0;
-
+        Id = id;
+        Name = name;
+        Value = rpeRecord?.Rpevalue ?? 0;
+        Duration = rpeRecord?.IntervalInMinutes ?? 0;
+        TotalValue = rpeRecord?.TotalRpeValue ?? 0;
     }
 }
+
