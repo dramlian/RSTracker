@@ -197,11 +197,11 @@ public class PlayerHelper
 
         await _blobLogger.LogAsync($"Getting wellness data for league week starting with {startDate}");
 
-        var returnDic = new List<(DayOfWeek, GetWelnessDayOutput)>();
+        var returnDic = new List<GetWelnessDayOutput>();
         foreach (var date in dates)
         {
             var welness = await GetWelness(date);
-            returnDic.Add((date.DayOfWeek, welness));
+            returnDic.Add(welness);
         }
         return new GetWelnessWeekOutput(returnDic);
     }
@@ -226,7 +226,7 @@ public class PlayerHelper
             )
         );
 
-        return new GetWelnessDayOutput(outputPlayers);
+        return new GetWelnessDayOutput(outputPlayers, dateTarget);
     }
 
 

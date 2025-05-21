@@ -2,29 +2,39 @@ namespace RSTracker.Models;
 
 public class GetWelnessWeekOutput
 {
-    public Dictionary<int, GetWelnessDayOutput> Days { get; }
+    public IEnumerable<GetWelnessDayOutput> Days { get; }
     public double TotalWeekWelness { get; }
     public double AverageThree { get; }
-    public GetWelnessWeekOutput(List<(DayOfWeek, GetWelnessDayOutput)> days)
+    public GetWelnessWeekOutput(List<GetWelnessDayOutput> days)
     {
-        Days = days.ToDictionary(x => (int)x.Item1, y => y.Item2);
-        TotalWeekWelness = days.Select(x => x.Item2).Sum(x => x.TotalWelnessAverage);
-        AverageThree = Math.Round(days.Where(x => x.Item1 == DayOfWeek.Wednesday || x.Item1 == DayOfWeek.Thursday || x.Item1 == DayOfWeek.Friday).Sum(x => x.Item2.TotalWelnessAverage) / 3, 1);
+        Days = days;
+        days = days.Where(x => !x.NoData).ToList();
+        TotalWeekWelness = days.Sum(x => x.TotalWelnessAverage);
+        AverageThree = Math.Round(days.Where(x => x.DayOfWeek == DayOfWeek.Wednesday || x.DayOfWeek == DayOfWeek.Thursday || x.DayOfWeek == DayOfWeek.Friday).Sum(x => x.TotalWelnessAverage) / 3, 1);
     }
 }
 
 public class GetWelnessDayOutput
 {
+    public DayOfWeek DayOfWeek { get; }
+    public string DayOfWeekString { get; }
+    public DateOnly Date { get; }
     public double MuscleAverage { get; }
     public double RecoveryAverage { get; }
     public double StressAverage { get; }
     public double SleepAverage { get; }
     public double TotalWelnessAverage { get; }
+    public bool NoData { get; }
     public IEnumerable<GetWelnessDayOutputPlayers> OutcomePlayers { get; }
 
-    public GetWelnessDayOutput(IEnumerable<GetWelnessDayOutputPlayers> players)
+    public GetWelnessDayOutput(IEnumerable<GetWelnessDayOutputPlayers> players, DateOnly day)
     {
+        DayOfWeek = day.DayOfWeek;
+        DayOfWeekString = day.ToString("dddd");
+        Date = day;
         OutcomePlayers = players.OrderBy(x => x.Id).ToList();
+        NoData = OutcomePlayers.All(x => x.NoData);
+
         var evalPlayers = OutcomePlayers.Where(x => !x.NoData).ToList();
 
         if (!evalPlayers.Any()) return;

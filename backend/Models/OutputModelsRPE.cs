@@ -13,6 +13,7 @@ public class GetRPEWeekOutput
     {
         Days = days;
         int dayCount = days.Count;
+        days = days.Where(x => !x.NoData).ToList();
         TotalWeekVolume = Math.Round(days.Sum(x => x.Volume) / dayCount, 2);
         TotalWeekIntensity = Math.Round(days.Sum(x => x.Intensity) / dayCount, 2);
         TotalWeekRpe = Math.Round(days.Sum(x => x.TotalAverage), 2);
@@ -40,6 +41,7 @@ public class GetRPEDayOutput
     public double Volume { get; }
     public double Intensity { get; }
     public int CommonTime { get; }
+    public bool NoData { get; }
     public IEnumerable<GetRPEDayOutputPlayers> OutcomePlayers { get; }
 
     public GetRPEDayOutput(IEnumerable<GetRPEDayOutputPlayers> players, DateOnly day)
@@ -48,6 +50,7 @@ public class GetRPEDayOutput
         DayOfWeekString = day.ToString("dddd");
         Date = day;
         OutcomePlayers = players.OrderBy(x => x.Id).ToList();
+        NoData = OutcomePlayers.All(x => x.NoData);
 
         var evalData = players
             .Where(x => !x.NoData)
