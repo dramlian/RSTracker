@@ -10,9 +10,9 @@ namespace RSTracker.Controllers
     public class PlayerController : ControllerBase
     {
         private readonly PlayerHelper _playerHelper;
-        public PlayerController(PlayerDbContext context, BlobLogger blobLogger)
+        public PlayerController(PlayerDbContext context, BlobLogger blobLogger, CacheService cacheService)
         {
-            _playerHelper = new PlayerHelper(context, blobLogger);
+            _playerHelper = new PlayerHelper(context, blobLogger, cacheService);
         }
 
         [HttpPost("addplayer")]

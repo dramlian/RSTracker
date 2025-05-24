@@ -9,10 +9,12 @@ public class PlayerHelper
 {
     private readonly PlayerDbContext _context;
     private readonly BlobLogger _blobLogger;
-    public PlayerHelper(PlayerDbContext context, BlobLogger blobLogger)
+    private readonly CacheService _cacheService;
+    public PlayerHelper(PlayerDbContext context, BlobLogger blobLogger, CacheService cacheService)
     {
         _context = context;
         _blobLogger = blobLogger;
+        _cacheService = cacheService;
     }
 
     public async Task AddPlayerToDb(PlayerInput player)
@@ -71,6 +73,7 @@ public class PlayerHelper
             input.Date);
 
         player.AddWelnessRecord(newWelness);
+        _cacheService.Set<Welness>($"{playerId}-welness-{input.Date}", newWelness);
         await _context.SaveChangesAsync();
     }
 
@@ -95,6 +98,7 @@ public class PlayerHelper
         }
 
         _context.WelnessRecords.Remove(welnessRecord);
+        _cacheService.Remove($"{playerId}-welness-{dateTarget}");
         await _context.SaveChangesAsync();
     }
 
@@ -211,6 +215,13 @@ public class PlayerHelper
     {
         await _blobLogger.LogAsync($"Getting wellness data for league week {dateTarget}");
 
+        /* 
+        1. Najprv fetchnes hracov (to tiez bude cached)
+        2. Potom pre kazdeho hraca ziska wellness zaznam pre dany den
+        3. Vytvori GetWelnessDayOutputPlayers pre kazdeho hraca
+        4. Vytvori GetWelnessDayOutput s vsetkymi hracmi a danym dnom
+        
+        */
         var players = await _context.Players
             .Select(p => new
             {
@@ -229,6 +240,22 @@ public class PlayerHelper
 
         return new GetWelnessDayOutput(outputPlayers, dateTarget);
     }
+
+    public async Task<(int, Welness)> FetchPlayersAndWelness(int playerId, DateOnly dateOnly)
+    {
+        await _blobLogger.LogAsync($"Fetching player and wellness data for player {playerId} on {dateOnly}");
+        Welness? welness = await _cacheService.GetAsync<Welness>($"{playerId}-welness-{dateOnly}", playerId, dateOnly, FetchWelnessFromDb);
+        return (playerId, welness ?? new Welness());
+    }
+    public async Task<Welness?> FetchWelnessFromDb(int playerId, DateOnly dateOnly)
+    {
+        var welnessRecord = await _context.WelnessRecords
+            .Where(x => EF.Property<int>(x, "PlayerId") == playerId)
+            .FirstOrDefaultAsync(w => w.Date.Equals(dateOnly));
+
+        return welnessRecord;
+    }
+
 
 
     public async Task<List<Player>> GetAllPlayers()
