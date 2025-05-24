@@ -10,6 +10,9 @@ import LoadingScreen from "../LoadingScreen/LoadingScreen";
 import WeekTableWelness from "../WeekTable/WeekTableWelness";
 import WeekTableRpe from "../WeekTable/WeekTableRpe";
 import ComboChartRPE from "../BarChart/ComboChartRPE";
+import DatePicker from "react-datepicker";
+import { format } from "date-fns";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Dashboard({ type }) {
   const toDate = new Date().toISOString().split("T")[0];
@@ -76,27 +79,33 @@ export default function Dashboard({ type }) {
         <Row className="align-items-center justify-content-center">
           <Col xs={12}>
             <Form.Group controlId="datePicker">
-              <Form.Label>Select date</Form.Label>
-              <Form.Control
-                type="date"
-                value={selectedDate}
-                max={new Date().toISOString().split("T")[0]}
-                onChange={(e) => setSelectedDate(e.target.value)}
+              <Form.Label>Select from date</Form.Label>
+              <DatePicker
+                selected={new Date(selectedDate)}
+                onChange={(date) => {
+                  const iso = date.toISOString().split("T")[0];
+                  setSelectedDate(iso);
+                }}
+                dateFormat="dd/MM/yyyy"
+                maxDate={new Date()}
+                className="form-control"
+                wrapperClassName="w-100"
               />
             </Form.Group>
+
             <Form.Group controlId="toDateDisplay" className="mt-3">
               <Form.Label>To date</Form.Label>
               <Form.Control
                 type="text"
-                value={toDate}
+                value={format(new Date(toDate), "dd/MM/yyyy")}
                 readOnly
                 plaintext={false}
+                className="w-100"
                 style={{ backgroundColor: "#e9ecef" }}
               />
             </Form.Group>
           </Col>
         </Row>
-
         {type === "welness" ? (
           <Row>
             <Col>
@@ -120,7 +129,6 @@ export default function Dashboard({ type }) {
             </Col>
           </Row>
         ) : null}
-
         <Row className="justify-content-center">
           <Col>
             {type === "welness" && <BarChartWelness chartData={chartData} />}
