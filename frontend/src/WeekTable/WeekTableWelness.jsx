@@ -2,7 +2,6 @@ import { Row, Col, Table } from "react-bootstrap";
 
 export default function WeekTableWelness({
   data,
-  dayDictionary,
   totalWeekWelness,
   averageThree,
 }) {
@@ -35,7 +34,7 @@ export default function WeekTableWelness({
 
                 return (
                   <tr key={day}>
-                    <td>{dayDictionary[day]}</td>
+                    <td>{values.dayOfWeekString}</td>
                     <td>{values.muscleAverage}</td>
                     <td>{values.recoveryAverage}</td>
                     <td>{values.stressAverage}</td>

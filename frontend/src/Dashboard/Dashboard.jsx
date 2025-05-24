@@ -50,7 +50,9 @@ export default function Dashboard({ type }) {
     if (!Array.isArray(days)) return result;
     days.forEach((day) => {
       result[day.dayOfWeekString] =
-        typeof day.totalAverage === "number" ? day.totalAverage : 0;
+        typeof day.totalWelnessAverage === "number"
+          ? day.totalWelnessAverage
+          : 0;
     });
     return result;
   };
