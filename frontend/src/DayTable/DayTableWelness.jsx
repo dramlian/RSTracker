@@ -3,13 +3,7 @@ import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import AddEntryModalWelness from "../AddEntryModal/AddEntryModalWelness";
 import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
 
-function DayTableWelness({
-  day,
-  selectedDate,
-  dayKey,
-  fetcheddata,
-  setWasUpdated,
-}) {
+function DayTableWelness({ day, selectedDate, fetcheddata, setWasUpdated }) {
   const [data, setData] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -22,7 +16,7 @@ function DayTableWelness({
 
   useEffect(() => {
     setData(fetcheddata.outcomePlayers ?? []);
-  }, [fetcheddata, selectedDate, dayKey]);
+  }, [fetcheddata, selectedDate]);
 
   function getRowClass(entry) {
     if (

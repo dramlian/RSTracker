@@ -3,13 +3,7 @@ import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import AddEntryModalRPE from "../AddEntryModal/AddEntryModalRPE";
 import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
 
-function DayTableRPE({
-  day,
-  selectedDate,
-  dayKey,
-  fetcheddata,
-  setWasUpdated,
-}) {
+function DayTableRPE({ day, selectedDate, fetcheddata, setWasUpdated }) {
   const [data, setData] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -22,7 +16,7 @@ function DayTableRPE({
 
   useEffect(() => {
     setData(fetcheddata.outcomePlayers ?? []);
-  }, [fetcheddata, selectedDate, dayKey]);
+  }, [fetcheddata, selectedDate]);
 
   function getRowClass(entry) {
     if (entry.value > 7) {
@@ -108,8 +102,7 @@ function DayTableRPE({
       <AddEntryModalRPE
         show={showAddModal}
         handleClose={handleCloseAddModal}
-        selectedDate={weeselectedDatekKey}
-        dayKey={dayKey}
+        selectedDate={selectedDate}
         setWasUpdated={setWasUpdated}
         dayString={day}
       />
@@ -117,7 +110,6 @@ function DayTableRPE({
         show={showDeleteModal}
         handleClose={handleCloseDeleteModal}
         selectedDate={selectedDate}
-        dayKey={dayKey}
         type="rpe"
         setWasUpdated={setWasUpdated}
         dayString={day}

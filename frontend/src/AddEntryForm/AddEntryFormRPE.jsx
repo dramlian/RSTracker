@@ -40,14 +40,12 @@ const AddEntryFormRPE = forwardRef(({}, ref) => {
     }));
   };
 
-  const handleSubmit = async (weekKey, dayKey, selectedPlayer, handleClose) => {
+  const handleSubmit = async (selectedDate, selectedPlayer, handleClose) => {
     if (validateForm()) {
       const payload = {
         intervalInMinutes: parseInt(formData.duration),
         value: parseInt(formData.rpe),
-        leagueWeek: weekKey,
-        date: new Date().toISOString().split("T")[0],
-        dayOfWeek: parseInt(dayKey, 10),
+        date: selectedDate,
       };
 
       try {

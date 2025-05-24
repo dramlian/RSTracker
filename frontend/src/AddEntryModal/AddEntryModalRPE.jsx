@@ -8,8 +8,7 @@ import LoadingScreen from "../LoadingScreen/LoadingScreen";
 function AddEntryModalRPE({
   show,
   handleClose,
-  weekKey,
-  dayKey,
+  selectedDate,
   setWasUpdated,
   dayString,
 }) {
@@ -47,8 +46,7 @@ function AddEntryModalRPE({
   const handleFormSubmit = async () => {
     if (
       await formRef.current?.submitForm(
-        weekKey,
-        dayKey,
+        selectedDate,
         selectedPlayer?.value,
         handleClose
       )
@@ -62,7 +60,7 @@ function AddEntryModalRPE({
       <LoadingScreen isLoading={isLoading} />
       <Modal.Header closeButton>
         <Modal.Title>
-          Add RPE in week {weekKey}, day {dayString}
+          Add RPE to {selectedDate}, {dayString}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
