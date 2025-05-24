@@ -1,5 +1,6 @@
 using Azure.Storage.Blobs;
 using System.Text;
+namespace RSTracker.Services;
 
 /* TODO: Each player will have a unique container and that
 container will have a unique blob for each day.*/

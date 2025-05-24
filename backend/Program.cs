@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using RSTracker.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,10 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<PlayerDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddScoped<BlobLogger>();
+builder.Services.AddScoped<CacheService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
