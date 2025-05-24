@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 namespace RSTracker.Models;
 
 public class GetRPEWeekOutput
@@ -6,29 +7,45 @@ public class GetRPEWeekOutput
     public double TotalWeekVolume { get; }
     public double TotalWeekIntensity { get; }
     public double TotalWeekRpe { get; }
-    public Dictionary<int, int> Norms { get; }
-    public Dictionary<int, double> TotalWeekAverages { get; }
+    public IEnumerable<DayAverage> Norms { get; }
+    public IEnumerable<DayAverage> TotalWeekAverages { get; }
 
     public GetRPEWeekOutput(List<GetRPEDayOutput> days)
     {
         Days = days;
         int dayCount = days.Count;
+        TotalWeekAverages = days.Select(x => new DayAverage(x.DayOfWeek, x.TotalAverage));
         days = days.Where(x => !x.NoData).ToList();
         TotalWeekVolume = Math.Round(days.Sum(x => x.Volume) / dayCount, 2);
         TotalWeekIntensity = Math.Round(days.Sum(x => x.Intensity) / dayCount, 2);
         TotalWeekRpe = Math.Round(days.Sum(x => x.TotalAverage), 2);
-        TotalWeekAverages = days.ToDictionary(x => (int)x.DayOfWeek, y => y.TotalAverage);
 
-        Norms = new Dictionary<int, int>
+        Norms = new List<DayAverage>
         {
-            [(int)DayOfWeek.Monday] = 300,
-            [(int)DayOfWeek.Tuesday] = 600,
-            [(int)DayOfWeek.Wednesday] = 580,
-            [(int)DayOfWeek.Thursday] = 110,
-            [(int)DayOfWeek.Friday] = 220,
-            [(int)DayOfWeek.Saturday] = 760,
-            [(int)DayOfWeek.Sunday] = 0
+            new DayAverage(DayOfWeek.Monday, 300),
+            new DayAverage(DayOfWeek.Tuesday, 600),
+            new DayAverage(DayOfWeek.Wednesday, 580),
+            new DayAverage(DayOfWeek.Thursday, 110),
+            new DayAverage(DayOfWeek.Friday, 220),
+            new DayAverage(DayOfWeek.Saturday, 760),
+            new DayAverage(DayOfWeek.Sunday, 0)
         };
+        Norms = Norms.OrderBy(x => TotalWeekAverages.Select(x => x.day).ToList().IndexOf(x.day));
+    }
+
+    public class DayAverage
+    {
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public DayOfWeek day { get; set; }
+        public double average { get; set; }
+
+
+        public DayAverage(DayOfWeek day, double average)
+        {
+            this.day = day;
+            this.average = average;
+        }
+
     }
 }
 

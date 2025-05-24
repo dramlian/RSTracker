@@ -15,7 +15,7 @@ function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
   const handleCloseDeleteModal = () => setShowDeleteModal(false);
 
   useEffect(() => {
-    setData(fetcheddata.outcomeplayers ?? []);
+    setData(fetcheddata.outcomePlayers ?? []);
   }, [fetcheddata, weekKey, dayKey]);
 
   function getRowClass(entry) {

@@ -1,37 +1,22 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Form } from "react-bootstrap";
 import BarChartWelness from "../BarChart/BarChartWelness";
 import BarChartRPE from "../BarChart/BarChartRPE";
 import DayTableWelness from "../DayTable/DayTableWelness";
 import DayTableRPE from "../DayTable/DayTableRPE";
-import Select from "react-select";
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ApiClient from "../Helpers/ApiClient";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
 import WeekTableWelness from "../WeekTable/WeekTableWelness";
 import WeekTableRpe from "../WeekTable/WeekTableRpe";
-import HorizontalLineChart from "../BarChart/ComboChartRPE";
+import ComboChartRPE from "../BarChart/ComboChartRPE";
 
 export default function Dashboard({ type }) {
-  const dayDictionary = useRef({
-    1: "Monday",
-    2: "Tuesday",
-    3: "Wednesday",
-    4: "Thursday",
-    5: "Friday",
-    6: "Saturday",
-    7: "Sunday",
-  });
-
-  const [weekOptions, _] = useState(
-    Array.from({ length: 15 }, (_, i) => ({
-      value: i + 1,
-      label: `Week ${i + 1}`,
-    }))
-  );
-  const [selectedWeek, setSelectedWeek] = useState({
-    value: 1,
-    label: "Week 1",
+  const toDate = new Date().toISOString().split("T")[0];
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 7);
+    return d.toISOString().split("T")[0];
   });
 
   const [dayData, setDayData] = useState({});
@@ -43,7 +28,7 @@ export default function Dashboard({ type }) {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const data = await ApiClient.get(`get-${type}/${selectedWeek.value}`);
+        const data = await ApiClient.get(`get-${type}/${selectedDate}`);
         setDayData(data);
         if (type === "welness") {
           setChartData(calculateWelnessCharts(data.days));
@@ -58,38 +43,27 @@ export default function Dashboard({ type }) {
     };
 
     fetchData();
-  }, [type, selectedWeek, wasUpdated]);
+  }, [type, selectedDate, wasUpdated]);
 
-  const calculateWelnessCharts = (data) => {
+  const calculateWelnessCharts = (days) => {
     const result = {};
-
-    for (const dayNumber in data) {
-      const dayName = dayDictionary.current[dayNumber];
-      const dayData = data[dayNumber];
-
-      if (dayData && typeof dayData.totalWelnessAverage === "number") {
-        result[dayName] = dayData.totalWelnessAverage;
-      } else {
-        result[dayName] = 0;
-      }
-    }
-
+    if (!Array.isArray(days)) return result;
+    days.forEach((day) => {
+      result[day.dayOfWeekString] =
+        typeof day.totalAverage === "number" ? day.totalAverage : 0;
+    });
     return result;
   };
 
-  const calculateRPECharts = (data) => {
+  const calculateRPECharts = (days) => {
     const result = {};
-
-    for (const dayNumber in data) {
-      const dayName = dayDictionary.current[dayNumber];
-      const dayData = data[dayNumber];
-
-      result[dayName] = {
-        volume: dayData.volume,
-        intensity: dayData.intensity,
+    if (!Array.isArray(days)) return result;
+    days.forEach((day) => {
+      result[day.dayOfWeekString] = {
+        volume: day.volume,
+        intensity: day.intensity,
       };
-    }
-
+    });
     return result;
   };
 
@@ -99,12 +73,25 @@ export default function Dashboard({ type }) {
       <div className="p-5 pt-3">
         <Row className="align-items-center justify-content-center">
           <Col xs={12}>
-            <Select
-              options={weekOptions}
-              value={selectedWeek}
-              onChange={setSelectedWeek}
-              placeholder="Select a week"
-            />
+            <Form.Group controlId="datePicker">
+              <Form.Label>Select date</Form.Label>
+              <Form.Control
+                type="date"
+                value={selectedDate}
+                max={new Date().toISOString().split("T")[0]}
+                onChange={(e) => setSelectedDate(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="toDateDisplay" className="mt-3">
+              <Form.Label>To date</Form.Label>
+              <Form.Control
+                type="text"
+                value={toDate}
+                readOnly
+                plaintext={false}
+                style={{ backgroundColor: "#e9ecef" }}
+              />
+            </Form.Group>
           </Col>
         </Row>
 
@@ -113,7 +100,6 @@ export default function Dashboard({ type }) {
             <Col>
               <WeekTableWelness
                 data={dayData.days}
-                dayDictionary={dayDictionary.current}
                 totalWeekWelness={dayData.totalWeekWelness}
                 averageThree={dayData.averageThree}
               />
@@ -124,7 +110,6 @@ export default function Dashboard({ type }) {
             <Col>
               <WeekTableRpe
                 data={dayData.days}
-                dayDictionary={dayDictionary.current}
                 totalWeekVolume={dayData.totalWeekVolume}
                 totalWeekIntensity={dayData.totalWeekIntensity}
                 totalWeekRpe={dayData.totalWeekRpe}
@@ -140,8 +125,7 @@ export default function Dashboard({ type }) {
             {type === "rpe" && (
               <>
                 <BarChartRPE chartData={chartData} />
-                <HorizontalLineChart
-                  dayDictionary={dayDictionary.current}
+                <ComboChartRPE
                   norms={dayData.norms}
                   averages={dayData.totalWeekAverages}
                 />
@@ -151,36 +135,35 @@ export default function Dashboard({ type }) {
         </Row>
       </div>
       <Row className="d-flex align-items-stretch">
-        {dayData.days &&
-          Object.entries(dayDictionary.current).map(([key, day]) => (
+        {Array.isArray(dayData.days) &&
+          dayData.days.map((day) => (
             <Col
-              key={`${selectedWeek.value}-${key}`}
+              key={`${selectedDate}-${day.dayOfWeek}`}
               xs={12}
               sm={6}
               md={4}
               lg={4}
               className="mb-4 d-flex"
             >
-              {dayData.days[key] &&
-                (type === "welness" ? (
-                  <DayTableWelness
-                    key={`${selectedWeek.value}-${key}`}
-                    day={day}
-                    weekKey={selectedWeek.value}
-                    dayKey={key}
-                    fetcheddata={dayData.days[key]}
-                    setWasUpdated={setWasUpdated}
-                  />
-                ) : (
-                  <DayTableRPE
-                    key={`${selectedWeek.value}-${key}`}
-                    day={day}
-                    weekKey={selectedWeek.value}
-                    dayKey={key}
-                    fetcheddata={dayData.days[key]}
-                    setWasUpdated={setWasUpdated}
-                  />
-                ))}
+              {type === "welness" ? (
+                <DayTableWelness
+                  key={`${selectedDate}-${day.dayOfWeek}`}
+                  day={day.dayOfWeekString}
+                  weekKey={selectedDate}
+                  dayKey={day.dayOfWeek}
+                  fetcheddata={day}
+                  setWasUpdated={setWasUpdated}
+                />
+              ) : (
+                <DayTableRPE
+                  key={`${selectedDate}-${day.dayOfWeek}`}
+                  day={day.dayOfWeekString}
+                  weekKey={selectedDate}
+                  dayKey={day.dayOfWeek}
+                  fetcheddata={day}
+                  setWasUpdated={setWasUpdated}
+                />
+              )}
             </Col>
           ))}
       </Row>

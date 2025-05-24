@@ -27,9 +27,8 @@ ChartJS.register(
   DataLabelsPlugin
 );
 
-const ComboChartRPE = ({ dayDictionary, norms, averages }) => {
+const ComboChartRPE = ({ norms, averages }) => {
   const [fontSize, setFontSize] = useState(13);
-  const labels = Object.values(dayDictionary);
 
   useEffect(() => {
     const handleResize = () => {
@@ -43,12 +42,12 @@ const ComboChartRPE = ({ dayDictionary, norms, averages }) => {
   }, []);
 
   const data = {
-    labels,
+    labels: norms ? norms.map((x) => x.day) : [],
     datasets: [
       {
         type: "bar",
         label: "RPE",
-        data: averages ? Object.values(averages) : [],
+        data: averages ? averages.map((x) => x.average) : [],
         backgroundColor: "rgba(54, 162, 235, 0.5)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
@@ -56,7 +55,7 @@ const ComboChartRPE = ({ dayDictionary, norms, averages }) => {
       {
         type: "line",
         label: "Norms",
-        data: norms ? Object.values(norms) : [],
+        data: norms ? norms.map((x) => x.average) : [],
         borderColor: "#FF0000",
         borderWidth: 2,
         borderDash: [],
