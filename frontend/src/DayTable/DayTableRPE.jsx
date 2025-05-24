@@ -3,7 +3,13 @@ import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import AddEntryModalRPE from "../AddEntryModal/AddEntryModalRPE";
 import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
 
-function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
+function DayTableRPE({
+  day,
+  selectedDate,
+  dayKey,
+  fetcheddata,
+  setWasUpdated,
+}) {
   const [data, setData] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -16,7 +22,7 @@ function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
 
   useEffect(() => {
     setData(fetcheddata.outcomePlayers ?? []);
-  }, [fetcheddata, weekKey, dayKey]);
+  }, [fetcheddata, selectedDate, dayKey]);
 
   function getRowClass(entry) {
     if (entry.value > 7) {
@@ -102,7 +108,7 @@ function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
       <AddEntryModalRPE
         show={showAddModal}
         handleClose={handleCloseAddModal}
-        weekKey={weekKey}
+        selectedDate={weeselectedDatekKey}
         dayKey={dayKey}
         setWasUpdated={setWasUpdated}
         dayString={day}
@@ -110,7 +116,7 @@ function DayTableRPE({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
       <DeleteEntryModal
         show={showDeleteModal}
         handleClose={handleCloseDeleteModal}
-        weekKey={weekKey}
+        selectedDate={selectedDate}
         dayKey={dayKey}
         type="rpe"
         setWasUpdated={setWasUpdated}

@@ -7,8 +7,7 @@ import LoadingScreen from "../LoadingScreen/LoadingScreen";
 function DeleteEntryModal({
   show,
   handleClose,
-  weekKey,
-  dayKey,
+  selectedDate,
   type,
   setWasUpdated,
   dayString,
@@ -45,7 +44,7 @@ function DeleteEntryModal({
 
   const handleDelete = async () => {
     try {
-      const url = `delete-${type}/${selectedPlayer.value}?dayOfWeek=${dayKey}&LeagueWeek=${weekKey}`;
+      const url = `delete-${type}/${selectedPlayer.value}/${selectedDate}`;
       await ApiClient.delete(url);
       handleClose();
       setWasUpdated((prev) => !prev);
@@ -59,7 +58,7 @@ function DeleteEntryModal({
       <LoadingScreen isLoading={isLoading} />
       <Modal.Header closeButton>
         <Modal.Title>
-          Delete Entry in week {weekKey}, day {dayString}
+          Delete Entry in {selectedDate}, {dayString}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>

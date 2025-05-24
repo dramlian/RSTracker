@@ -4,11 +4,11 @@ import Select from "react-select";
 import AddEntryFormWellness from "../AddEntryForm/AddEntryFormWellness";
 import ApiClient from "../Helpers/ApiClient";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
+
 function AddEntryModalWelness({
   show,
   handleClose,
-  weekKey,
-  dayKey,
+  selectedDate,
   setWasUpdated,
   dayString,
 }) {
@@ -46,8 +46,7 @@ function AddEntryModalWelness({
   const handleFormSubmit = async () => {
     if (
       await formRef.current?.submitForm(
-        weekKey,
-        dayKey,
+        selectedDate,
         selectedPlayer?.value,
         handleClose
       )
@@ -61,7 +60,7 @@ function AddEntryModalWelness({
       <LoadingScreen isLoading={isLoading} />
       <Modal.Header closeButton>
         <Modal.Title>
-          Add Wellness in week {weekKey}, day {dayString}
+          Add Wellness to {selectedDate}, {dayString}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>

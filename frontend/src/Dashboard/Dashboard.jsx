@@ -159,7 +159,7 @@ export default function Dashboard({ type }) {
                 <DayTableWelness
                   key={`${selectedDate}-${day.dayOfWeek}`}
                   day={day.dayOfWeekString}
-                  weekKey={selectedDate}
+                  selectedDate={selectedDate}
                   dayKey={day.dayOfWeek}
                   fetcheddata={day}
                   setWasUpdated={setWasUpdated}
@@ -168,7 +168,7 @@ export default function Dashboard({ type }) {
                 <DayTableRPE
                   key={`${selectedDate}-${day.dayOfWeek}`}
                   day={day.dayOfWeekString}
-                  weekKey={selectedDate}
+                  selectedDate={selectedDate}
                   dayKey={day.dayOfWeek}
                   fetcheddata={day}
                   setWasUpdated={setWasUpdated}

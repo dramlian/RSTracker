@@ -3,7 +3,13 @@ import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import AddEntryModalWelness from "../AddEntryModal/AddEntryModalWelness";
 import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
 
-function DayTableWelness({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
+function DayTableWelness({
+  day,
+  selectedDate,
+  dayKey,
+  fetcheddata,
+  setWasUpdated,
+}) {
   const [data, setData] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -16,7 +22,7 @@ function DayTableWelness({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
 
   useEffect(() => {
     setData(fetcheddata.outcomePlayers ?? []);
-  }, [fetcheddata, weekKey, dayKey]);
+  }, [fetcheddata, selectedDate, dayKey]);
 
   function getRowClass(entry) {
     if (
@@ -118,16 +124,14 @@ function DayTableWelness({ day, weekKey, dayKey, fetcheddata, setWasUpdated }) {
       <AddEntryModalWelness
         show={showAddModal}
         handleClose={handleCloseAddModal}
-        weekKey={weekKey}
-        dayKey={dayKey}
+        selectedDate={selectedDate}
         setWasUpdated={setWasUpdated}
         dayString={day}
       />
       <DeleteEntryModal
         show={showDeleteModal}
         handleClose={handleCloseDeleteModal}
-        weekKey={weekKey}
-        dayKey={dayKey}
+        selectedDate={selectedDate}
         type="welness"
         setWasUpdated={setWasUpdated}
         dayString={day}
