@@ -11,23 +11,16 @@ public class CacheService
         _cache = cache;
     }
 
-    public async Task<T?> GetAsync<T>(string key, Func<Task<T?>> getDataFunc, TimeSpan? absoluteExpiration = null)
+    public async Task<T?> GetAsync<T>(string key, Func<Task<T>> getDataFunc, TimeSpan? absoluteExpiration = null)
     {
-        return await _cache.GetOrCreateAsync(key, async entry =>
-        {
-            entry.AbsoluteExpirationRelativeToNow = absoluteExpiration ?? TimeSpan.FromMinutes(10);
-            return await getDataFunc();
-        });
+        if (_cache.TryGetValue(key, out T? cached) && cached != null)
+            return cached;
+
+        var data = await getDataFunc();
+        _cache.Set(key, data, absoluteExpiration ?? TimeSpan.FromMinutes(10));
+        return data;
     }
 
-    public async Task<T?> GetAsyncPlayerData<T>(string key, int inputKey, DateOnly dateKey, Func<int, DateOnly, Task<T?>> getDataFunc, TimeSpan? absoluteExpiration = null)
-    {
-        return await _cache.GetOrCreateAsync(key, async entry =>
-        {
-            entry.AbsoluteExpirationRelativeToNow = absoluteExpiration ?? TimeSpan.FromMinutes(10);
-            return await getDataFunc(inputKey, dateKey);
-        });
-    }
 
     public void Set<T>(string key, T data, TimeSpan? absoluteExpiration = null)
     {
