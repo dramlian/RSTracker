@@ -8,6 +8,9 @@ import InsertPlayer from "./InsertPlayer";
 import RemovePlayer from "./RemovePlayer";
 import ListPlayers from "./ListPlayers";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
+import DatePicker from "react-datepicker";
+import { format } from "date-fns";
+import "react-datepicker/dist/react-datepicker.css";
 
 function ManagementPage() {
   const [selectedDate, setSelectedDate] = useState(() => {
@@ -102,11 +105,16 @@ function ManagementPage() {
           <Row className="mb-4">
             <Col md={6}>
               <label>Select Date</label>
-              <input
-                type="date"
+              <DatePicker
+                selected={new Date(selectedDate)}
+                onChange={(date) => {
+                  const iso = date.toISOString().split("T")[0];
+                  setSelectedDate(iso);
+                }}
+                dateFormat="dd/MM/yyyy"
+                maxDate={new Date()}
                 className="form-control"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
+                wrapperClassName="w-100"
               />
             </Col>
             <Col md={6}>
