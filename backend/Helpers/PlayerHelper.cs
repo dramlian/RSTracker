@@ -11,6 +11,7 @@ public class PlayerHelper
     protected readonly PlayerDbContext _context;
     protected readonly BlobLogger _blobLogger;
     protected readonly CacheService _cacheService;
+
     public PlayerHelper(IDbContextFactory<PlayerDbContext> contextFactory, BlobLogger blobLogger, CacheService cacheService)
     {
         _contextFactory = contextFactory;
@@ -27,7 +28,8 @@ public class PlayerHelper
     public async Task AddPlayerToDb(PlayerInput player)
     {
         await _blobLogger.LogAsync($"Adding player {JsonConvert.SerializeObject(player)}");
-        Player newPlayer = new Player
+
+        var newPlayer = new Player
         {
             Name = player.Name,
             Age = player.Age,
@@ -38,31 +40,33 @@ public class PlayerHelper
 
         await _context.Players.AddAsync(newPlayer);
         await _context.SaveChangesAsync();
+
     }
 
     public async Task DeletePlayer(int playerId)
     {
         await _blobLogger.LogAsync($"Deleting player with ID {playerId}");
-        var player = _context.Players.Where(x => x.Id.Equals(playerId)).FirstOrDefault();
+
+        var player = await _context.Players
+            .FirstOrDefaultAsync(x => x.Id == playerId);
+
         if (player == null)
-        {
             throw new KeyNotFoundException("Player not found.");
-        }
+
         _context.Players.Remove(player);
         await _context.SaveChangesAsync();
+
     }
 
     public async Task<IEnumerable<Player>> GetAllPlayers()
     {
-        await _blobLogger.LogAsync($"Getting all players");
-        var players = await FetchAllPlayersFromDb();
-        return players ?? Enumerable.Empty<Player>().ToList();
+        await _blobLogger.LogAsync("Getting all players");
+        return await FetchAllPlayersFromDb();
     }
 
-    public async Task<IEnumerable<Player>?> FetchAllPlayersFromDb()
+    public async Task<List<Player>> FetchAllPlayersFromDb()
     {
-        await _blobLogger.LogAsync($"Fetching all players from DB");
+        await _blobLogger.LogAsync("Fetching all players from DB");
         return await _context.Players.ToListAsync();
     }
-
 }

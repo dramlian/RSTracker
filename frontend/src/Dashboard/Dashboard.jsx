@@ -158,14 +158,14 @@ export default function Dashboard({ type }) {
               {type === "welness" ? (
                 <DayTableWelness
                   day={day.dayOfWeekString}
-                  selectedDate={selectedDate}
+                  selectedDate={day.date}
                   fetcheddata={day}
                   setWasUpdated={setWasUpdated}
                 />
               ) : (
                 <DayTableRPE
                   day={day.dayOfWeekString}
-                  selectedDate={selectedDate}
+                  selectedDate={day.date}
                   fetcheddata={day}
                   setWasUpdated={setWasUpdated}
                 />

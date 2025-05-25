@@ -3,8 +3,6 @@ using RSTracker.Models;
 using Newtonsoft.Json;
 using RSTracker.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Concurrent;
-
 public class RPEManager : PlayerHelper
 {
     public RPEManager(IDbContextFactory<PlayerDbContext> contextFactory, BlobLogger blobLogger, CacheService cacheService)
@@ -12,43 +10,42 @@ public class RPEManager : PlayerHelper
     {
     }
 
+
     public async Task AddRPEToDb(int playerId, RpeInput input)
     {
         await _blobLogger.LogAsync($"Adding RPE data for player {playerId} {JsonConvert.SerializeObject(input)}");
-
-        var player = _context.Players
+        var player = await _context.Players
             .Include(p => p.RPERecords)
-            .FirstOrDefault(p => p.Id == playerId);
+            .FirstOrDefaultAsync(p => p.Id == playerId);
 
         if (player == null)
         {
             throw new KeyNotFoundException("Player not found.");
         }
 
-        var existingRecord = player.RPERecords
-            .FirstOrDefault(x => x.Date.Equals(input.Date));
+        RPE? rpeRecord = player.RPERecords
+            .Where(x => x.Date.Equals(input.Date))
+            .FirstOrDefault();
 
-        if (existingRecord != null)
+        if (rpeRecord != null)
         {
-            _context.RPEs.Remove(existingRecord);
+            _context.RPEs.Remove(rpeRecord);
             await _context.SaveChangesAsync();
         }
 
-        RPE newRpe = new RPE(input.IntervalInMinutes, input.Value, input.Date);
+        RPE newRpe = new RPE
+            (input.IntervalInMinutes, input.Value, input.Date);
 
         player.AddRPERecord(newRpe);
         await _context.SaveChangesAsync();
-
-        _cacheService.Remove(GetCacheKey(playerId, input.Date, "rpe"));
     }
 
     public async Task DeleteRPE(int playerId, DateOnly dateTarget)
     {
         await _blobLogger.LogAsync($"Deleting RPE data for player {playerId} on {dateTarget}");
-
-        var player = _context.Players
+        var player = await _context.Players
             .Include(p => p.RPERecords)
-            .FirstOrDefault(p => p.Id == playerId);
+            .FirstOrDefaultAsync(p => p.Id == playerId);
 
         if (player == null)
         {
@@ -56,17 +53,15 @@ public class RPEManager : PlayerHelper
         }
 
         var rpeRecord = player.RPERecords?
-            .FirstOrDefault(x => x.Date.Equals(dateTarget));
+            .Where(x => x.Date.Equals(dateTarget))
+            .FirstOrDefault();
 
         if (rpeRecord == null)
         {
             throw new KeyNotFoundException("RPE record not found.");
         }
-
         _context.RPEs.Remove(rpeRecord);
         await _context.SaveChangesAsync();
-
-        _cacheService.Remove(GetCacheKey(playerId, dateTarget, "rpe"));
     }
 
     public async Task<GetRPEWeekOutput> GetRPEOfLeagueWeek(DateOnly startDate)
@@ -77,40 +72,39 @@ public class RPEManager : PlayerHelper
 
         await _blobLogger.LogAsync($"Getting RPE data for league week starting with {startDate}");
 
-        var tasks = dates.Select(date => GetRPE(date));
-        var results = await Task.WhenAll(tasks);
+        var tasks = dates.Select(async date =>
+        {
+            return await GetRPE(date);
+        });
 
+        var results = await Task.WhenAll(tasks);
         return new GetRPEWeekOutput(results.OrderBy(x => x.Date));
     }
 
+
     public async Task<GetRPEDayOutput> GetRPE(DateOnly dateTarget)
     {
-        await _blobLogger.LogAsync($"Getting RPE data for league day {dateTarget}");
+        await _blobLogger.LogAsync($"Getting RPE data for league week {dateTarget}");
 
         using var context = _contextFactory.CreateDbContext();
-        var players = await context.Players.ToListAsync();
 
-        var outputPlayers = new ConcurrentBag<GetRPEDayOutputPlayers>();
-
-        var tasks = players.Select(async player =>
-        {
-            var rpe = await _cacheService.GetAsync(GetCacheKey(player.Id, dateTarget, "rpe"), async () =>
+        var players = await context.Players
+            .Select(p => new
             {
-                using var innerContext = _contextFactory.CreateDbContext();
-                return await innerContext.RPEs
-                    .Where(r => EF.Property<int>(r, "PlayerId") == player.Id && r.Date == dateTarget)
-                    .FirstOrDefaultAsync() ?? new RPE();
-            });
+                Player = p,
+                RPE = p.RPERecords.FirstOrDefault(r => r.Date.Equals(dateTarget))
+            })
+            .ToListAsync();
 
-            outputPlayers.Add(new GetRPEDayOutputPlayers(
-                player.Id,
-                player.Name,
-                rpe
-            ));
-        });
-
-        await Task.WhenAll(tasks);
+        var outputPlayers = players.Select(x =>
+            new GetRPEDayOutputPlayers(
+                x.Player.Id,
+                x.Player.Name,
+                x.RPE
+            )
+        );
 
         return new GetRPEDayOutput(outputPlayers, dateTarget);
     }
+
 }

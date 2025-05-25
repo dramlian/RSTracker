@@ -22,7 +22,7 @@ builder.Services.AddDbContextFactory<PlayerDbContext>(options =>
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<BlobLogger>();
 builder.Services.AddScoped<CacheService>();
-builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.None);
+//builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.None);
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

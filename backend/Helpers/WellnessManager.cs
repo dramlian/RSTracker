@@ -3,10 +3,9 @@ using RSTracker.Models;
 using Newtonsoft.Json;
 using RSTracker.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Concurrent;
-
 public class WelnessManager : PlayerHelper
 {
+
     public WelnessManager(IDbContextFactory<PlayerDbContext> contextFactory, BlobLogger blobLogger, CacheService cacheService)
         : base(contextFactory, blobLogger, cacheService)
     {
@@ -15,33 +14,32 @@ public class WelnessManager : PlayerHelper
     public async Task AddWelnessToDb(int playerId, WelnessInput input)
     {
         await _blobLogger.LogAsync($"Adding wellness data for player {playerId} {JsonConvert.SerializeObject(input)}");
-
         var player = _context.Players
-            .Where(x => x.Id.Equals(playerId))
-            .Include(p => p.WelnessRecords)
-            .FirstOrDefault();
+        .Where(x => x.Id.Equals(playerId))
+        .Include(p => p.WelnessRecords).FirstOrDefault();
 
         if (player == null)
-            throw new KeyNotFoundException("Player not found.");
-
-        var existingRecord = player.WelnessRecords
-            .FirstOrDefault(x => x.Date.Equals(input.Date));
-
-        if (existingRecord != null)
         {
-            _context.WelnessRecords.Remove(existingRecord);
+            throw new KeyNotFoundException("Player not found.");
+        }
+
+        Welness? welnessRecord = player.WelnessRecords
+            .Where(x => x.Date.Equals(input.Date))
+            .FirstOrDefault();
+
+        if (welnessRecord != null)
+        {
+            _context.WelnessRecords.Remove(welnessRecord);
             await _context.SaveChangesAsync();
         }
 
-        Welness newWelness = new Welness(
-            input.MuscleStatus, input.RecoveryStatus,
+        Welness newWelness = new Welness
+            (input.MuscleStatus, input.RecoveryStatus,
             input.StressStatus, input.SleepStatus,
             input.Date);
 
         player.AddWelnessRecord(newWelness);
         await _context.SaveChangesAsync();
-
-        _cacheService.Remove(GetCacheKey(playerId, input.Date, "welness"));
     }
 
     public async Task<GetWelnessWeekOutput> GetWelnessOfLeagueWeek(DateOnly startDate)
@@ -52,63 +50,63 @@ public class WelnessManager : PlayerHelper
 
         await _blobLogger.LogAsync($"Getting wellness data for league week starting with {startDate}");
 
-        var tasks = dates.Select(date => GetWelness(date));
-        var results = await Task.WhenAll(tasks);
+        var tasks = dates.Select(async date =>
+        {
+            return await GetWelness(date);
+        });
 
+        var results = await Task.WhenAll(tasks);
         return new GetWelnessWeekOutput(results.OrderBy(x => x.Date));
     }
 
     public async Task<GetWelnessDayOutput> GetWelness(DateOnly dateTarget)
     {
-        await _blobLogger.LogAsync($"Getting wellness data for league day {dateTarget}");
+        await _blobLogger.LogAsync($"Getting wellness data for league week {dateTarget}");
 
         using var context = _contextFactory.CreateDbContext();
-        var players = await context.Players.ToListAsync();
 
-        var outputPlayers = new ConcurrentBag<GetWelnessDayOutputPlayers>();
-
-        var tasks = players.Select(async player =>
-        {
-            var wellness = await _cacheService.GetAsync(GetCacheKey(player.Id, dateTarget, "welness"), async () =>
+        var players = await context.Players
+            .Select(p => new
             {
-                using var innerContext = _contextFactory.CreateDbContext();
-                return await innerContext.WelnessRecords
-                    .Where(w => EF.Property<int>(w, "PlayerId") == player.Id && w.Date == dateTarget)
-                    .FirstOrDefaultAsync() ?? new Welness();
-            });
+                Player = p,
+                Wellness = p.WelnessRecords.FirstOrDefault(w => w.Date.Equals(dateTarget))
+            })
+            .ToListAsync();
 
-            outputPlayers.Add(new GetWelnessDayOutputPlayers(
-                player.Id,
-                player.Name,
-                wellness
-            ));
-        });
-
-        await Task.WhenAll(tasks);
+        var outputPlayers = players.Select(x =>
+            new GetWelnessDayOutputPlayers(
+                x.Player.Id,
+                x.Player.Name,
+                x.Wellness
+            )
+        );
 
         return new GetWelnessDayOutput(outputPlayers, dateTarget);
     }
 
+
     public async Task DeleteWelness(int playerId, DateOnly dateTarget)
     {
         await _blobLogger.LogAsync($"Deleting wellness data for player {playerId} on {dateTarget}");
-
         var player = _context.Players
             .Include(p => p.WelnessRecords)
             .FirstOrDefault(p => p.Id == playerId);
 
         if (player == null)
+        {
             throw new KeyNotFoundException("Player not found.");
-
+        }
         var welnessRecord = player.WelnessRecords?
-            .FirstOrDefault(x => x.Date.Equals(dateTarget));
+            .Where(x => x.Date.Equals(dateTarget))
+            .FirstOrDefault();
 
         if (welnessRecord == null)
+        {
             throw new KeyNotFoundException("Wellness record not found.");
+        }
 
         _context.WelnessRecords.Remove(welnessRecord);
         await _context.SaveChangesAsync();
-
-        _cacheService.Remove(GetCacheKey(playerId, dateTarget, "welness"));
     }
+
 }
