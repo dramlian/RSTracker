@@ -66,25 +66,29 @@ public class RPEManager : PlayerHelper
 
     public async Task<GetRPEWeekOutput> GetRPEOfLeagueWeek(DateOnly startDate)
     {
-        IEnumerable<DateOnly> dates = Enumerable.Range(0, 7)
-            .Select(i => startDate.AddDays(i));
+        var dates = Enumerable.Range(0, 7)
+            .Select(i => startDate.AddDays(i))
+            .ToList();
 
         await _blobLogger.LogAsync($"Getting RPE data for league week starting with {startDate}");
 
-        var returnDic = new List<GetRPEDayOutput>();
-        foreach (var date in dates)
+        var tasks = dates.Select(async date =>
         {
-            var rpe = await GetRPE(date);
-            returnDic.Add(rpe);
-        }
-        return new GetRPEWeekOutput(returnDic);
+            return await GetRPE(date);
+        });
+
+        var results = await Task.WhenAll(tasks);
+        return new GetRPEWeekOutput(results.OrderBy(x => x.Date));
     }
+
 
     public async Task<GetRPEDayOutput> GetRPE(DateOnly dateTarget)
     {
         await _blobLogger.LogAsync($"Getting RPE data for league week {dateTarget}");
 
-        var players = await _context.Players
+        using var context = _contextFactory.CreateDbContext();
+
+        var players = await context.Players
             .Select(p => new
             {
                 Player = p,
@@ -102,7 +106,6 @@ public class RPEManager : PlayerHelper
 
         return new GetRPEDayOutput(outputPlayers, dateTarget);
     }
-
 
 }
 

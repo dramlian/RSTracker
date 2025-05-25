@@ -10,10 +10,10 @@ public class GetRPEWeekOutput
     public IEnumerable<DayAverage> Norms { get; }
     public IEnumerable<DayAverage> TotalWeekAverages { get; }
 
-    public GetRPEWeekOutput(List<GetRPEDayOutput> days)
+    public GetRPEWeekOutput(IEnumerable<GetRPEDayOutput> days)
     {
         Days = days;
-        int dayCount = days.Count;
+        int dayCount = days.ToList().Count;
         TotalWeekAverages = days.Select(x => new DayAverage(x.DayOfWeek, x.TotalAverage));
         days = days.Where(x => !x.NoData).ToList();
         TotalWeekVolume = Math.Round(days.Sum(x => x.Volume) / dayCount, 2);

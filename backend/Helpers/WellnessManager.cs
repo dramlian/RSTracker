@@ -44,25 +44,28 @@ public class WelnessManager : PlayerHelper
 
     public async Task<GetWelnessWeekOutput> GetWelnessOfLeagueWeek(DateOnly startDate)
     {
-        IEnumerable<DateOnly> dates = Enumerable.Range(0, 7)
-            .Select(i => startDate.AddDays(i));
+        var dates = Enumerable.Range(0, 7)
+            .Select(i => startDate.AddDays(i))
+            .ToList();
 
         await _blobLogger.LogAsync($"Getting wellness data for league week starting with {startDate}");
 
-        var returnDic = new List<GetWelnessDayOutput>();
-        foreach (var date in dates)
+        var tasks = dates.Select(async date =>
         {
-            var welness = await GetWelness(date);
-            returnDic.Add(welness);
-        }
-        return new GetWelnessWeekOutput(returnDic);
+            return await GetWelness(date);
+        });
+
+        var results = await Task.WhenAll(tasks);
+        return new GetWelnessWeekOutput(results.OrderBy(x => x.Date));
     }
 
     public async Task<GetWelnessDayOutput> GetWelness(DateOnly dateTarget)
     {
         await _blobLogger.LogAsync($"Getting wellness data for league week {dateTarget}");
 
-        var players = await _context.Players
+        using var context = _contextFactory.CreateDbContext();
+
+        var players = await context.Players
             .Select(p => new
             {
                 Player = p,
@@ -80,6 +83,7 @@ public class WelnessManager : PlayerHelper
 
         return new GetWelnessDayOutput(outputPlayers, dateTarget);
     }
+
 
     public async Task DeleteWelness(int playerId, DateOnly dateTarget)
     {
