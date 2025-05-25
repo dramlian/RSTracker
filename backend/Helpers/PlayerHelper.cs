@@ -7,12 +7,14 @@ namespace RSTracker.Helpers;
 
 public class PlayerHelper
 {
+    protected readonly IDbContextFactory<PlayerDbContext> _contextFactory;
     protected readonly PlayerDbContext _context;
     protected readonly BlobLogger _blobLogger;
     protected readonly CacheService _cacheService;
-    public PlayerHelper(PlayerDbContext context, BlobLogger blobLogger, CacheService cacheService)
+    public PlayerHelper(IDbContextFactory<PlayerDbContext> contextFactory, BlobLogger blobLogger, CacheService cacheService)
     {
-        _context = context;
+        _contextFactory = contextFactory;
+        _context = contextFactory.CreateDbContext();
         _blobLogger = blobLogger;
         _cacheService = cacheService;
     }

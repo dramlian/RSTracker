@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using RSTracker.Models;
 using RSTracker.Helpers;
 using RSTracker.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace RSTracker.Controllers
 {
@@ -13,11 +14,11 @@ namespace RSTracker.Controllers
         private readonly WelnessManager _welnessManager;
         private readonly RPEManager _rpeManager;
 
-        public PlayerController(PlayerDbContext context, BlobLogger blobLogger, CacheService cacheService)
+        public PlayerController(IDbContextFactory<PlayerDbContext> contextFactor, BlobLogger blobLogger, CacheService cacheService)
         {
-            _playerHelper = new PlayerHelper(context, blobLogger, cacheService);
-            _welnessManager = new WelnessManager(context, blobLogger, cacheService);
-            _rpeManager = new RPEManager(context, blobLogger, cacheService);
+            _playerHelper = new PlayerHelper(contextFactor, blobLogger, cacheService);
+            _welnessManager = new WelnessManager(contextFactor, blobLogger, cacheService);
+            _rpeManager = new RPEManager(contextFactor, blobLogger, cacheService);
         }
 
         [HttpPost("addplayer")]

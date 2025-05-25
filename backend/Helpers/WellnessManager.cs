@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 public class WelnessManager : PlayerHelper
 {
 
-    public WelnessManager(PlayerDbContext context, BlobLogger blobLogger, CacheService cacheService)
-        : base(context, blobLogger, cacheService)
+    public WelnessManager(IDbContextFactory<PlayerDbContext> contextFactory, BlobLogger blobLogger, CacheService cacheService)
+        : base(contextFactory, blobLogger, cacheService)
     {
     }
 

@@ -5,8 +5,8 @@ using RSTracker.Services;
 using Microsoft.EntityFrameworkCore;
 public class RPEManager : PlayerHelper
 {
-    public RPEManager(PlayerDbContext context, BlobLogger blobLogger, CacheService cacheService)
-        : base(context, blobLogger, cacheService)
+    public RPEManager(IDbContextFactory<PlayerDbContext> contextFactory, BlobLogger blobLogger, CacheService cacheService)
+        : base(contextFactory, blobLogger, cacheService)
     {
     }
 
