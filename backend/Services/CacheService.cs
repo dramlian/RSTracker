@@ -1,6 +1,4 @@
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Threading.Tasks;
 
 namespace RSTracker.Services;
 
@@ -13,7 +11,16 @@ public class CacheService
         _cache = cache;
     }
 
-    public async Task<T?> GetAsync<T>(string key, int inputKey, DateOnly dateKey, Func<int, DateOnly, Task<T>> getDataFunc, TimeSpan? absoluteExpiration = null)
+    public async Task<T?> GetAsync<T>(string key, Func<Task<T?>> getDataFunc, TimeSpan? absoluteExpiration = null)
+    {
+        return await _cache.GetOrCreateAsync(key, async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = absoluteExpiration ?? TimeSpan.FromMinutes(10);
+            return await getDataFunc();
+        });
+    }
+
+    public async Task<T?> GetAsyncPlayerData<T>(string key, int inputKey, DateOnly dateKey, Func<int, DateOnly, Task<T?>> getDataFunc, TimeSpan? absoluteExpiration = null)
     {
         return await _cache.GetOrCreateAsync(key, async entry =>
         {

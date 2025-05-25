@@ -18,6 +18,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<PlayerDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddMemoryCache();
 builder.Services.AddScoped<BlobLogger>();
 builder.Services.AddScoped<CacheService>();
 
