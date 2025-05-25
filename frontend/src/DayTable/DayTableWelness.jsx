@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import AddEntryModalWelness from "../AddEntryModal/AddEntryModalWelness";
 import DeleteEntryModal from "../DeleteEntryModal/DeleteEntryModal";
+import { format } from "date-fns";
 
 function DayTableWelness({ day, selectedDate, fetcheddata, setWasUpdated }) {
   const [data, setData] = useState([]);
@@ -13,6 +14,10 @@ function DayTableWelness({ day, selectedDate, fetcheddata, setWasUpdated }) {
 
   const handleShowDeleteModal = () => setShowDeleteModal(true);
   const handleCloseDeleteModal = () => setShowDeleteModal(false);
+
+  const formattedDate = selectedDate
+    ? format(new Date(selectedDate), "dd.MM.yyyy")
+    : "";
 
   useEffect(() => {
     setData(fetcheddata.outcomePlayers ?? []);
@@ -40,8 +45,9 @@ function DayTableWelness({ day, selectedDate, fetcheddata, setWasUpdated }) {
   return (
     <Container className="mt-5 border border-2 rounded p-4">
       <Row className="d-flex justify-content-between align-items-center mb-3">
-        <Col>
+        <Col className="text-center">
           <h2>{day}</h2>
+          <h4>{formattedDate}</h4>
         </Col>
         <Col className="text-end">
           <Button

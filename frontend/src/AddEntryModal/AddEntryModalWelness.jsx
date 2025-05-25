@@ -4,6 +4,7 @@ import Select from "react-select";
 import AddEntryFormWellness from "../AddEntryForm/AddEntryFormWellness";
 import ApiClient from "../Helpers/ApiClient";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
+import { format } from "date-fns";
 
 function AddEntryModalWelness({
   show,
@@ -16,6 +17,9 @@ function AddEntryModalWelness({
   const [options, setOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const formRef = useRef();
+  const formattedDate = selectedDate
+    ? format(new Date(selectedDate), "dd.MM.yyyy")
+    : "";
 
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -60,7 +64,7 @@ function AddEntryModalWelness({
       <LoadingScreen isLoading={isLoading} />
       <Modal.Header closeButton>
         <Modal.Title>
-          Add Wellness to {selectedDate}, {dayString}
+          Add Wellness to {formattedDate}, {dayString}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
