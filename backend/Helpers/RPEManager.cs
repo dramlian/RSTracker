@@ -12,9 +12,6 @@ public class RPEManager : PlayerHelper
     {
     }
 
-    private string GetCacheKey(int playerId, DateOnly date) =>
-        $"rpe_{playerId}_{date:yyyyMMdd}";
-
     public async Task AddRPEToDb(int playerId, RpeInput input)
     {
         await _blobLogger.LogAsync($"Adding RPE data for player {playerId} {JsonConvert.SerializeObject(input)}");
@@ -24,7 +21,9 @@ public class RPEManager : PlayerHelper
             .FirstOrDefault(p => p.Id == playerId);
 
         if (player == null)
+        {
             throw new KeyNotFoundException("Player not found.");
+        }
 
         var existingRecord = player.RPERecords
             .FirstOrDefault(x => x.Date.Equals(input.Date));
@@ -40,7 +39,7 @@ public class RPEManager : PlayerHelper
         player.AddRPERecord(newRpe);
         await _context.SaveChangesAsync();
 
-        _cacheService.Remove(GetCacheKey(playerId, input.Date));
+        _cacheService.Remove(GetCacheKey(playerId, input.Date, "rpe"));
     }
 
     public async Task DeleteRPE(int playerId, DateOnly dateTarget)
@@ -52,18 +51,22 @@ public class RPEManager : PlayerHelper
             .FirstOrDefault(p => p.Id == playerId);
 
         if (player == null)
+        {
             throw new KeyNotFoundException("Player not found.");
+        }
 
         var rpeRecord = player.RPERecords?
             .FirstOrDefault(x => x.Date.Equals(dateTarget));
 
         if (rpeRecord == null)
+        {
             throw new KeyNotFoundException("RPE record not found.");
+        }
 
         _context.RPEs.Remove(rpeRecord);
         await _context.SaveChangesAsync();
 
-        _cacheService.Remove(GetCacheKey(playerId, dateTarget));
+        _cacheService.Remove(GetCacheKey(playerId, dateTarget, "rpe"));
     }
 
     public async Task<GetRPEWeekOutput> GetRPEOfLeagueWeek(DateOnly startDate)
@@ -91,7 +94,7 @@ public class RPEManager : PlayerHelper
 
         var tasks = players.Select(async player =>
         {
-            var rpe = await _cacheService.GetAsync(GetCacheKey(player.Id, dateTarget), async () =>
+            var rpe = await _cacheService.GetAsync(GetCacheKey(player.Id, dateTarget, "rpe"), async () =>
             {
                 using var innerContext = _contextFactory.CreateDbContext();
                 return await innerContext.RPEs

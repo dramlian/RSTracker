@@ -12,9 +12,6 @@ public class WelnessManager : PlayerHelper
     {
     }
 
-    private string GetCacheKey(int playerId, DateOnly date) =>
-        $"welness_{playerId}_{date:yyyyMMdd}";
-
     public async Task AddWelnessToDb(int playerId, WelnessInput input)
     {
         await _blobLogger.LogAsync($"Adding wellness data for player {playerId} {JsonConvert.SerializeObject(input)}");
@@ -44,7 +41,7 @@ public class WelnessManager : PlayerHelper
         player.AddWelnessRecord(newWelness);
         await _context.SaveChangesAsync();
 
-        _cacheService.Remove(GetCacheKey(playerId, input.Date));
+        _cacheService.Remove(GetCacheKey(playerId, input.Date, "welness"));
     }
 
     public async Task<GetWelnessWeekOutput> GetWelnessOfLeagueWeek(DateOnly startDate)
@@ -72,7 +69,7 @@ public class WelnessManager : PlayerHelper
 
         var tasks = players.Select(async player =>
         {
-            var wellness = await _cacheService.GetAsync(GetCacheKey(player.Id, dateTarget), async () =>
+            var wellness = await _cacheService.GetAsync(GetCacheKey(player.Id, dateTarget, "welness"), async () =>
             {
                 using var innerContext = _contextFactory.CreateDbContext();
                 return await innerContext.WelnessRecords
@@ -112,6 +109,6 @@ public class WelnessManager : PlayerHelper
         _context.WelnessRecords.Remove(welnessRecord);
         await _context.SaveChangesAsync();
 
-        _cacheService.Remove(GetCacheKey(playerId, dateTarget));
+        _cacheService.Remove(GetCacheKey(playerId, dateTarget, "welness"));
     }
 }

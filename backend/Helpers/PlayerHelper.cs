@@ -19,6 +19,11 @@ public class PlayerHelper
         _cacheService = cacheService;
     }
 
+    protected string GetCacheKey(int playerId, DateOnly date, string type)
+    {
+        return $"{type}_{playerId}_{date:yyyyMMdd}";
+    }
+
     public async Task AddPlayerToDb(PlayerInput player)
     {
         await _blobLogger.LogAsync($"Adding player {JsonConvert.SerializeObject(player)}");
@@ -33,7 +38,6 @@ public class PlayerHelper
 
         await _context.Players.AddAsync(newPlayer);
         await _context.SaveChangesAsync();
-        //_cacheService.Remove("all-players");
     }
 
     public async Task DeletePlayer(int playerId)
@@ -46,13 +50,11 @@ public class PlayerHelper
         }
         _context.Players.Remove(player);
         await _context.SaveChangesAsync();
-        //_cacheService.Remove("all-players");
     }
 
     public async Task<IEnumerable<Player>> GetAllPlayers()
     {
         await _blobLogger.LogAsync($"Getting all players");
-        //var players = await _cacheService.GetAsync<IEnumerable<Player>>("all-players", FetchAllPlayersFromDb, TimeSpan.FromMinutes(10));
         var players = await FetchAllPlayersFromDb();
         return players ?? Enumerable.Empty<Player>().ToList();
     }
