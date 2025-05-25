@@ -5,7 +5,6 @@ using RSTracker.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 
-
 public class WelnessManager : PlayerHelper
 {
     public WelnessManager(IDbContextFactory<PlayerDbContext> contextFactory, BlobLogger blobLogger, CacheService cacheService)
