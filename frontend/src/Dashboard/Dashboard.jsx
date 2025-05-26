@@ -109,23 +109,13 @@ export default function Dashboard({ type }) {
         {type === "welness" ? (
           <Row>
             <Col>
-              <WeekTableWelness
-                data={dayData.days}
-                totalWeekWelness={dayData.totalWeekWelness}
-                averageThree={dayData.averageThree}
-              />
+              <WeekTableWelness data={dayData} />
             </Col>
           </Row>
         ) : type === "rpe" ? (
           <Row>
             <Col>
-              <WeekTableRpe
-                data={dayData.days}
-                totalWeekVolume={dayData.totalWeekVolume}
-                totalWeekIntensity={dayData.totalWeekIntensity}
-                totalWeekRpe={dayData.totalWeekRpe}
-                norms={dayData.norms}
-              />
+              <WeekTableRpe data={dayData} />
             </Col>
           </Row>
         ) : null}

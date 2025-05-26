@@ -1,10 +1,10 @@
 import { Row, Col, Table } from "react-bootstrap";
 
-export default function WeekTableWelness({
-  data,
-  totalWeekWelness,
-  averageThree,
-}) {
+export default function WeekTableWelness({ data }) {
+  const daysArray = Array.isArray(data?.days)
+    ? data.days
+    : Object.values(data || {});
+
   return (
     <Row className="mt-4">
       <Col className="text-center">
@@ -21,8 +21,8 @@ export default function WeekTableWelness({
             </tr>
           </thead>
           <tbody>
-            {data &&
-              Object.entries(data).map(([day, values]) => {
+            {daysArray &&
+              daysArray.map((values, idx) => {
                 const allZero =
                   values.muscleAverage === 0 &&
                   values.recoveryAverage === 0 &&
@@ -33,7 +33,7 @@ export default function WeekTableWelness({
                 if (allZero) return null;
 
                 return (
-                  <tr key={day}>
+                  <tr key={values.dayOfWeekString || idx}>
                     <td>{values.dayOfWeekString}</td>
                     <td>{values.muscleAverage}</td>
                     <td>{values.recoveryAverage}</td>
@@ -51,13 +51,21 @@ export default function WeekTableWelness({
               <td>
                 <strong>Total Weekly Wellness</strong>
               </td>
-              <td>{totalWeekWelness || "N/A"}</td>
+              <td>
+                {typeof data?.totalWeekWelness === "number"
+                  ? data.totalWeekWelness
+                  : "N/A"}
+              </td>
             </tr>
             <tr>
               <td>
                 <strong>Average of 3 Days</strong>
               </td>
-              <td>{averageThree || "N/A"}</td>
+              <td>
+                {typeof data?.averageThree === "number"
+                  ? data.averageThree
+                  : "N/A"}
+              </td>
             </tr>
           </tbody>
         </Table>

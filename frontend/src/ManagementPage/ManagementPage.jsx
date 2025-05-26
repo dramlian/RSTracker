@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Row, Col, Card, Button } from "react-bootstrap";
 import Select from "react-select";
 import AddEntryFormRPE from "../AddEntryForm/AddEntryFormRPE";
@@ -9,7 +9,6 @@ import RemovePlayer from "./RemovePlayer";
 import ListPlayers from "./ListPlayers";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
 import DatePicker from "react-datepicker";
-import { format } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 
 function ManagementPage() {
