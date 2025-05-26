@@ -38,13 +38,13 @@ export default function BarChartRPE({ chartData }) {
       {
         label: "Volume",
         data: Object.values(chartData).map((dayData) => dayData.volume),
-        backgroundColor: "rgba(255, 99, 132, 0.6)",
+        backgroundColor: "rgba(238, 255, 0, 0.51)",
         borderWidth: 1,
       },
       {
         label: "Intensity",
         data: Object.values(chartData).map((dayData) => dayData.intensity),
-        backgroundColor: "rgba(54, 162, 235, 0.6)",
+        backgroundColor: "rgba(16, 37, 223, 0.6)",
         borderWidth: 1,
       },
     ],

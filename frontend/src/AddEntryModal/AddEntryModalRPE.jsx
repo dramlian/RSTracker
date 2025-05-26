@@ -4,6 +4,7 @@ import Select from "react-select";
 import AddEntryFormRPE from "../AddEntryForm/AddEntryFormRPE";
 import ApiClient from "../Helpers/ApiClient";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
+import { format } from "date-fns";
 
 function AddEntryModalRPE({
   show,
@@ -16,6 +17,9 @@ function AddEntryModalRPE({
   const [options, setOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const formRef = useRef();
+  const formattedDate = selectedDate
+    ? format(new Date(selectedDate), "dd.MM.yyyy")
+    : "";
 
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -60,7 +64,7 @@ function AddEntryModalRPE({
       <LoadingScreen isLoading={isLoading} />
       <Modal.Header closeButton>
         <Modal.Title>
-          Add RPE to {selectedDate}, {dayString}
+          Add RPE to {formattedDate}, {dayString}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>

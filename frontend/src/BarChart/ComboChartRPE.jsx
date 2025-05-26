@@ -48,8 +48,8 @@ const ComboChartRPE = ({ norms, averages }) => {
         type: "bar",
         label: "RPE",
         data: averages ? averages.map((x) => x.average) : [],
-        backgroundColor: "rgba(54, 162, 235, 0.5)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        backgroundColor: "rgba(50, 170, 26, 0.51)",
+        borderColor: "rgba(50, 170, 26, 0.51)",
         borderWidth: 1,
       },
       {

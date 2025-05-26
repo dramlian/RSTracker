@@ -5,7 +5,7 @@ public class GetWelnessWeekOutput
     public IEnumerable<GetWelnessDayOutput> Days { get; }
     public double TotalWeekWelness { get; }
     public double AverageThree { get; }
-    public GetWelnessWeekOutput(List<GetWelnessDayOutput> days)
+    public GetWelnessWeekOutput(IEnumerable<GetWelnessDayOutput> days)
     {
         Days = days;
         days = days.Where(x => !x.NoData).ToList();

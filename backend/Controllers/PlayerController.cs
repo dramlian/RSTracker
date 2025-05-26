@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using RSTracker.Models;
 using RSTracker.Helpers;
 using RSTracker.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace RSTracker.Controllers
 {
@@ -10,9 +11,14 @@ namespace RSTracker.Controllers
     public class PlayerController : ControllerBase
     {
         private readonly PlayerHelper _playerHelper;
-        public PlayerController(PlayerDbContext context, BlobLogger blobLogger)
+        private readonly WelnessManager _welnessManager;
+        private readonly RPEManager _rpeManager;
+
+        public PlayerController(IDbContextFactory<PlayerDbContext> contextFactor, BlobLogger blobLogger, CacheService cacheService)
         {
-            _playerHelper = new PlayerHelper(context, blobLogger);
+            _playerHelper = new PlayerHelper(contextFactor, blobLogger, cacheService);
+            _welnessManager = new WelnessManager(contextFactor, blobLogger, cacheService);
+            _rpeManager = new RPEManager(contextFactor, blobLogger, cacheService);
         }
 
         [HttpPost("addplayer")]
@@ -32,42 +38,42 @@ namespace RSTracker.Controllers
         [HttpPost("add-welness/{playerId}")]
         public async Task<IActionResult> AddWelness(int playerId, [FromBody] WelnessInput input)
         {
-            await _playerHelper.AddWelnessToDb(playerId, input);
+            await _welnessManager.AddWelnessToDb(playerId, input);
             return Ok(new { message = "Wellness data added successfully." });
         }
 
         [HttpDelete("delete-welness/{playerId}/{dateTarget}")]
         public async Task<IActionResult> DeleteWelness(int playerId, DateOnly dateTarget)
         {
-            await _playerHelper.DeleteWelness(playerId, dateTarget);
+            await _welnessManager.DeleteWelness(playerId, dateTarget);
             return Ok(new { message = "Wellness data deleted successfully." });
         }
 
         [HttpPost("add-rpe/{playerId}")]
         public async Task<IActionResult> AddRPE(int playerId, [FromBody] RpeInput input)
         {
-            await _playerHelper.AddRPEToDb(playerId, input);
+            await _rpeManager.AddRPEToDb(playerId, input);
             return Ok(new { message = "RPE data added successfully." });
         }
 
         [HttpDelete("delete-rpe/{playerId}/{dateTarget}")]
         public async Task<IActionResult> DeleteRPE(int playerId, DateOnly dateTarget)
         {
-            await _playerHelper.DeleteRPE(playerId, dateTarget);
+            await _rpeManager.DeleteRPE(playerId, dateTarget);
             return Ok(new { message = "RPE data deleted successfully." });
         }
 
         [HttpGet("get-rpe/{startDate}")]
         public async Task<IActionResult> GetRpeOfLeagueWeek(DateOnly startDate)
         {
-            var rpe = await _playerHelper.GetRPEOfLeagueWeek(startDate);
+            var rpe = await _rpeManager.GetRPEOfLeagueWeek(startDate);
             return Ok(rpe);
         }
 
         [HttpGet("get-welness/{startDate}")]
         public async Task<IActionResult> GetWelnessOfLeagueWeek(DateOnly startDate)
         {
-            var welness = await _playerHelper.GetWelnessOfLeagueWeek(startDate);
+            var welness = await _welnessManager.GetWelnessOfLeagueWeek(startDate);
             return Ok(welness);
         }
 

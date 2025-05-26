@@ -41,7 +41,7 @@ export default function BarChartWelness({ chartData }) {
       {
         label: "Wellness Score",
         data: values,
-        backgroundColor: "rgba(24, 58, 30, 0.6)",
+        backgroundColor: "rgba(10, 204, 238, 0.85)",
         borderWidth: 1,
       },
     ],

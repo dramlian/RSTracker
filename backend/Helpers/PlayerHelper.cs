@@ -7,18 +7,30 @@ namespace RSTracker.Helpers;
 
 public class PlayerHelper
 {
-    private readonly PlayerDbContext _context;
-    private readonly BlobLogger _blobLogger;
-    public PlayerHelper(PlayerDbContext context, BlobLogger blobLogger)
+    protected readonly IDbContextFactory<PlayerDbContext> _contextFactory;
+    protected readonly PlayerDbContext _context;
+    protected readonly BlobLogger _blobLogger;
+    protected readonly CacheService _cacheService;
+    private const string CacheKeyAllPlayers = "players_all";
+
+    public PlayerHelper(IDbContextFactory<PlayerDbContext> contextFactory, BlobLogger blobLogger, CacheService cacheService)
     {
-        _context = context;
+        _contextFactory = contextFactory;
+        _context = contextFactory.CreateDbContext();
         _blobLogger = blobLogger;
+        _cacheService = cacheService;
+    }
+
+    protected string GetCacheKey(int playerId, DateOnly date, string type)
+    {
+        return $"{type}_{playerId}_{date:yyyyMMdd}";
     }
 
     public async Task AddPlayerToDb(PlayerInput player)
     {
         await _blobLogger.LogAsync($"Adding player {JsonConvert.SerializeObject(player)}");
-        Player newPlayer = new Player
+
+        var newPlayer = new Player
         {
             Name = player.Name,
             Age = player.Age,
@@ -29,212 +41,34 @@ public class PlayerHelper
 
         await _context.Players.AddAsync(newPlayer);
         await _context.SaveChangesAsync();
+        _cacheService.Remove(CacheKeyAllPlayers);
     }
 
     public async Task DeletePlayer(int playerId)
     {
         await _blobLogger.LogAsync($"Deleting player with ID {playerId}");
-        var player = _context.Players.Where(x => x.Id.Equals(playerId)).FirstOrDefault();
+
+        var player = await _context.Players
+            .FirstOrDefaultAsync(x => x.Id == playerId);
+
         if (player == null)
-        {
             throw new KeyNotFoundException("Player not found.");
-        }
+
         _context.Players.Remove(player);
         await _context.SaveChangesAsync();
+
+        _cacheService.Remove(CacheKeyAllPlayers);
     }
 
-    public async Task AddWelnessToDb(int playerId, WelnessInput input)
+    public async Task<IEnumerable<Player>> GetAllPlayers()
     {
-        await _blobLogger.LogAsync($"Adding wellness data for player {playerId} {JsonConvert.SerializeObject(input)}");
-        var player = _context.Players
-        .Where(x => x.Id.Equals(playerId))
-        .Include(p => p.WelnessRecords).FirstOrDefault();
-
-        if (player == null)
-        {
-            throw new KeyNotFoundException("Player not found.");
-        }
-
-        Welness? welnessRecord = player.WelnessRecords
-            .Where(x => x.Date.Equals(input.Date))
-            .FirstOrDefault();
-
-        if (welnessRecord != null)
-        {
-            _context.WelnessRecords.Remove(welnessRecord);
-            await _context.SaveChangesAsync();
-        }
-
-        Welness newWelness = new Welness
-            (input.MuscleStatus, input.RecoveryStatus,
-            input.StressStatus, input.SleepStatus,
-            input.Date);
-
-        player.AddWelnessRecord(newWelness);
-        await _context.SaveChangesAsync();
+        await _blobLogger.LogAsync("Getting all players");
+        return await _cacheService.GetAsync(CacheKeyAllPlayers, FetchAllPlayersFromDb);
     }
 
-    public async Task DeleteWelness(int playerId, DateOnly dateTarget)
+    public async Task<List<Player>> FetchAllPlayersFromDb()
     {
-        await _blobLogger.LogAsync($"Deleting wellness data for player {playerId} on {dateTarget}");
-        var player = _context.Players
-            .Include(p => p.WelnessRecords)
-            .FirstOrDefault(p => p.Id == playerId);
-
-        if (player == null)
-        {
-            throw new KeyNotFoundException("Player not found.");
-        }
-        var welnessRecord = player.WelnessRecords?
-            .Where(x => x.Date.Equals(dateTarget))
-            .FirstOrDefault();
-
-        if (welnessRecord == null)
-        {
-            throw new KeyNotFoundException("Wellness record not found.");
-        }
-
-        _context.WelnessRecords.Remove(welnessRecord);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task AddRPEToDb(int playerId, RpeInput input)
-    {
-        await _blobLogger.LogAsync($"Adding RPE data for player {playerId} {JsonConvert.SerializeObject(input)}");
-        var player = await _context.Players
-            .Include(p => p.RPERecords)
-            .FirstOrDefaultAsync(p => p.Id == playerId);
-
-        if (player == null)
-        {
-            throw new KeyNotFoundException("Player not found.");
-        }
-
-        RPE? rpeRecord = player.RPERecords
-            .Where(x => x.Date.Equals(input.Date))
-            .FirstOrDefault();
-
-        if (rpeRecord != null)
-        {
-            _context.RPEs.Remove(rpeRecord);
-            await _context.SaveChangesAsync();
-        }
-
-        RPE newRpe = new RPE
-            (input.IntervalInMinutes, input.Value, input.Date);
-
-        player.AddRPERecord(newRpe);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task DeleteRPE(int playerId, DateOnly dateTarget)
-    {
-        await _blobLogger.LogAsync($"Deleting RPE data for player {playerId} on {dateTarget}");
-        var player = await _context.Players
-            .Include(p => p.RPERecords)
-            .FirstOrDefaultAsync(p => p.Id == playerId);
-
-        if (player == null)
-        {
-            throw new KeyNotFoundException("Player not found.");
-        }
-
-        var rpeRecord = player.RPERecords?
-            .Where(x => x.Date.Equals(dateTarget))
-            .FirstOrDefault();
-
-        if (rpeRecord == null)
-        {
-            throw new KeyNotFoundException("RPE record not found.");
-        }
-        _context.RPEs.Remove(rpeRecord);
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task<GetRPEWeekOutput> GetRPEOfLeagueWeek(DateOnly startDate)
-    {
-        IEnumerable<DateOnly> dates = Enumerable.Range(0, 7)
-            .Select(i => startDate.AddDays(i));
-
-        await _blobLogger.LogAsync($"Getting RPE data for league week starting with {startDate}");
-
-        var returnDic = new List<GetRPEDayOutput>();
-        foreach (var date in dates)
-        {
-            var rpe = await GetRPE(date);
-            returnDic.Add(rpe);
-        }
-        return new GetRPEWeekOutput(returnDic);
-    }
-
-    public async Task<GetRPEDayOutput> GetRPE(DateOnly dateTarget)
-    {
-        await _blobLogger.LogAsync($"Getting RPE data for league week {dateTarget}");
-
-        var players = await _context.Players
-            .Select(p => new
-            {
-                Player = p,
-                RPE = p.RPERecords.FirstOrDefault(r => r.Date.Equals(dateTarget))
-            })
-            .ToListAsync();
-
-        var outputPlayers = players.Select(x =>
-            new GetRPEDayOutputPlayers(
-                x.Player.Id,
-                x.Player.Name,
-                x.RPE
-            )
-        );
-
-        return new GetRPEDayOutput(outputPlayers, dateTarget);
-    }
-
-
-    public async Task<GetWelnessWeekOutput> GetWelnessOfLeagueWeek(DateOnly startDate)
-    {
-        IEnumerable<DateOnly> dates = Enumerable.Range(0, 7)
-            .Select(i => startDate.AddDays(i));
-
-        await _blobLogger.LogAsync($"Getting wellness data for league week starting with {startDate}");
-
-        var returnDic = new List<GetWelnessDayOutput>();
-        foreach (var date in dates)
-        {
-            var welness = await GetWelness(date);
-            returnDic.Add(welness);
-        }
-        return new GetWelnessWeekOutput(returnDic);
-    }
-
-    public async Task<GetWelnessDayOutput> GetWelness(DateOnly dateTarget)
-    {
-        await _blobLogger.LogAsync($"Getting wellness data for league week {dateTarget}");
-
-        var players = await _context.Players
-            .Select(p => new
-            {
-                Player = p,
-                Wellness = p.WelnessRecords.FirstOrDefault(w => w.Date.Equals(dateTarget))
-            })
-            .ToListAsync();
-
-        var outputPlayers = players.Select(x =>
-            new GetWelnessDayOutputPlayers(
-                x.Player.Id,
-                x.Player.Name,
-                x.Wellness
-            )
-        );
-
-        return new GetWelnessDayOutput(outputPlayers, dateTarget);
-    }
-
-
-    public async Task<List<Player>> GetAllPlayers()
-    {
-        await _blobLogger.LogAsync($"Getting all players");
-        var players = await _context.Players.ToListAsync();
-        return players;
+        await _blobLogger.LogAsync("Fetching all players from DB");
+        return await _context.Players.ToListAsync();
     }
 }

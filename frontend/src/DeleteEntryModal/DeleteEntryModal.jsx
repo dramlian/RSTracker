@@ -3,6 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import Select from "react-select";
 import ApiClient from "../Helpers/ApiClient";
 import LoadingScreen from "../LoadingScreen/LoadingScreen";
+import { format } from "date-fns";
 
 function DeleteEntryModal({
   show,
@@ -15,6 +16,9 @@ function DeleteEntryModal({
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [options, setOptions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const formattedDate = selectedDate
+    ? format(new Date(selectedDate), "dd.MM.yyyy")
+    : "";
 
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -58,7 +62,7 @@ function DeleteEntryModal({
       <LoadingScreen isLoading={isLoading} />
       <Modal.Header closeButton>
         <Modal.Title>
-          Delete Entry in {selectedDate}, {dayString}
+          Delete Entry in {formattedDate}, {dayString}
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
