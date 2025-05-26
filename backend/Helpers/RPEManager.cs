@@ -10,7 +10,6 @@ public class RPEManager : PlayerHelper
     {
     }
 
-
     public async Task AddRPEToDb(int playerId, RpeInput input)
     {
         await _blobLogger.LogAsync($"Adding RPE data for player {playerId} {JsonConvert.SerializeObject(input)}");
@@ -38,6 +37,7 @@ public class RPEManager : PlayerHelper
 
         player.AddRPERecord(newRpe);
         await _context.SaveChangesAsync();
+        _cacheService.Remove($"rpe-day:{input.Date}");
     }
 
     public async Task DeleteRPE(int playerId, DateOnly dateTarget)
@@ -62,6 +62,7 @@ public class RPEManager : PlayerHelper
         }
         _context.RPEs.Remove(rpeRecord);
         await _context.SaveChangesAsync();
+        _cacheService.Remove($"rpe-day:{dateTarget}");
     }
 
     public async Task<GetRPEWeekOutput> GetRPEOfLeagueWeek(DateOnly startDate)
@@ -74,13 +75,12 @@ public class RPEManager : PlayerHelper
 
         var tasks = dates.Select(async date =>
         {
-            return await GetRPE(date);
+            return await _cacheService.GetAsync<GetRPEDayOutput>($"rpe-day:{date}", () => GetRPE(date));
         });
 
         var results = await Task.WhenAll(tasks);
         return new GetRPEWeekOutput(results.OrderBy(x => x.Date));
     }
-
 
     public async Task<GetRPEDayOutput> GetRPE(DateOnly dateTarget)
     {
@@ -106,5 +106,4 @@ public class RPEManager : PlayerHelper
 
         return new GetRPEDayOutput(outputPlayers, dateTarget);
     }
-
 }

@@ -11,6 +11,7 @@ public class PlayerHelper
     protected readonly PlayerDbContext _context;
     protected readonly BlobLogger _blobLogger;
     protected readonly CacheService _cacheService;
+    private const string CacheKeyAllPlayers = "players_all";
 
     public PlayerHelper(IDbContextFactory<PlayerDbContext> contextFactory, BlobLogger blobLogger, CacheService cacheService)
     {
@@ -40,7 +41,7 @@ public class PlayerHelper
 
         await _context.Players.AddAsync(newPlayer);
         await _context.SaveChangesAsync();
-
+        _cacheService.Remove(CacheKeyAllPlayers);
     }
 
     public async Task DeletePlayer(int playerId)
@@ -56,12 +57,13 @@ public class PlayerHelper
         _context.Players.Remove(player);
         await _context.SaveChangesAsync();
 
+        _cacheService.Remove(CacheKeyAllPlayers);
     }
 
     public async Task<IEnumerable<Player>> GetAllPlayers()
     {
         await _blobLogger.LogAsync("Getting all players");
-        return await FetchAllPlayersFromDb();
+        return await _cacheService.GetAsync(CacheKeyAllPlayers, FetchAllPlayersFromDb);
     }
 
     public async Task<List<Player>> FetchAllPlayersFromDb()

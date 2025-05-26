@@ -3,6 +3,7 @@ using RSTracker.Models;
 using Newtonsoft.Json;
 using RSTracker.Services;
 using Microsoft.EntityFrameworkCore;
+
 public class WelnessManager : PlayerHelper
 {
 
@@ -40,6 +41,8 @@ public class WelnessManager : PlayerHelper
 
         player.AddWelnessRecord(newWelness);
         await _context.SaveChangesAsync();
+
+        _cacheService.Remove($"wellness-day:{input.Date}");
     }
 
     public async Task<GetWelnessWeekOutput> GetWelnessOfLeagueWeek(DateOnly startDate)
@@ -52,7 +55,10 @@ public class WelnessManager : PlayerHelper
 
         var tasks = dates.Select(async date =>
         {
-            return await GetWelness(date);
+            return await _cacheService.GetAsync(
+                $"wellness-day:{date}",
+                () => GetWelness(date),
+                TimeSpan.FromHours(1));
         });
 
         var results = await Task.WhenAll(tasks);
@@ -107,6 +113,8 @@ public class WelnessManager : PlayerHelper
 
         _context.WelnessRecords.Remove(welnessRecord);
         await _context.SaveChangesAsync();
+
+        _cacheService.Remove($"wellness-day:{dateTarget}");
     }
 
 }

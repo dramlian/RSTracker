@@ -11,7 +11,7 @@ public class CacheService
         _cache = cache;
     }
 
-    public async Task<T?> GetAsync<T>(string key, Func<Task<T>> getDataFunc, TimeSpan? absoluteExpiration = null)
+    public async Task<T> GetAsync<T>(string key, Func<Task<T>> getDataFunc, TimeSpan? absoluteExpiration = null)
     {
         if (_cache.TryGetValue(key, out T? cached) && cached != null)
             return cached;
