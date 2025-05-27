@@ -8,17 +8,27 @@ import Management from "./ManagementPage/ManagementPage";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { ToastContainer } from "react-toastify";
 
+import { PublicClientApplication } from "@azure/msal-browser";
+import { MsalProvider } from "@azure/msal-react";
+import { msalConfig } from "./Authtentification/authConfig";
+import { TokenLogger } from "./Authtentification/TokenLogger";
+
+const msalInstance = new PublicClientApplication(msalConfig);
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
-      <Header />
-      <Routes>
-        <Route path="/welness" element={<Dashboard type={"welness"} />} />
-        <Route path="/rpe" element={<Dashboard type={"rpe"} />} />
-        <Route path="/management" element={<Management />} />
-        <Route path="*" element={<Homepage />} />
-      </Routes>
-    </BrowserRouter>
-    <ToastContainer />
+    <MsalProvider instance={msalInstance}>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/welness" element={<Dashboard type={"welness"} />} />
+          <Route path="/rpe" element={<Dashboard type={"rpe"} />} />
+          <Route path="/management" element={<Management />} />
+          <Route path="*" element={<Homepage />} />
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer />
+      <TokenLogger />
+    </MsalProvider>
   </StrictMode>
 );
