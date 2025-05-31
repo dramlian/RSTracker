@@ -7,7 +7,7 @@ using RSTracker.Abstractions;
 public class WelnessManager : PlayerHelper
 {
 
-    public WelnessManager(IDbContextFactory<PlayerDbContext> contextFactory, IBlobLogger blobLogger, CacheService cacheService)
+    public WelnessManager(IDbContextFactory<PlayerDbContext> contextFactory, IBlobLogger blobLogger, ICacheService cacheService)
         : base(contextFactory, blobLogger, cacheService)
     {
     }

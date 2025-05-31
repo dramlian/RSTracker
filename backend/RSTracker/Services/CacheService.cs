@@ -2,7 +2,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace RSTracker.Services;
 
-public class CacheService
+public class CacheService : ICacheService
 {
     private readonly IMemoryCache _cache;
 

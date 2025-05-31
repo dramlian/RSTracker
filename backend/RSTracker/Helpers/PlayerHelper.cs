@@ -11,10 +11,10 @@ public class PlayerHelper
     protected readonly IDbContextFactory<PlayerDbContext> _contextFactory;
     protected readonly PlayerDbContext _context;
     protected readonly IBlobLogger _blobLogger;
-    protected readonly CacheService _cacheService;
+    protected readonly ICacheService _cacheService;
     private const string CacheKeyAllPlayers = "players_all";
 
-    public PlayerHelper(IDbContextFactory<PlayerDbContext> contextFactory, IBlobLogger blobLogger, CacheService cacheService)
+    public PlayerHelper(IDbContextFactory<PlayerDbContext> contextFactory, IBlobLogger blobLogger, ICacheService cacheService)
     {
         _contextFactory = contextFactory;
         _context = contextFactory.CreateDbContext();

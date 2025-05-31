@@ -15,7 +15,7 @@ namespace RSTracker.Controllers
         private readonly WelnessManager _welnessManager;
         private readonly RPEManager _rpeManager;
 
-        public PlayerController(IDbContextFactory<PlayerDbContext> contextFactor, IBlobLogger blobLogger, CacheService cacheService)
+        public PlayerController(IDbContextFactory<PlayerDbContext> contextFactor, IBlobLogger blobLogger, ICacheService cacheService)
         {
             _playerHelper = new PlayerHelper(contextFactor, blobLogger, cacheService);
             _welnessManager = new WelnessManager(contextFactor, blobLogger, cacheService);

@@ -29,7 +29,7 @@ builder.Services.AddDbContextFactory<PlayerDbContext>(options =>
 
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IBlobLogger, BlobLogger>();
-builder.Services.AddScoped<CacheService>();
+builder.Services.AddScoped<ICacheService, CacheService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
