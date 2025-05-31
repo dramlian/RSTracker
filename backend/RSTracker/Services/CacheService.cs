@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Caching.Memory;
+using RSTracker.Abstractions;
 
 namespace RSTracker.Services;
 

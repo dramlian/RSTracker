@@ -1,4 +1,4 @@
-namespace RSTracker.Services;
+namespace RSTracker.Abstractions;
 
 public interface ICacheService
 {

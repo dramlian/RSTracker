@@ -67,7 +67,7 @@ public class PlayerHelper
         return await _cacheService.GetAsync(CacheKeyAllPlayers, FetchAllPlayersFromDb);
     }
 
-    public async Task<List<Player>> FetchAllPlayersFromDb()
+    private async Task<List<Player>> FetchAllPlayersFromDb()
     {
         await _blobLogger.LogAsync("Fetching all players from DB");
         return await _context.Players.ToListAsync();
