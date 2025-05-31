@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSTracker", "RSTracker.csproj", "{58AF8F97-9CB6-D4FD-0404-53CDC7D852F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSTracker\RSTracker", "RSTracker\RSTracker.csproj", "{58AF8F97-9CB6-D4FD-0404-53CDC7D852F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
