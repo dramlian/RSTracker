@@ -3,11 +3,11 @@ using RSTracker.Models;
 using Newtonsoft.Json;
 using RSTracker.Services;
 using Microsoft.EntityFrameworkCore;
-
+using RSTracker.Abstractions;
 public class WelnessManager : PlayerHelper
 {
 
-    public WelnessManager(IDbContextFactory<PlayerDbContext> contextFactory, BlobLogger blobLogger, CacheService cacheService)
+    public WelnessManager(IDbContextFactory<PlayerDbContext> contextFactory, IBlobLogger blobLogger, CacheService cacheService)
         : base(contextFactory, blobLogger, cacheService)
     {
     }

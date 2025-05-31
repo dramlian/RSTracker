@@ -4,6 +4,7 @@ using RSTracker.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RSTracker.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,7 @@ builder.Services.AddDbContextFactory<PlayerDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddMemoryCache();
-builder.Services.AddScoped<BlobLogger>();
+builder.Services.AddScoped<IBlobLogger, BlobLogger>();
 builder.Services.AddScoped<CacheService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

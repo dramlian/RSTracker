@@ -1,10 +1,11 @@
 using Azure.Storage.Blobs;
 using System.Text;
+using RSTracker.Abstractions;
 namespace RSTracker.Services;
 
 /* TODO: Each player will have a unique container and that
 container will have a unique blob for each day.*/
-public class BlobLogger
+public class BlobLogger : IBlobLogger
 {
     private readonly BlobContainerClient _containerClient;
 

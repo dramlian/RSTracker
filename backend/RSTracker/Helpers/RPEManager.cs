@@ -3,9 +3,10 @@ using RSTracker.Models;
 using Newtonsoft.Json;
 using RSTracker.Services;
 using Microsoft.EntityFrameworkCore;
+using RSTracker.Abstractions;
 public class RPEManager : PlayerHelper
 {
-    public RPEManager(IDbContextFactory<PlayerDbContext> contextFactory, BlobLogger blobLogger, CacheService cacheService)
+    public RPEManager(IDbContextFactory<PlayerDbContext> contextFactory, IBlobLogger blobLogger, CacheService cacheService)
         : base(contextFactory, blobLogger, cacheService)
     {
     }
