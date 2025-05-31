@@ -24,6 +24,9 @@ namespace RSTracker.Models
         [Range(1, 52, ErrorMessage = "Value must be between 1 and 52.")]
         public DateOnly Date { get; set; }
 
+        public int PlayerId { get; set; }
+        public Player Player { get; set; } = null!;
+
         public Welness(int muscleStatus, int recoveryStatus, int stressStatus, int sleepStatus, DateOnly date)
         {
             MuscleStatus = muscleStatus;

@@ -16,7 +16,7 @@ namespace RSTracker.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("ProductVersion", "9.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -65,7 +65,7 @@ namespace RSTracker.Migrations
                     b.Property<int>("IntervalInMinutes")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("PlayerId")
+                    b.Property<int>("PlayerId")
                         .HasColumnType("integer");
 
                     b.Property<int>("Rpevalue")
@@ -95,7 +95,7 @@ namespace RSTracker.Migrations
                     b.Property<int>("MuscleStatus")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("PlayerId")
+                    b.Property<int>("PlayerId")
                         .HasColumnType("integer");
 
                     b.Property<int>("RecoveryStatus")
@@ -116,18 +116,24 @@ namespace RSTracker.Migrations
 
             modelBuilder.Entity("RSTracker.Models.RPE", b =>
                 {
-                    b.HasOne("RSTracker.Models.Player", null)
+                    b.HasOne("RSTracker.Models.Player", "Player")
                         .WithMany("RPERecords")
                         .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("RSTracker.Models.Welness", b =>
                 {
-                    b.HasOne("RSTracker.Models.Player", null)
+                    b.HasOne("RSTracker.Models.Player", "Player")
                         .WithMany("WelnessRecords")
                         .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("RSTracker.Models.Player", b =>

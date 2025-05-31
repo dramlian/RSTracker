@@ -13,14 +13,14 @@ public class PlayerDbContext : DbContext
     {
         modelBuilder.Entity<Player>()
             .HasMany(p => p.RPERecords)
-            .WithOne()
-            .HasForeignKey("PlayerId")
+            .WithOne(r => r.Player)
+            .HasForeignKey(r => r.PlayerId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Player>()
             .HasMany(p => p.WelnessRecords)
-            .WithOne()
-            .HasForeignKey("PlayerId")
+            .WithOne(w => w.Player)
+            .HasForeignKey(w => w.PlayerId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
