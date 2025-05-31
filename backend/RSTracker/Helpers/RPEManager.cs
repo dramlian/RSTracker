@@ -1,7 +1,6 @@
 using RSTracker.Helpers;
 using RSTracker.Models;
 using Newtonsoft.Json;
-using RSTracker.Services;
 using Microsoft.EntityFrameworkCore;
 using RSTracker.Abstractions;
 public class RPEManager : PlayerHelper
@@ -83,7 +82,7 @@ public class RPEManager : PlayerHelper
         return new GetRPEWeekOutput(results.OrderBy(x => x.Date));
     }
 
-    public async Task<GetRPEDayOutput> GetRPE(DateOnly dateTarget)
+    private async Task<GetRPEDayOutput> GetRPE(DateOnly dateTarget)
     {
         await _blobLogger.LogAsync($"Getting RPE data for league week {dateTarget}");
 
