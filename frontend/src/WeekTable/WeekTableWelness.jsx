@@ -10,7 +10,7 @@ export default function WeekTableWelness({ data }) {
       <Col className="text-center">
         <Accordion>
           <Accordion.Item eventKey="0">
-            <Accordion.Header>Wellness Averages</Accordion.Header>
+            <Accordion.Header>Table</Accordion.Header>
             <Accordion.Body>
               <Table striped bordered hover>
                 <thead>
