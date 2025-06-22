@@ -84,12 +84,5 @@ namespace RSTracker.Controllers
             var players = await _playerHelper.GetAllPlayers();
             return Ok(players);
         }
-
-        [HttpGet("dummy")]
-        public async Task<IActionResult> Dummy()
-        {
-            // This is a dummy endpoint for testing purposes.
-            return Ok(new { message = "Dummy endpoint reached successfully." });
-        }
     }
 }
