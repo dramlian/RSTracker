@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RSTracker.Abstractions;
 
-
+DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -86,10 +86,6 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    DotNetEnv.Env.Load();
-}
 
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
