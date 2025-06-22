@@ -11,8 +11,11 @@ public class BlobLogger : IBlobLogger
 
     public BlobLogger(IConfiguration configuration)
     {
-        var blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("BlobServiceClient"));
-        _containerClient = blobServiceClient.GetBlobContainerClient(configuration.GetConnectionString("BlobContainerName"));
+        var blobServiceConnection = Environment.GetEnvironmentVariable("BLOB_SERVICE_CLIENT");
+        var blobContainerName = Environment.GetEnvironmentVariable("BLOB_CONTAINER_NAME");
+
+        var blobServiceClient = new BlobServiceClient(blobServiceConnection);
+        _containerClient = blobServiceClient.GetBlobContainerClient(blobContainerName);
         _containerClient.CreateIfNotExists();
     }
 

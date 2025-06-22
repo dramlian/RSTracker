@@ -6,6 +6,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RSTracker.Abstractions;
 
+
+DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
@@ -28,8 +30,10 @@ builder.Services.AddControllers(options =>
     options.Filters.Add(new Microsoft.AspNetCore.Mvc.Authorization.AuthorizeFilter());
 });
 
+var defaultConnection = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION");
+
 builder.Services.AddDbContextFactory<PlayerDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(defaultConnection));
 
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IBlobLogger, BlobLogger>();
