@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RSTracker.Migrations
 {
     [DbContext(typeof(PlayerDbContext))]
-    [Migration("20250531172946_InitWithRelations")]
-    partial class InitWithRelations
+    [Migration("20250621154222_InitialCreateNew")]
+    partial class InitialCreateNew
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

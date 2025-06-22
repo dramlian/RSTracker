@@ -67,5 +67,5 @@ class ApiClient {
   }
 }
 
-const api = new ApiClient("http://localhost:5001/player");
+const api = new ApiClient("https://rstracker-api.kindcoast-63f12bd5.polandcentral.azurecontainerapps.io/player");
 export default api;
