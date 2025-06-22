@@ -30,7 +30,7 @@ builder.Services.AddControllers(options =>
     options.Filters.Add(new Microsoft.AspNetCore.Mvc.Authorization.AuthorizeFilter());
 });
 
-var defaultConnection = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION");
+var defaultConnection = Environment.GetEnvironmentVariable("default-connection");
 
 builder.Services.AddDbContextFactory<PlayerDbContext>(options =>
     options.UseNpgsql(defaultConnection));
