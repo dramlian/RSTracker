@@ -22,8 +22,11 @@ jobs:
         with:
           dotnet-version: "9.x"
 
+      - name: Pull postgres image
+        run: docker pull postgres:15-alpine
+
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore backend/RSTracker.Tests/RSTracker.Tests.csproj
 
       - name: Run tests
         run: dotnet test backend/RSTracker.Tests/RSTracker.Tests.csproj
