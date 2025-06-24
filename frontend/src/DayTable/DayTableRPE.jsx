@@ -72,7 +72,7 @@ function DayTableRPE({ day, selectedDate, fetcheddata, setWasUpdated }) {
                   <td>{entry.name}</td>
                   <td>{entry.value}</td>
                   <td>{entry.duration}</td>
-                  <td>{entry.totalvalue}</td>
+                  <td>{entry.totalValue}</td>
                 </tr>
               ))}
             </tbody>
