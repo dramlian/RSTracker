@@ -79,9 +79,9 @@ public class GetRPEDayOutput
 
         var totalSum = evalData.Sum(x => x.TotalValue);
         var durationSum = evalData.Sum(x => x.Duration);
+        CommonTime = durationSum / count;
 
         TotalAverage = Math.Round((double)totalSum / count, 1);
-        CommonTime = durationSum / count;
         Volume = Math.Round(TotalAverage / 760 * 100, 2);
         Intensity = Math.Round(Volume / (CommonTime / 95.0), 2);
     }

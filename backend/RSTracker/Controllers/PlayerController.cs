@@ -14,12 +14,14 @@ namespace RSTracker.Controllers
         private readonly PlayerHelper _playerHelper;
         private readonly WelnessManager _welnessManager;
         private readonly RPEManager _rpeManager;
+        private readonly ACWRManager _acwrManager;
 
         public PlayerController(IDbContextFactory<PlayerDbContext> contextFactor, IBlobLogger blobLogger, ICacheService cacheService)
         {
             _playerHelper = new PlayerHelper(contextFactor, blobLogger, cacheService);
             _welnessManager = new WelnessManager(contextFactor, blobLogger, cacheService);
             _rpeManager = new RPEManager(contextFactor, blobLogger, cacheService);
+            _acwrManager = new ACWRManager(contextFactor, blobLogger, cacheService);
         }
 
         [HttpPost("addplayer")]
@@ -83,6 +85,13 @@ namespace RSTracker.Controllers
         {
             var players = await _playerHelper.GetAllPlayers();
             return Ok(players);
+        }
+
+        [HttpGet("get-acwr/{startDate}/{numberOfWeeks}")]
+        public async Task<IActionResult> GetACWR(DateOnly startDate, int numberOfWeeks)
+        {
+            var acwrWeeks = await _acwrManager.GetACWR(startDate, numberOfWeeks);
+            return Ok(acwrWeeks);
         }
     }
 }
