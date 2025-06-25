@@ -73,6 +73,7 @@ export default function ACWRPage() {
         </Col>
         <Col md={4}>
           <Button
+            variant="outline-secondary"
             style={{ marginTop: "1.9rem" }}
             className="w-100"
             onClick={handleFetchData}
