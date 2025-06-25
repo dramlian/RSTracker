@@ -84,16 +84,32 @@ export default function ACWRPage() {
         </Col>
       </Row>
 
-      <Row>
-        <Col>
-          <ComboBarChartACWR />
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <StackedBarChartRPE rpeData={acwrData} />
-        </Col>
-      </Row>
+      {!acwrData || acwrData.length === 0 || loading ? (
+        <Row className="mb-4">
+          <Col className="text-center">
+            <div style={{ padding: "2rem", color: "#666" }}>
+              <h5>No data available</h5>
+              <p>
+                Please select a date and number of weeks, then click "Fetch ACWR
+                Stats" to view the charts
+              </p>
+            </div>
+          </Col>
+        </Row>
+      ) : (
+        <>
+          <Row>
+            <Col>
+              <ComboBarChartACWR acwrData={acwrData} />
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <StackedBarChartRPE rpeData={acwrData} />
+            </Col>
+          </Row>
+        </>
+      )}
     </Container>
   );
 }

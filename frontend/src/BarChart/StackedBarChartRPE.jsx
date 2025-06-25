@@ -35,53 +35,58 @@ const StackedBarChartRPE = ({ rpeData }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Return empty state if no data
-  if (!rpeData || rpeData.length === 0) {
-    return (
-      <div
-        style={{
-          height: "45vh",
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div style={{ textAlign: "center", color: "#666" }}>
-          <h5>No data available</h5>
-          <p>Please fetch data to view the chart</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Process real data
-  const processedData = {
-    labels: rpeData.map((item) => {
-      const date = new Date(item.firstDayOfWeek);
-      return `Week ${date.getMonth() + 1}/${date.getDate()}`;
-    }),
-    datasets: [
-      {
-        label: "Volume",
-        data: rpeData.map((item) => parseFloat(item.averageVolume.toFixed(1))),
-        backgroundColor: "rgba(54, 162, 235, 0.8)",
-        borderColor: "rgba(54, 162, 235, 1)",
-        borderWidth: 1,
-        stack: "Stack 0",
-      },
-      {
-        label: "Intensity",
-        data: rpeData.map((item) =>
-          parseFloat(item.averageIntensity.toFixed(1))
-        ),
-        backgroundColor: "rgba(255, 99, 132, 0.8)",
-        borderColor: "rgba(255, 99, 132, 1)",
-        borderWidth: 1,
-        stack: "Stack 0",
-      },
-    ],
-  };
+  // Create empty data structure if no data, otherwise process real data
+  const processedData =
+    !rpeData || rpeData.length === 0
+      ? {
+          labels: [],
+          datasets: [
+            {
+              label: "Volume",
+              data: [],
+              backgroundColor: "rgba(54, 162, 235, 0.8)",
+              borderColor: "rgba(54, 162, 235, 1)",
+              borderWidth: 1,
+              stack: "Stack 0",
+            },
+            {
+              label: "Intensity",
+              data: [],
+              backgroundColor: "rgba(255, 99, 132, 0.8)",
+              borderColor: "rgba(255, 99, 132, 1)",
+              borderWidth: 1,
+              stack: "Stack 0",
+            },
+          ],
+        }
+      : {
+          labels: rpeData.map((item) => {
+            const date = new Date(item.firstDayOfWeek);
+            return `Week ${date.getMonth() + 1}/${date.getDate()}`;
+          }),
+          datasets: [
+            {
+              label: "Volume",
+              data: rpeData.map((item) =>
+                parseFloat(item.averageVolume.toFixed(1))
+              ),
+              backgroundColor: "rgba(54, 162, 235, 0.8)",
+              borderColor: "rgba(54, 162, 235, 1)",
+              borderWidth: 1,
+              stack: "Stack 0",
+            },
+            {
+              label: "Intensity",
+              data: rpeData.map((item) =>
+                parseFloat(item.averageIntensity.toFixed(1))
+              ),
+              backgroundColor: "rgba(255, 99, 132, 0.8)",
+              borderColor: "rgba(255, 99, 132, 1)",
+              borderWidth: 1,
+              stack: "Stack 0",
+            },
+          ],
+        };
 
   const data = processedData;
 
