@@ -13,13 +13,12 @@ export default function ACWRPage() {
 
   const handleFetchData = async () => {
     if (!startDate || numberOfWeeks <= 0 || numberOfWeeks > 52) {
-      alert("Please select a valid date and number of weeks (1-52)");
+      alert("Please select a valid date and number of weeks (1-52)"); // todo better display
       return;
     }
 
     try {
       setLoading(true);
-      // Format date from YYYY-MM-DD to MM-DD-YYYY for the API
       const formattedDate = new Date(startDate)
         .toLocaleDateString("en-US", {
           month: "2-digit",
@@ -29,11 +28,8 @@ export default function ACWRPage() {
         .replace(/\//g, "-");
 
       const endpoint = `get-acwr/${formattedDate}/${numberOfWeeks}`;
-      console.log("Fetching ACWR data from:", endpoint);
-
       const response = await api.get(endpoint);
       setAcwrData(response);
-      console.log("ACWR data received:", response);
     } catch (error) {
       console.error("Error fetching ACWR data:", error);
       alert("Failed to fetch ACWR data. Please try again.");
@@ -63,10 +59,10 @@ export default function ACWRPage() {
             <Form.Label>Number of Weeks</Form.Label>
             <Form.Control
               type="number"
-              min="1"
-              max="52"
               value={numberOfWeeks}
-              onChange={(e) => setNumberOfWeeks(parseInt(e.target.value))}
+              onChange={(e) => {
+                setNumberOfWeeks(e.target.value);
+              }}
               required
             />
           </Form.Group>
