@@ -91,7 +91,7 @@ export default function ACWRPage() {
       </Row>
       <Row>
         <Col>
-          <StackedBarChartRPE />
+          <StackedBarChartRPE rpeData={acwrData} />
         </Col>
       </Row>
     </Container>

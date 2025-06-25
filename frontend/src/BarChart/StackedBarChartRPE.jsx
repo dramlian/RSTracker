@@ -35,38 +35,55 @@ const StackedBarChartRPE = ({ rpeData }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Dummy data for RPE stacked bar chart with percentages
-  const dummyData = {
-    labels: [
-      "Week 1",
-      "Week 2",
-      "Week 3",
-      "Week 4",
-      "Week 5",
-      "Week 6",
-      "Week 7",
-    ],
+  // Return empty state if no data
+  if (!rpeData || rpeData.length === 0) {
+    return (
+      <div
+        style={{
+          height: "45vh",
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div style={{ textAlign: "center", color: "#666" }}>
+          <h5>No data available</h5>
+          <p>Please fetch data to view the chart</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Process real data
+  const processedData = {
+    labels: rpeData.map((item) => {
+      const date = new Date(item.firstDayOfWeek);
+      return `Week ${date.getMonth() + 1}/${date.getDate()}`;
+    }),
     datasets: [
       {
-        label: "Intensity",
-        data: [45, 40, 52, 35, 42, 48, 37],
-        backgroundColor: "rgba(255, 99, 132, 0.8)",
-        borderColor: "rgba(255, 99, 132, 1)",
+        label: "Volume",
+        data: rpeData.map((item) => parseFloat(item.averageVolume.toFixed(1))),
+        backgroundColor: "rgba(54, 162, 235, 0.8)",
+        borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
         stack: "Stack 0",
       },
       {
-        label: "Volume",
-        data: [55, 60, 48, 65, 58, 52, 63],
-        backgroundColor: "rgba(54, 162, 235, 0.8)",
-        borderColor: "rgba(54, 162, 235, 1)",
+        label: "Intensity",
+        data: rpeData.map((item) =>
+          parseFloat(item.averageIntensity.toFixed(1))
+        ),
+        backgroundColor: "rgba(255, 99, 132, 0.8)",
+        borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 1,
         stack: "Stack 0",
       },
     ],
   };
 
-  const data = rpeData || dummyData;
+  const data = processedData;
 
   const options = {
     responsive: true,
@@ -78,7 +95,7 @@ const StackedBarChartRPE = ({ rpeData }) => {
       },
       title: {
         display: true,
-        text: "Intensity vs Volume Distribution (%)",
+        text: "Intensity vs Volume Distribution",
         font: {
           size: 18,
         },
@@ -91,8 +108,7 @@ const StackedBarChartRPE = ({ rpeData }) => {
           weight: "bold",
         },
         formatter: (value, context) => {
-          // Only show percentage if value is greater than 5% to avoid clutter
-          return value > 5 ? value + "%" : "";
+          return parseFloat(value).toFixed(1) + "%";
         },
         anchor: "center",
         align: "center",
@@ -101,7 +117,6 @@ const StackedBarChartRPE = ({ rpeData }) => {
     scales: {
       y: {
         beginAtZero: true,
-        max: 100,
         stacked: true,
         ticks: {
           display: true,
@@ -109,13 +124,10 @@ const StackedBarChartRPE = ({ rpeData }) => {
           font: {
             size: fontSize,
           },
-          callback: function (value) {
-            return value + "%";
-          },
         },
         title: {
           display: true,
-          text: "Percentage (%)",
+          text: "Values (%)",
           color: "#000",
         },
       },
