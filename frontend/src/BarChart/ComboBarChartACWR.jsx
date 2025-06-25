@@ -133,19 +133,31 @@ const ComboBarChartACWR = ({ acwrData }) => {
       },
       datalabels: {
         display: function (context) {
-          return context.dataset.type === "line";
+          return true;
         },
-        color: "#FF0000",
+        color: function (context) {
+          return context.dataset.type === "line" ? "#FF0000" : "#000";
+        },
         font: {
           size: fontSize,
           weight: "bold",
         },
-        formatter: (value) => {
-          return value.toFixed(2);
+        formatter: (value, context) => {
+          if (context.dataset.type === "line") {
+            return value.toFixed(2);
+          } else {
+            return parseFloat(value).toFixed(1);
+          }
         },
-        align: "right",
-        offset: 8,
-        anchor: "end",
+        align: function (context) {
+          return context.dataset.type === "line" ? "right" : "center";
+        },
+        offset: function (context) {
+          return context.dataset.type === "line" ? 8 : 0;
+        },
+        anchor: function (context) {
+          return context.dataset.type === "line" ? "end" : "center";
+        },
       },
     },
     scales: {
