@@ -5,6 +5,7 @@ import Dashboard from "./Dashboard/Dashboard";
 import Header from "./Header/Header";
 import Homepage from "./Homepage/Homepage";
 import Management from "./ManagementPage/ManagementPage";
+import ACWRPage from "./ACWRPage/ACWRPage";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { ToastContainer } from "react-toastify";
 
@@ -49,6 +50,7 @@ function AppRoutes() {
           <Route path="/welness" element={<Dashboard type={"welness"} />} />
           <Route path="/rpe" element={<Dashboard type={"rpe"} />} />
           <Route path="/management" element={<Management />} />
+          <Route path="/acwr" element={<ACWRPage type={"acwr"} />} />
         </>
       )}
     </Routes>

@@ -49,6 +49,9 @@ export default function Header() {
                 <Nav.Link as={Link} to="/welness">
                   Wellness Dashboard
                 </Nav.Link>
+                <Nav.Link as={Link} to="/acwr">
+                  ACWR Dashboard
+                </Nav.Link>
               </Nav>
             </Col>
           </Row>
