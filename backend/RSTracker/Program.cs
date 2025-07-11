@@ -1,19 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using RSTracker.Services;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RSTracker.Abstractions;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
 
-if (builder.Environment.IsDevelopment())
-{
-    DotNetEnv.Env.Load();
-}
+string keyVaultUrl = "https://rstracker-keyvault.vault.azure.net/";
+var client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+KeyVaultSecret dbSecret = await client.GetSecretAsync("db-connection");
+var defaultConnection = dbSecret.Value;
 
-var defaultConnection = Environment.GetEnvironmentVariable("default-connection");
+KeyVaultSecret blobSecret = await client.GetSecretAsync("blob-service-client");
+var blobServiceConnection = blobSecret.Value;
 
 
 builder.Services.AddCors(options =>
@@ -41,7 +43,7 @@ builder.Services.AddDbContextFactory<PlayerDbContext>(options =>
     options.UseNpgsql(defaultConnection));
 
 builder.Services.AddMemoryCache();
-builder.Services.AddScoped<IBlobLogger, BlobLogger>();
+builder.Services.AddScoped<IBlobLogger>(provider => new BlobLogger(blobServiceConnection));
 builder.Services.AddScoped<ICacheService, CacheService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

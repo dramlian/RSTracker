@@ -9,13 +9,10 @@ public class BlobLogger : IBlobLogger
 {
     private readonly BlobContainerClient _containerClient;
 
-    public BlobLogger(IConfiguration configuration)
+    public BlobLogger(string blobServiceConnection)
     {
-        var blobServiceConnection = Environment.GetEnvironmentVariable("blob-service-client");
-        var blobContainerName = Environment.GetEnvironmentVariable("blob-container-name");
-
         var blobServiceClient = new BlobServiceClient(blobServiceConnection);
-        _containerClient = blobServiceClient.GetBlobContainerClient(blobContainerName);
+        _containerClient = blobServiceClient.GetBlobContainerClient("rs-dev-logs");
         _containerClient.CreateIfNotExists();
     }
 
