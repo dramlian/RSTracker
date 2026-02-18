@@ -8,33 +8,33 @@ The platform is designed around the concept of **league weeks** (7-day windows),
 
 ## Key Features
 
-### Player Management
+**Player Management**
 - Maintain a full squad roster with player profiles (name, age, position, weight, height)
 - Add and remove players with cascading data cleanup
 
-### RPE Tracking
+**RPE Tracking**
 - Record daily session RPE values and training duration per player
 - Automatic calculation of session training load (RPE x duration)
 - Daily team averages, volume percentages, and intensity metrics
 - Comparison against built-in reference norms for each day of the week
 
-### Wellness Monitoring
+**Wellness Monitoring**
 - Track four daily wellness dimensions per player: Muscle Status, Recovery Status, Stress, and Sleep
 - Each dimension scored on a 1-7 scale (total wellness score out of 28)
 - Mid-week recovery assessment via Wednesday-Thursday-Friday averages
 
-### ACWR Analysis
+**ACWR Analysis**
 - Acute:Chronic Workload Ratio calculation over configurable time windows
 - Multi-week trend visualization to identify periods of elevated injury risk
 - Combined volume and intensity breakdown per week
 
-### Data Visualization
+**Data Visualization**
 - Bar charts for daily wellness and RPE summaries
 - Combo charts comparing actual RPE loads against daily reference norms
 - Stacked bar charts for weekly RPE breakdowns across the ACWR period
 - ACWR ratio trend charts spanning multiple weeks
 
-### Weekly Data Views
+**Weekly Data Views**
 - Day-by-day tables showing individual player values alongside team averages
 - Week summary tables with aggregated statistics
 - Date picker navigation to browse historical data by league week
@@ -43,35 +43,35 @@ The platform is designed around the concept of **league weeks** (7-day windows),
 
 ## Screenshots
 
-### RPE Bar Chart
 ![RPE Bar Chart](docs/screenshots/RPEBarChart.png)
+*RPE Bar Chart -- daily training load visualization*
 
-### RPE Norm Chart
 ![RPE Norm Chart](docs/screenshots/RPENormChart.png)
+*RPE Norm Chart -- actual loads compared against daily reference norms*
 
-### Wellness Chart
 ![Wellness Chart](docs/screenshots/WelnessChart.png)
+*Wellness Chart -- daily wellness score overview*
 
-### ACWR Analysis
 ![ACWR Analysis](docs/screenshots/ACWR.png)
+*ACWR Analysis -- workload ratio trends across multiple weeks*
 
-### Player Management
 ![Player Management](docs/screenshots/PlayerManagement.png)
+*Player Management -- squad roster administration*
 
-### Player Data, RPE, Wellness and Management
 ![Player Data RPE Wellness Management](docs/screenshots/PlayerDataRPEWelnessManagement.png)
+*Player Data, RPE, Wellness and Management -- combined data entry view*
 
 ---
 
 ## Sports Science Background
 
-### RPE (Rating of Perceived Exertion)
+#### RPE (Rating of Perceived Exertion)
 
 RPE is a subjective measure of how hard a player perceives a training session to be. When combined with session duration, it produces the **session RPE** or total training load:
 
 $$\text{Session RPE} = \text{RPE Value} \times \text{Duration (minutes)}$$
 
-### Volume and Intensity
+#### Volume and Intensity
 
 - **Volume** is expressed as a percentage of the maximum expected daily load (baseline of 760):
 
@@ -81,7 +81,7 @@ $$\text{Volume} = \frac{\text{Total RPE}}{760} \times 100$$
 
 $$\text{Intensity} = \frac{\text{Volume}}{\text{Common Time} / 95}$$
 
-### Wellness Scoring
+#### Wellness Scoring
 
 Players self-report four metrics daily, each on a 1-7 scale:
 
@@ -94,7 +94,7 @@ Players self-report four metrics daily, each on a 1-7 scale:
 
 The total wellness score ranges from 4 to 28. The platform also calculates a **Wednesday-Thursday-Friday average**, commonly used to assess recovery state heading into match day.
 
-### ACWR (Acute:Chronic Workload Ratio)
+#### ACWR (Acute:Chronic Workload Ratio)
 
 The ACWR compares the current week's training load against the rolling average of the previous four weeks:
 
@@ -107,7 +107,7 @@ $$ACWR = \frac{\text{Current Week Load}}{\text{Average of Previous 4 Weeks}}$$
 | 1.3 - 1.5 | Caution -- elevated injury risk |
 | Above 1.5 | Danger zone -- high injury risk |
 
-### Daily Reference Norms
+#### Daily Reference Norms
 
 The system includes built-in daily RPE norms for a typical training week to compare against actual loads:
 
@@ -119,9 +119,7 @@ The system includes built-in daily RPE norms for a typical training week to comp
 
 ## Technology Stack
 
----
-
-### Frontend
+#### Frontend
 
 | Technology | Purpose |
 |---|---|
@@ -138,9 +136,7 @@ The system includes built-in daily RPE norms for a typical training week to comp
 | react-toastify | Toast notifications |
 | react-spinners | Loading indicators |
 
----
-
-### Backend
+#### Backend
 
 | Technology | Purpose |
 |---|---|
@@ -154,9 +150,7 @@ The system includes built-in daily RPE norms for a typical training week to comp
 | Azure Blob Storage | Structured operation logging |
 | In-Memory Cache | Response caching with TTL-based invalidation |
 
----
-
-### Infrastructure
+#### Infrastructure
 
 | Technology | Purpose |
 |---|---|
@@ -166,6 +160,25 @@ The system includes built-in daily RPE norms for a typical training week to comp
 | Azure Key Vault | Centralized secrets management |
 | Azure Blob Storage | Append-style daily log files |
 
+#### Testing
+
+| Technology | Purpose |
+|---|---|
+| xUnit | Test framework |
+| Testcontainers | Integration testing with real PostgreSQL instances |
+
+---
+
+## CI/CD
+
+The project uses **GitHub Actions** for continuous integration and deployment. A workflow is triggered on every push to the `main` branch and performs the following steps:
+
+1. **Test** -- restores .NET dependencies, pulls a PostgreSQL image, and runs the full xUnit test suite (including Testcontainers-based integration tests)
+2. **Build** -- builds Docker images for both the backend (ASP.NET Core API) and frontend (React SPA served by Nginx), tagged with the short commit hash
+3. **Push** -- pushes both images to Docker Hub
+4. **Deploy** -- authenticates with Azure and updates both Azure Container Apps (backend and frontend) to use the newly built images
+
+This ensures that every merge to `main` is automatically tested, containerized, and deployed to production.
 
 ---
 
